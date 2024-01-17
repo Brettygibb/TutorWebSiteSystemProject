@@ -34,13 +34,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Student login
     loginUser($email, $pass, 'Student', 'StudentDashBoard.php');
-
     // Tutor login
     loginUser($email, $pass, 'Tutor', 'TutorDashBoard.php');
-
+    // Admin login
     loginUser($email, $pass, 'Admin', 'AdminDashBoard.php');
 
-    // If neither student nor tutor, login failed
+    // If neither student nor tutor no admin, login failed
     echo "Login Failed";
 }
 
