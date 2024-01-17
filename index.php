@@ -6,6 +6,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Project/PHP/PHPProject.php to edi
 <html>
     <head>
         <meta charset="UTF-8">
+<<<<<<< HEAD
         <title>NBCC Tutoring</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="styles.css">
@@ -42,5 +43,21 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Project/PHP/PHPProject.php to edi
             ?>
         </main>
 </div>
+=======
+        <title></title>
+        <!--link styles.css-->
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        Hello World! Bretts test
+        <br>
+        <a href="StudentLogin.php">Student Login</a>
+        <br>
+        <a href="TutorLogin.php">Tutor Login</a>
+        <br>
+        <?php
+        // put your code here
+        ?>
+>>>>>>> 16b56bd42568c77b226af58ab33fe5224207e2ac
     </body>
 </html>
