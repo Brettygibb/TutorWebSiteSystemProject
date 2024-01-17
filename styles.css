@@ -1,12 +1,52 @@
+nav {
+    background-color: #333;
+    color: #fff;
+    padding: 15px;
+    text-align: center;
+    
+  }
+
+  nav a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 15px;
+    margin: 0 10px;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  nav a:hover {
+    background-color: #555;
+  }
+
+  .nbccBanner{
+    width: 100%;
+    max-width: 100%; /* Ensure the image doesn't exceed its natural size */
+    height: auto;   /* Maintain the aspect ratio */
+    
+  }
+
+  .wrapper {
+    width: 80%;
+    margin: 20px auto; /* Adjust the margin as needed */
+    padding: 20px;
+    border: 2px solid #333; /* Border color and style */
+    border-radius: 8px;
+    background-color: #cec1c1; /* Background color if needed */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    
+}
+
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #685f5f;
     margin: 0;
     padding: 0;
     display: flex;
-    align-items: center;
+    align-items: top;
     justify-content: center;
-    height: 100vh;
+    
+    flex-direction: column;
 }
 form {
     background-color: #fff;
@@ -45,7 +85,11 @@ button {
 button:hover {
     background-color: #45a049;
 }
-.wrapper{
+
+#indexParagraph{
+    font-size: 19px;
+}
+/*.wrapper{
     viewport-fit: 80%;
     
-}
+}*/
