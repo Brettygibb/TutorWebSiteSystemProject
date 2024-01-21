@@ -46,7 +46,7 @@ $result = mysqli_stmt_get_result($stmt);
 
     <section>
         <h2>Available Courses for Subscription</h2>
-        <form action="SubscribeCourseProc.php" method="post">
+        <form action="TutorSubscribeCourseProc.php" method="post">
             <table>
                 <thead>
                     <tr>
