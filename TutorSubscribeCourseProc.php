@@ -8,7 +8,7 @@ if ($_SESSION['role'] !== 'Tutor' || !isset($_SESSION['id'])) {
     exit();
 }
 
-$tutorId = $_SESSION['id'];
+$userId = $_SESSION['id'];
 
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -20,8 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         foreach ($selectedCourses as $courseId) {
             $sql = "INSERT INTO tutors (UserId, CourseId) VALUES (?, ?)";
             $stmt = mysqli_prepare($conn, $sql);
-            mysqli_stmt_bind_param($stmt, "ii", $tutorId, $courseId);
+            mysqli_stmt_bind_param($stmt, "ii", $userId, $courseId);
             mysqli_stmt_execute($stmt);
+
+            // Get the last auto-incremented tutorId
+            $lastTutorId = mysqli_insert_id($conn);
+            echo "TutorId for the inserted record: $lastTutorId<br>";
         }
 
         echo "Courses subscribed successfully!";
