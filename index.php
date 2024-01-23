@@ -17,7 +17,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Project/PHP/PHPProject.php to edi
                 <a href="#">Home</a>
                 <a href="#">Find a Tutor</a>
                 <a href="Login.php">Sign In</a>
-                <a href="#">Create an Account</a>
+                <a href="tutorSignup.php">Create an Account</a>
                 </nav>
             </div>
 

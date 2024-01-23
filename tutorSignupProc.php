@@ -1,5 +1,5 @@
 <?php
-include("connect.php");
+include("Connect.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve form data
@@ -14,8 +14,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = password_hash(isset($_POST["password"]) ? $_POST["password"] : "", PASSWORD_DEFAULT);
 
     // Insert data into the users table
-    $sql = "INSERT INTO users (FirstName, LastName, Email, Password, Role) VALUES (?, ?, ?, ?, ?)";
-    $stmt = $con->prepare($sql);
+    $sql = "INSERT INTO users (FirstName, LastName, Email, PasswordHash, Role) VALUES (?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
 
     // Set the role for the tutor
     $role = 'Tutor';
