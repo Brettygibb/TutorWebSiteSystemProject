@@ -14,8 +14,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = password_hash(isset($_POST["password"]) ? $_POST["password"] : "", PASSWORD_DEFAULT);
 
     // Insert data into the users table
-    $sql = "INSERT INTO users (FirstName, LastName, Email, Password, Role) VALUES (?, ?, ?, ?, ?)";
-    $stmt = $con->prepare($sql);
+    $sql = "INSERT INTO users (FirstName, LastName, Email, PasswordHash, Role) VALUES (?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
 
     // Set the role for the student
     $role = 'Student';
@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     $stmt->close();
-    $con->close();
+    $conn->close();
 
     // We need additional steps to get the new TutorId and insert into the tutors table if needed
 
