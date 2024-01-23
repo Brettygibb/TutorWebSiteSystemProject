@@ -93,3 +93,17 @@ button:hover {
     viewport-fit: 80%;
     
 }*/
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input, select {
+    margin-bottom: 10px;
+}
