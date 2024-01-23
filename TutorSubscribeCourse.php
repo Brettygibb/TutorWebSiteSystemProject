@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $selectedCourseId = $_POST["courseId"];
 
     // Redirect to TutorSubscribeProc.php with selected course ID
-    header("Location: TutorSubscribeProc.php?courseId=$selectedCourseId");
+    header("Location: TutorSubscribeCourseProc.php?courseId=$selectedCourseId");
     exit();
 }
 ?>
