@@ -4,6 +4,19 @@ include 'Connect.php';
 
 $userid = $_SESSION['id'];
 
+// Query to get the tutor ID based on the user ID
+$tutorIdSql = "SELECT TutorId FROM tutors WHERE UserId = $userid";
+$tutorIdResult = mysqli_query($conn, $tutorIdSql);
+$tutorIdRow = mysqli_fetch_assoc($tutorIdResult);
+
+if (!$tutorIdRow) {
+    // Handle the case where the tutor ID is not found
+    echo "Error: Tutor ID not found for the user.";
+    exit();
+}
+
+$tutorid = $tutorIdRow['TutorId'];
+
 // Query to get the user information
 $userSql = "SELECT * FROM users WHERE UserID = $userid";
 $userResult = mysqli_query($conn, $userSql);
@@ -14,9 +27,7 @@ $availableCoursesSql = "
     SELECT *
     FROM courses
     WHERE CourseId NOT IN (
-        SELECT CourseId FROM tutor_courses WHERE TutorId = $userid
-    ) OR NOT EXISTS (
-        SELECT 1 FROM tutor_courses WHERE TutorId = $userid
+        SELECT CourseId FROM tutor_courses WHERE TutorId = $tutorid
     );
 ";
 
@@ -27,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $selectedCourseId = $_POST["courseId"];
 
     // Redirect to TutorSubscribeProc.php with selected course ID
-    header("Location: TutorSubscribeCourseProc.php?courseId=$selectedCourseId");
+    header("Location: TutorSubscribeCourseProc.php?courseId=$selectedCourseId&tutorId=$tutorid");
     exit();
 }
 ?>
