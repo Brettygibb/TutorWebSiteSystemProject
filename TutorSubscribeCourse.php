@@ -2,24 +2,38 @@
 session_start();
 include 'Connect.php';
 
-// Check if the user is logged in as a tutor
-if ($_SESSION['role'] !== 'Tutor' || !isset($_SESSION['id'])) {
-    header("Location: Login.php");
+$userid = $_SESSION['id'];
+
+// Query to get the user information
+$userSql = "SELECT * FROM users WHERE UserID = $userid";
+$userResult = mysqli_query($conn, $userSql);
+$userRow = mysqli_fetch_assoc($userResult);
+
+// Query to get available courses for the tutor to subscribe
+$availableCoursesSql = "
+    SELECT *
+    FROM courses
+    WHERE CourseId NOT IN (
+        SELECT CourseId FROM tutor_courses WHERE TutorId = $userid
+    ) OR NOT EXISTS (
+        SELECT 1 FROM tutor_courses WHERE TutorId = $userid
+    );
+";
+
+$availableCoursesResult = mysqli_query($conn, $availableCoursesSql);
+
+// Handle form submission
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $selectedCourseId = $_POST["courseId"];
+
+    // Insert the selected course into the tutor_courses table
+    $insertSql = "INSERT INTO tutor_courses (TutorId, CourseId) VALUES ($userid, $selectedCourseId)";
+    mysqli_query($conn, $insertSql);
+
+    // Redirect to the Tutor Dashboard or any other page
+    header("Location: TutorDashboard.php");
     exit();
 }
-
-$userId = $_SESSION['id'];
-
-// Query to fetch available courses for subscription excluding already tutored courses
-$sql = "SELECT CourseId, CourseName FROM courses
-        WHERE CourseId NOT IN (
-            SELECT CourseId FROM tutors WHERE UserId = ?
-        )";
-
-$stmt = mysqli_prepare($conn, $sql);
-mysqli_stmt_bind_param($stmt, "i", $userId);
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
 ?>
 
 <!DOCTYPE html>
@@ -27,45 +41,49 @@ $result = mysqli_stmt_get_result($stmt);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tutor Subscribe Course</title>
+    <title>Tutor Subscribe Courses</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <h1>Tutor Subscribe Course</h1>
+        <h1>Tutor Subscribe Courses</h1>
         <nav>
             <ul>
-                <li><a href="TutorDashBoard.php">Dashboard</a></li>
+                <li><a href="TutorDashboard.php">Home</a></li>
                 <li><a href="#">Subscribe Course</a></li>
                 <li><a href="#">Upcoming Sessions</a></li>
-                <li><a href="Logout.php">Logout</a></li>
-                <li><a href="TutorEditProfile.php">Edit Profile</a></li>
+                <li><a href="#">Logout</a></li>
+                <li><a href="StudentEditProfile.php">Edit Profile</a></li>
             </ul>
         </nav>
     </header>
 
     <section>
-        <h2>Available Courses for Subscription</h2>
-        <form action="TutorSubscribeCourseProc.php" method="post">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Course Name</th>
-                        <th>Select</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        echo "<tr>
-                                <td>{$row['CourseName']}</td>
-                                <td><label><input type='checkbox' name='courses[]' value='{$row['CourseId']}'> </label></td>
-                              </tr>";
-                    }
-                    ?>
-                </tbody>
-            </table>
-            <button type="submit">Subscribe Selected Courses</button>
+        <h2>Welcome to the Tutor Subscribe Courses Page</h2>
+        <!-- Users Info -->
+        <p>First Name: <?php echo $userRow['FirstName']; ?></p>
+        <p>Last Name: <?php echo $userRow['LastName']; ?></p>
+        <p>Email: <?php echo $userRow['Email']; ?></p>
+        
+        <?php if (!empty($userRow['image'])): ?>
+            <img src="<?php echo $userRow['image']; ?>" alt="Profile Picture">
+        <?php endif; ?>
+
+        <!-- Display available courses -->
+        <h3>Available Courses for Subscription</h3>
+        <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+            <label for="courseId">Select a Course:</label>
+            <select name="courseId" id="courseId">
+                <?php
+                // Reset the pointer of the result set
+                mysqli_data_seek($availableCoursesResult, 0);
+
+                while ($courseRow = mysqli_fetch_assoc($availableCoursesResult)): ?>
+                    <option value="<?php echo $courseRow['CourseId']; ?>"><?php echo $courseRow['CourseName']; ?></option>
+                <?php endwhile; ?>
+            </select>
+            <br>
+            <input type="submit" value="Subscribe">
         </form>
     </section>
 </body>

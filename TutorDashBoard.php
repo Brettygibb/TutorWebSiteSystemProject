@@ -37,7 +37,6 @@ $row = mysqli_fetch_assoc($result);
         <p>First Name: <?php echo $row['FirstName']; ?></p>
         <p>Last Name: <?php echo $row['LastName']; ?></p>
         <p>Email: <?php echo $row['Email']; ?></p>
-        <p>Gender: <?php echo $row['Gender']; ?></p>
         <?php if (!empty($row['image'])): ?>
             <img src="<?php echo $row['image']; ?>" alt="Profile Picture">
         <?php endif; ?>
