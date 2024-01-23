@@ -26,12 +26,8 @@ $availableCoursesResult = mysqli_query($conn, $availableCoursesSql);
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $selectedCourseId = $_POST["courseId"];
 
-    // Insert the selected course into the tutor_courses table
-    $insertSql = "INSERT INTO tutor_courses (TutorId, CourseId) VALUES ($userid, $selectedCourseId)";
-    mysqli_query($conn, $insertSql);
-
-    // Redirect to the Tutor Dashboard or any other page
-    header("Location: TutorDashboard.php");
+    // Redirect to TutorSubscribeProc.php with selected course ID
+    header("Location: TutorSubscribeProc.php?courseId=$selectedCourseId");
     exit();
 }
 ?>
