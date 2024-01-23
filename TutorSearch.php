@@ -6,7 +6,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Project/PHP/PHPProject.php to edi
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>NBCC Tutoring</title>
+        <title>Find a Tutor</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="styles.css">
     </head>
@@ -27,15 +27,25 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Project/PHP/PHPProject.php to edi
             <!--banner photo-->
             <img src="images/nbccLogo.png" class="nbccBanner" alt="" />
 
-            <h1>Welcome to the NBCC Tutoring Hub!</h1>
+            <form id="tutorSearch" action="search_tutors.php" method="post">
+            <label for="classDropdown">Class:</label>
+            
+            <select id="classDropdown" name="class">
+            <option value="math">Math</option>
+            <option value="english">English</option>
+            <option value="science">Science</option>
+            <!-- change this to pull classes from DB -->
+            </select>
 
-            <p id="indexParagraph">Where academic excellence meets personalized support! 
-            Whether you're a student seeking a helping hand on your educational journey or a passionate individual eager to share your knowledge, 
-            our tutoring service is here to connect you. At NBCC, we believe in the power of collaboration and the transformative impact of one-on-one learning experiences. 
-            Students, sign up today to unlock the door to academic success with our dedicated and qualified tutors, ready to guide you through your courses and boost your confidence.
-            Tutors, join our community of educators, share your expertise, and make a positive impact on the academic lives of your peers. Together, 
-            let's embark on a journey of knowledge, growth, and achievement. Welcome to a place where learning knows no bounds – welcome to the NBCC Tutoring Hub!
-            </p>
+                <label for="keywords">Keywords:</label>
+                <input type="text" id="keywords" name="keywords" placeholder="Enter keywords">
+
+                <label for="rating">Rating:</label>
+                <input type="number" id="rating" name="rating" min="1" max="5" placeholder="Enter rating (1-5)">
+
+                <button type="submit">Search</button>
+
+            </form>
 
             <?php
             // put your code here
