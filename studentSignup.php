@@ -22,12 +22,6 @@
             <label for="password">Password:</label>
             <input type="text" id="password" name="password" required><br>
 
-            <label for="phone">Phone Number:</label>
-            <input type="tel" id="phone" name="phone" required><br>
-
-            <label for="studentid">Student ID:</label>
-            <input type="text" id="studentid" name="studentid" required><br>
-
             <input type="submit" value="Signup">
         </form>
     </div>
