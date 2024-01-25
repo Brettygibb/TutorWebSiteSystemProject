@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $pass = $_POST['password'];
     $token = generateRandomToken();
     saveUserToDataBase($firstName,$lastName,$email,$pass,$token);
-    sendVerificationEmail($email,$token);
+    sendVerificationEmail($email,$token,$firstName,$lastName);
     header("Location: ConfirmationMessage.php");
     exit();
 }
