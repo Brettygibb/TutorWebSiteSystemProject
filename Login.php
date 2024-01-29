@@ -9,7 +9,7 @@
 <body>
     <form action = "LoginProc.php" method = "post">
         <input type = "text" name = "email" placeholder = "Email">
-        <input type = "text" name = "pass" placeholder = "Password">
+        <input type = "password"  name = "pass" placeholder = "Password">
         <button type = "submit">Login</button>
     </form>
     <p>Don't have an account? <a href = "studentSignup.php">Sign up</a></p>
