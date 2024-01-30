@@ -1,5 +1,5 @@
 <?php
-include("connect.php");
+include("Connect.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve form data
