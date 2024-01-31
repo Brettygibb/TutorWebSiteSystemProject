@@ -28,7 +28,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
     mysqli_stmt_bind_param($stmt,"sssi",$hashed_password,$gender,$image_path,$_SESSION['id']);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
-    header("Location: StudentDashBoard.php");
+    header("Location: AdminDashBoard.php");
     exit();
 
 }
