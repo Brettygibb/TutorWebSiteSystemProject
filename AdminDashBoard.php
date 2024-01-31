@@ -23,8 +23,8 @@ $row = mysqli_fetch_assoc($result);
         <nav>
             <ul>
                 <li><a href="#">Home</a></li>
-                <li><a href="TutorSubscribeCourse.php">Subscribe Course</a></li>
-                <li><a href="#">Upcoming Sessions</a></li>
+                <li><a href="TutorSubscribeCourse.php">Review Requests</a></li>
+                <li><a href="#">Add another Admin</a></li>
                 <li><a href="#">Logout</a></li>
                 <li><a href="AdminEditProfile.php">Edit Profile</a></li>
             </ul>
