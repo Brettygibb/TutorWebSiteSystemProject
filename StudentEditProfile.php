@@ -6,7 +6,7 @@
     <title>Edit Profile</title>
 </head>
 <body>
-    <form action="StudentEditProc.php" method="post" enctype="multipart/form-data">
+    <form action="AdminEditProc.php" method="post" enctype="multipart/form-data">
         <input type="text" name="email" placeholder="Email">
         <input type="text" name="pass" placeholder="Password">
         <label for="gender">Gender:</label>
