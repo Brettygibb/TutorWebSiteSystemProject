@@ -24,7 +24,7 @@ $row = mysqli_fetch_assoc($result);
             <ul>
                 <li><a href="#">Home</a></li>
                 <li><a href="ReviewRequests.php">Review Requests</a></li>
-                <li><a href="#">Add another Admin</a></li>
+                <li><a href="AddAdmin.php">Add another Admin</a></li>
                 <li><a href="#">Logout</a></li>
                 <li><a href="AdminEditProfile.php">Edit Profile</a></li>
             </ul>
