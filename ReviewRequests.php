@@ -20,8 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Fetch all requests from the database
-$sql = "SELECT * FROM requests";
+// Fetch only pending requests from the database
+$sql = "SELECT * FROM requests WHERE Status = 'Pending'";
 $result = mysqli_query($conn, $sql);
 
 ?>
@@ -49,7 +49,7 @@ $result = mysqli_query($conn, $sql);
     </header>
 
     <section>
-        <h2>Requests List</h2>
+        <h2>Pending Requests List</h2>
 
         <table>
             <tr>
