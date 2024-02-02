@@ -1,5 +1,4 @@
 <?php
-//comment this whole page
 
 include 'Connect.php';
 

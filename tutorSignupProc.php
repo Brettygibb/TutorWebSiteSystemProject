@@ -1,5 +1,5 @@
 <?php
-include("connect.php");
+include("Connect.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve form data
@@ -14,8 +14,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = password_hash(isset($_POST["password"]) ? $_POST["password"] : "", PASSWORD_DEFAULT);
 
     // Insert data into the users table
-    $sql = "INSERT INTO users (FirstName, LastName, Email, Password, Role) VALUES (?, ?, ?, ?, ?)";
-    $stmt = $con->prepare($sql);
+    $sql = "INSERT INTO users (FirstName, LastName, Email, PasswordHash, Role) VALUES (?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
 
     // Set the role for the tutor
     $role = 'Tutor';
@@ -24,18 +24,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->execute();
 
     if ($stmt->affected_rows == 1) {
-        // Redirect to a success page or handle success
-        header("Location: index.php");
+        // Get the UserId of the newly inserted user
+        $userId = $stmt->insert_id;
+
+        // Insert data into the tutors table
+        $sqlTutor = "INSERT INTO tutors (UserId) VALUES (?)";
+        $stmtTutor = $conn->prepare($sqlTutor);
+        $stmtTutor->bind_param("i", $userId);
+        $stmtTutor->execute();
+
+        if ($stmtTutor->affected_rows == 1) {
+            // Redirect to a success page or handle success
+            header("Location: Login.php");
+        } else {
+            // Redirect to an error page or handle errors
+            header("Location: tutorSignup.php");
+        }
+
+        $stmtTutor->close();
     } else {
         // Redirect to an error page or handle errors
         header("Location: tutorSignup.php");
     }
 
     $stmt->close();
-    $con->close();
-
-    // We need additional steps to get the new TutorId and insert into the tutors table if needed
+    $conn->close();
 
     exit();
 }
 ?>
+
