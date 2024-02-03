@@ -10,18 +10,25 @@ if (!isset($_SESSION['id']) || $_SESSION['role'] !== 'Admin') {
 
 // Process form submission if any
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['requestId']) && isset($_POST['status'])) {
+    if (isset($_POST['requestId']) && isset($_POST['status']) && isset($_POST['courseId'])) {
         $requestId = $_POST['requestId'];
         $status = $_POST['status'];
+        $courseId = $_POST['courseId'];
 
-        // Update the status of the request in the database
-        $updateSql = "UPDATE requests SET Status = '$status' WHERE TutorId = $requestId";
+        // Update the status of the request in the database with specific TutorId and CourseId
+        $updateSql = "UPDATE requests SET Status = '$status' WHERE TutorId = $requestId AND CourseId = $courseId AND Status = 'Pending'";
         mysqli_query($conn, $updateSql);
+
+        // Check if the status is 'Approved' and insert into tutor_courses table
+        if ($status === 'Approved') {
+            $insertSql = "INSERT INTO tutor_courses (TutorId, CourseId) VALUES ($requestId, $courseId)";
+            mysqli_query($conn, $insertSql);
+        }
     }
 }
 
 // Fetch only pending requests with tutor names from the database
-$sql = "SELECT requests.TutorId, CONCAT(users.FirstName, ' ', users.LastName) AS TutorName, courses.CourseName, requests.Status 
+$sql = "SELECT requests.TutorId, requests.CourseId, CONCAT(users.FirstName, ' ', users.LastName) AS TutorName, courses.CourseName, requests.Status 
         FROM requests 
         JOIN tutors ON requests.TutorId = tutors.TutorId
         JOIN users ON tutors.UserId = users.UserId
@@ -73,6 +80,7 @@ $result = mysqli_query($conn, $sql);
                             <!-- Display dropdown for changing the status for pending requests -->
                             <form method="post">
                                 <input type="hidden" name="requestId" value="<?php echo $row['TutorId']; ?>">
+                                <input type="hidden" name="courseId" value="<?php echo $row['CourseId']; ?>">
                                 <select name="status">
                                     <option value="Approved">Approved</option>
                                     <option value="Denied">Denied</option>
