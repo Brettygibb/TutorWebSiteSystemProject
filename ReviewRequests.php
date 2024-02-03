@@ -20,10 +20,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Fetch only pending requests from the database
-$sql = "SELECT * FROM requests WHERE Status = 'Pending'";
+// Fetch only pending requests with tutor names from the database
+$sql = "SELECT requests.TutorId, CONCAT(users.FirstName, ' ', users.LastName) AS TutorName, courses.CourseName, requests.Status 
+        FROM requests 
+        JOIN tutors ON requests.TutorId = tutors.TutorId
+        JOIN users ON tutors.UserId = users.UserId
+        JOIN courses ON requests.CourseId = courses.CourseId
+        WHERE requests.Status = 'Pending'";
 $result = mysqli_query($conn, $sql);
-
 ?>
 
 <!DOCTYPE html>
@@ -53,16 +57,16 @@ $result = mysqli_query($conn, $sql);
 
         <table>
             <tr>
-                <th>Tutor ID</th>
-                <th>Course ID</th>
+                <th>Tutor Name</th>
+                <th>Course Name</th>
                 <th>Status</th>
                 <th>Action</th>
             </tr>
 
             <?php while ($row = mysqli_fetch_assoc($result)): ?>
                 <tr>
-                    <td><?php echo $row['TutorId']; ?></td>
-                    <td><?php echo $row['CourseId']; ?></td>
+                    <td><?php echo $row['TutorName']; ?></td>
+                    <td><?php echo $row['CourseName']; ?></td>
                     <td><?php echo $row['Status']; ?></td>
                     <td>
                         <?php if ($row['Status'] === 'Pending'): ?>
