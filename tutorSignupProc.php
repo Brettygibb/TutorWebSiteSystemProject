@@ -24,18 +24,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->execute();
 
     if ($stmt->affected_rows == 1) {
-        // Redirect to a success page or handle success
-        header("Location: index.php");
+        // Get the UserId of the newly inserted user
+        $userId = $stmt->insert_id;
+
+        // Insert data into the tutors table
+        $sqlTutor = "INSERT INTO tutors (UserId) VALUES (?)";
+        $stmtTutor = $conn->prepare($sqlTutor);
+        $stmtTutor->bind_param("i", $userId);
+        $stmtTutor->execute();
+
+        if ($stmtTutor->affected_rows == 1) {
+            // Redirect to a success page or handle success
+            header("Location: Login.php");
+        } else {
+            // Redirect to an error page or handle errors
+            header("Location: tutorSignup.php");
+        }
+
+        $stmtTutor->close();
     } else {
         // Redirect to an error page or handle errors
         header("Location: tutorSignup.php");
     }
 
     $stmt->close();
-    $con->close();
-
-    // We need additional steps to get the new TutorId and insert into the tutors table if needed
+    $conn->close();
 
     exit();
 }
 ?>
+

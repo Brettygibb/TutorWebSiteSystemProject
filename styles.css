@@ -93,3 +93,50 @@ button:hover {
     viewport-fit: 80%;
     
 }*/
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input, select {
+    margin-bottom: 10px;
+}
+
+
+/*TABLE OUTPUT-----------------------------------------------------------------------------*/
+/* Style for the table */
+table {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Define 3 columns with equal width */
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 20px; /* Add some space below the table */
+}
+
+/* Style for table headers */
+th {
+    background-color: #f2f2f2; /* Light gray background color */
+    color: #000; /* Text color */
+    padding: 8px;
+    text-align: left;
+    border: 1px solid #000; /* Black border */
+}
+
+/* Style for table data cells */
+td {
+    border: 1px solid #000; /* Black border */
+    padding: 8px;
+    text-align: left;
+}
+
+/* Style for alternating rows */
+tr:nth-child(even) {
+    background-color: #fff; /* White background color for even rows */
+}
+
