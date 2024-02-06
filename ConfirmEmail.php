@@ -21,15 +21,15 @@ else{
 
 function verifyEmail($token) {
     global $conn;
-    $query = "UPDATE users SET IsConfirmed = true WHERE ConfirmationToken = ?";
-    $stmt = $conn->prepare($query);
+    //stored procedure 
+    $stmt = $conn->prepare("CALL UpdateIsConfirmedByToken(?)");
     $stmt->bind_param("s", $token);
-    $stmt->execute();
-    if ($stmt->affected_rows == 1) {
-        echo "Email verified successfully"; // Indicate successful email confirmation
-        return true;
-    } else {
-        echo "Email verification failed"; // Indicate failure to confirm email
-        return false;
-    }
+    
+    if (!$stmt) die('Unable to prepare statement');
+    $result = $stmt->execute();
+    $rows   = $stmt->get_result();
+    $stmt->close();
+    $conn->close();
+    return $result;
+    
 }
