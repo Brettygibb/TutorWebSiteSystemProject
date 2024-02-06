@@ -3,6 +3,7 @@ session_start();
 include 'Connect.php';
 
 $userid = $_SESSION['id'];
+//need a stored procedure
 $sql = "select * from users where UserID = $userid";
 
 $result = mysqli_query($conn,$sql);

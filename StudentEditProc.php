@@ -1,5 +1,4 @@
 <?php
-//comment this whole page
 
 include 'Connect.php';
 
@@ -22,6 +21,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
         $image_path = 'default_image.jpg';
     }
 
+    //need a stored procedure
     $sql = "update users set PasswordHash = ?,Gender = ?,image = ? where UserID = ?";
     $stmt = mysqli_prepare($conn,$sql);
     $hashed_password = password_hash($pass,PASSWORD_DEFAULT);
