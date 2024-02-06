@@ -5,6 +5,7 @@ include 'Connect.php';
 $userid = $_SESSION['id'];
 
 // Query to get the tutor ID based on the user ID
+//need a stored procedure to get the tutor id
 $tutorIdSql = "SELECT TutorId FROM tutors WHERE UserId = $userid";
 $tutorIdResult = mysqli_query($conn, $tutorIdSql);
 $tutorIdRow = mysqli_fetch_assoc($tutorIdResult);
@@ -18,11 +19,13 @@ if (!$tutorIdRow) {
 $tutorid = $tutorIdRow['TutorId'];
 
 // Query to get the user information
+//need a stored procedure to get the user info
 $userSql = "SELECT * FROM users WHERE UserID = $userid";
 $userResult = mysqli_query($conn, $userSql);
 $userRow = mysqli_fetch_assoc($userResult);
 
 // Query to get available courses for the tutor to subscribe
+//need a stored procedure to get the available courses
 $availableCoursesSql = "
     SELECT *
     FROM courses
