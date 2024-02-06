@@ -31,7 +31,7 @@
             }
 
             // TODO: Adjust the query based on database structure
-            
+            //need a stored procedure to get the user info
             $sql = "SELECT tutors.*, users.FirstName, users.LastName, courses.CourseName 
         FROM tutors 
         JOIN users ON tutors.UserId = users.UserId
