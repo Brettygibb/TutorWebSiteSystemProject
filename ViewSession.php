@@ -3,8 +3,7 @@ session_start();
 include 'Connect.php';
 
 $userid = $_SESSION['id'];
-//need a stored procedure
-$sql = "select * from users where UserID = $userid";
+$sql = "SELECT * FROM users WHERE UserID = $userid";
 
 $result = mysqli_query($conn,$sql);
 $row = mysqli_fetch_assoc($result);
@@ -43,27 +42,22 @@ $row = mysqli_fetch_assoc($result);
     </section>
 
     <section>
-        <h2>Upcoming Sessions</h2>
         <?php
-        $sql = "SELECT * FROM sessions WHERE StudentId = 5031242";
 
-        $results = mysqli_query($conn,$sql);
-        //$row = mysqli_fetch_assoc($result);
+        $value = $_POST["submit"];
 
-        $resultset = array();
-        while ($row = mysqli_fetch_array($results)) {
-            $resultset[] = $row;
-        }
+        //echo $value;
+        $sql = "SELECT * FROM sessions WHERE SessionId = $value";
 
-        echo '<form action="ViewSession.php" method="post">';
-
-        foreach ($resultset as $result){
-            echo "<p>";
-            echo $result['Course'], " ", $result['DateAndTime']," ", "<button name=submit value=$result[SessionId] >View Session</button>";
-            echo "</p>";
-        }
-
-        echo '</form>';
+        $result = mysqli_query($conn,$sql);
+        $row = mysqli_fetch_assoc($result);
+        
+        echo "<p>";
+        echo $row['Course']; 
+        echo "</p>";
+        echo "<p>";
+        echo $row['Description']; 
+        echo "</p>";
 
         ?>
 
