@@ -19,8 +19,8 @@ if ($result) {
         if (isset($_GET['courseId'])) {
             $selectedCourseId = $_GET['courseId'];
 
-            // Insert the selected course into the tutor_courses table
-            $insertSql = "INSERT INTO tutor_courses (TutorId, CourseId) VALUES ($tutorid, $selectedCourseId)";
+            // Insert the selected course into the requests table with Status 'Pending'
+            $insertSql = "INSERT INTO requests (TutorId, CourseId, Status) VALUES ($tutorid, $selectedCourseId, 'Pending')";
             mysqli_query($conn, $insertSql);
 
             // Redirect to the Tutor Dashboard or any other page

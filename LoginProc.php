@@ -8,6 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
     $pass = $_POST['pass'];
 
+    // need a stored procedure
     $sql = "SELECT UserId, FirstName, LastName, Email, PasswordHash, Role FROM users WHERE Email = ?";
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($stmt, "s", $email);
