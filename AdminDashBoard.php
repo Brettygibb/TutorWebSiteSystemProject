@@ -19,7 +19,7 @@ $row = mysqli_fetch_assoc($result);
 </head>
 <body>
     <header>
-        <h1>Tutor Dashboard</h1>
+        <h1>Admin Dashboard</h1>
         <nav>
             <ul>
                 <li><a href="#">Home</a></li>
@@ -32,7 +32,7 @@ $row = mysqli_fetch_assoc($result);
     </header>
 
     <section>
-        <h2>Welcome to the Tutor Dashboard</h2>
+        <h2>Welcome to the Admin Dashboard</h2>
         <!-- Users Info -->
         <p>First Name: <?php echo $row['FirstName']; ?></p>
         <p>Last Name: <?php echo $row['LastName']; ?></p>
