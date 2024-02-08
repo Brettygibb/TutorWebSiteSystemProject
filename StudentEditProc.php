@@ -22,6 +22,8 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
     }
 
     //need a stored procedure
+    //we need to add the user gender, image to the database that was kinda my(Brett) fuck up
+    //so dont let me(Brett) forget about this
     $sql = "update users set PasswordHash = ?,Gender = ?,image = ? where UserID = ?";
     $stmt = mysqli_prepare($conn,$sql);
     $hashed_password = password_hash($pass,PASSWORD_DEFAULT);
