@@ -19,7 +19,8 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 
     if($result->num_rows > 0){
         $resetToken = generateRandomToken();
-        //frees reseult set
+        //frees reseult set cant run more then one stored proc at a time
+        //need to add this
         $result->free();
         while($stmt->more_results()&&$stmt->next_result()){
             if($res =$stmt->get_result()){
