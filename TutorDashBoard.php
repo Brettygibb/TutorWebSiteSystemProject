@@ -2,6 +2,8 @@
 session_start();
 include 'Connect.php';
 
+
+
 $userid = $_SESSION['id'];
 $sql = "select * from users where UserID = $userid";
 

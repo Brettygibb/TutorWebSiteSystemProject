@@ -1,53 +1,63 @@
-nav {
+/* Reset default browser styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Global styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #685f5f;
+}
+
+.wrapper {
+    width: 80%;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+header {
     background-color: #333;
     color: #fff;
     padding: 15px;
     text-align: center;
-    
-  }
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
 
-  nav a {
+nav ul {
+    list-style-type: none;
+}
+
+nav a {
     color: #fff;
     text-decoration: none;
     padding: 10px 15px;
     margin: 0 10px;
     font-weight: bold;
     font-size: 16px;
-  }
+    border-radius: 5px;
+}
 
-  nav a:hover {
+nav a:hover {
     background-color: #555;
-  }
+}
 
-  .nbccBanner{
-    width: 100%;
-    max-width: 100%; /* Ensure the image doesn't exceed its natural size */
-    height: auto;   /* Maintain the aspect ratio */
-    
-  }
-
-  .wrapper {
-    width: 80%;
-    margin: 20px auto; /* Adjust the margin as needed */
+section {
     padding: 20px;
-    border: 2px solid #333; /* Border color and style */
-    border-radius: 8px;
-    background-color: #cec1c1; /* Background color if needed */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    
 }
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #685f5f;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    align-items: top;
-    justify-content: center;
-    
-    flex-direction: column;
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
 }
+
+/* Form styles */
 form {
     background-color: #fff;
     padding: 20px;
@@ -55,16 +65,18 @@ form {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     max-width: 400px;
     width: 100%;
-    
     color: #45a049;
 }
+
 h2 {
     text-align: center;
 }
+
 label {
     display: block;
     margin-bottom: 8px;
 }
+
 input {
     width: 100%;
     padding: 8px;
@@ -73,6 +85,7 @@ input {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
 button {
     background-color: #4caf50;
     color: #fff;
@@ -82,28 +95,12 @@ button {
     cursor: pointer;
     width: 100%;
 }
+
 button:hover {
     background-color: #45a049;
 }
 
-#indexParagraph{
+#indexParagraph {
     font-size: 19px;
 }
-/*.wrapper{
-    viewport-fit: 80%;
-    
-}*/
 
-body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-input, select {
-    margin-bottom: 10px;
-}

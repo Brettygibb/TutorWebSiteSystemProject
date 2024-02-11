@@ -2,6 +2,12 @@
 session_start();
 include 'Connect.php';
 
+// Set a test value for 'id' session variable
+$_SESSION['id'] = 1; // Replace 123 with the desired test value
+
+// Now you can use $_SESSION['id'] in your code as if it were set during a login process
+$userid = $_SESSION['id'];
+
 $userid = $_SESSION['id'];
 $sql = "select * from users where UserID = $userid";
 
