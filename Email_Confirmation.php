@@ -16,7 +16,7 @@ function saveUserToDataBase($firstName, $lastName, $email, $pass, $token) {
 
     // Check if the email address already exists
     //this doesnt work
-    $checkQuery = "SELECT * FROM users WHERE Email = ?";
+    $checkQuery = "CALL GetUserByEmail(?)";
     $checkStmt = $conn->prepare($checkQuery);
     $checkStmt->bind_param("s", $email);
     $checkStmt->execute();
@@ -26,9 +26,16 @@ function saveUserToDataBase($firstName, $lastName, $email, $pass, $token) {
         // Email address already exists, display alert
         echo "<script>alert('User with this email already exists. Please choose a different email.');</script>";
     } else {
+        $result->free();
+        while($conn->more_results()&&$conn->next_result()){
+            if($result =$conn->use_result()){
+                $result->free();
+            }
+        }
+
         // Insert new user into the database
         $hashedPassword = password_hash($pass, PASSWORD_DEFAULT);
-        $insertQuery = "INSERT INTO users (FirstName, LastName, Email, PasswordHash, ConfirmationToken) VALUES (?, ?, ?, ?, ?)";
+        $insertQuery = "CALL AddUser(?,?,?,?,?)";
         $insertStmt = $conn->prepare($insertQuery);
         $insertStmt->bind_param("sssss", $firstName, $lastName, $email, $hashedPassword, $token);
         

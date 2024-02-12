@@ -16,25 +16,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $courseId = $_POST['courseId'];
 
         // Update the status of the request in the database with specific TutorId and CourseId
-        $updateSql = "UPDATE requests SET Status = '$status' WHERE TutorId = $requestId AND CourseId = $courseId AND Status = 'Pending'";
-        mysqli_query($conn, $updateSql);
+        $updateSql = "CALL UpdateRequestStatus(?, ?, ?)";
+        $stmt = $conn->prepare($updateSql);
+        $stmt->bind_param("iss", $requestId, $courseId, $status);
+        $stmt->execute();
+        $stmt->close();
+        $result->free();
+        while($conn->more_results()&&$conn->next_result()){
+            if($result =$conn->use_result()){
+                $result->free();
+            }
+        }
+
 
         // Check if the status is 'Approved' and insert into tutor_courses table
         if ($status === 'Approved') {
-            $insertSql = "INSERT INTO tutor_courses (TutorId, CourseId) VALUES ($requestId, $courseId)";
-            mysqli_query($conn, $insertSql);
+            $insertSql = "CALL InsertTutorCourse(?, ?)";
+            $stmt = $conn->prepare($insertSql);
+            $stmt->bind_param("is", $requestId, $courseId);
+            $stmt->execute();
+            
+            $stmt->close();
+            $result->free();
+            while($conn->more_results()&&$conn->next_result()){
+                if($result =$conn->use_result()){
+                    $result->free();
+                }
+            }
+
         }
     }
 }
 
 // Fetch only pending requests with tutor names from the database
-$sql = "SELECT requests.TutorId, requests.CourseId, CONCAT(users.FirstName, ' ', users.LastName) AS TutorName, courses.CourseName, requests.Status 
-        FROM requests 
-        JOIN tutors ON requests.TutorId = tutors.TutorId
-        JOIN users ON tutors.UserId = users.UserId
-        JOIN courses ON requests.CourseId = courses.CourseId
-        WHERE requests.Status = 'Pending'";
+$sql = "CALL GetPendingTutorRequests()";
 $result = mysqli_query($conn, $sql);
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>
