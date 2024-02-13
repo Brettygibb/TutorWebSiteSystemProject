@@ -10,7 +10,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
     $sql = "CALL GetUserByEmail(?)";
     $stmt = $conn->prepare($sql);
     if(!$stmt){
-        echo "Error: ".$conn->error;
+        echo "Unable to prepare statement. Error: ".$conn->error;
         exit();
     }
     $stmt->bind_param("s",$email);
@@ -32,7 +32,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
         $sql = "CALL UpdateUserResetToken(?,?)";
         $stmt = $conn->prepare($sql);
         if(!$stmt){
-            echo "Error: ".$conn->error;
+            echo "Unable to prepare statement. Error: ".$conn->error;
             exit();
         }
         $stmt->bind_param("ss",$resetToken,$email);

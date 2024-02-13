@@ -33,6 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($status === 'Approved') {
             $insertSql = "CALL InsertTutorCourse(?, ?)";
             $stmt = $conn->prepare($insertSql);
+            if (!$stmt) {
+                echo "Error: Unable to prepare statement.";
+                exit();
+            }
             $stmt->bind_param("is", $requestId, $courseId);
             $stmt->execute();
             
@@ -51,6 +55,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Fetch only pending requests with tutor names from the database
 $sql = "CALL GetPendingTutorRequests()";
 $result = mysqli_query($conn, $sql);
+
+if (!$result) {
+    // Error message for failed database query
+    echo "Error: Unable to fetch pending requests from the database.";
+}
 
 $conn->close();
 ?>

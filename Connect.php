@@ -6,7 +6,7 @@ $host = "localhost";
 
 $conn = mysqli_connect($host, $user, $pass, $database);
 if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+    die("Unable to connect to the database server " . mysqli_connect_error());
 }
 
 ?>

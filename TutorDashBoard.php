@@ -9,7 +9,7 @@ if(isset($_SESSION['id'])) {
     $sql = "CALL GetUserByUserID(?)";
     $stmt = $conn->prepare($sql);
     if(!$stmt){
-        echo "Error: ".$conn->error;
+        echo "Unable to prepare statement. Error: ".$conn->error;
         exit();
     }
     $stmt->bind_param("i", $userid);
@@ -20,12 +20,12 @@ if(isset($_SESSION['id'])) {
 
         // You can now use $row to display user info
     } else {
-        echo "No user found with ID: ".$userid;
+        echo "Error: No user found with ID: ".$userid;
     }
     $stmt->close();
     $conn->close();
 } else {
-    echo "User is not logged in.";
+    echo "Error: User is not logged in.";
 }
 ?>
 <!DOCTYPE html>

@@ -36,6 +36,6 @@ function sendResetEmail($email,$token){
         $mail->send();
         echo "Password reset email sent";
     } catch (Exception $e) {
-        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        echo "Password reset email could not be sent. Mailer Error: {$mail->ErrorInfo}";
     }
 }

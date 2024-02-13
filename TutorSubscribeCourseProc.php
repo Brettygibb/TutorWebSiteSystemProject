@@ -23,9 +23,14 @@ if ($result) {
             $insertSql = "INSERT INTO requests (TutorId, CourseId, Status) VALUES ($tutorid, $selectedCourseId, 'Pending')";
             mysqli_query($conn, $insertSql);
 
-            // Redirect to the Tutor Dashboard or any other page
-            header("Location: TutorDashboard.php");
-            exit();
+            if ($insertResult) {
+                // Redirect to the Tutor Dashboard or any other page
+                header("Location: TutorDashboard.php");
+                exit();
+            } else {
+                // Handle the case where the SQL insert query fails
+                echo "Error: Unable to insert request for subscription.";
+            }
         } else {
             // Handle the case where no course ID is provided
             echo "Error: No course selected for subscription.";

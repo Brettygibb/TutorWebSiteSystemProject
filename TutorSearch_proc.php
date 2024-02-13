@@ -31,6 +31,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         while ($row = $result->fetch_assoc()) {
             $rows[] = $row;
         }
+    } else {
+        die("No tutors found matching the search criteria.");
     }
 
     // Close the database connection

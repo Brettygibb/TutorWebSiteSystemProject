@@ -11,8 +11,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // need a stored procedure
     $sql = "CALL UserLogin(?)";
     $stmt = mysqli_prepare($conn, $sql);
+    if (!$stmt) {
+        echo "Internal Server Error. Please try again later.";
+        exit();
+    }
     mysqli_stmt_bind_param($stmt, "s", $email);
-    mysqli_stmt_execute($stmt);
+    if (!mysqli_stmt_execute($stmt)) {
+        echo "Internal Server Error. Please try again later.";
+        exit();
+    }
     mysqli_stmt_store_result($stmt);
 
     if(mysqli_stmt_num_rows($stmt) == 1) {

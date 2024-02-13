@@ -7,7 +7,18 @@ $userid = $_SESSION['id'];
 $sql = "select * from users where UserID = $userid";
 
 $result = mysqli_query($conn,$sql);
+
+// Check if query was successful
+if (!$result) {
+    die("Error: Failed to retrieve user information from the database.");
+}
+
 $row = mysqli_fetch_assoc($result);
+
+// Check if user data exists
+if (!$row) {
+    die("Error: User information not found.");
+}
 
 ?>
 <!DOCTYPE html>
@@ -49,6 +60,11 @@ $row = mysqli_fetch_assoc($result);
 
         $results = mysqli_query($conn,$sql);
         //$row = mysqli_fetch_assoc($result);
+
+        // Check if query was successful
+        if (!$results) {
+            die("Error: Failed to retrieve upcoming sessions from the database.");
+        }
 
         $resultset = array();
         while ($row = mysqli_fetch_array($results)) {

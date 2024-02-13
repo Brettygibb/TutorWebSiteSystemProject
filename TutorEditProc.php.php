@@ -15,7 +15,12 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
         $image_tmp = $image['tmp_name'];
         $image_path = "images/".$image_name;
 
-        move_uploaded_file($image_tmp, $image_path);
+        if(move_uploaded_file($image_tmp, $image_path)) {
+            echo "Image uploaded successfully";
+        } else {
+            echo "Error: Failed to upload image";
+            exit();
+        }
     }
     else{
         $image_path = 'default_image.jpg';
