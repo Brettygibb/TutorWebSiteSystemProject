@@ -18,18 +18,7 @@ $row = mysqli_fetch_assoc($result);
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Student Dashboard</h1>
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Search Tutors</a></li>
-                <li><a href="#">Logout</a></li>
-                <li><a href="StudentEditProfile.php">Edit Profile</a></li>
-            </ul>
-        </nav>
-    </header>
-
+    <?php include 'Includes/StudentHeader.php'; ?>
     <section>
         <h2>Welcome to the Student Dashboard</h2>
         <!-- Users Info -->

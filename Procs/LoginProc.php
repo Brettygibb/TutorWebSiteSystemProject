@@ -1,5 +1,5 @@
 <?php
-include 'Connect.php';
+include '../Connect.php';
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -30,13 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Redirect based on role
             if ($role == "Student") {
-                header("Location: StudentDashBoard.php");
+                header("Location: ../StudentDashBoard.php");
                 exit();
             } elseif ($role == "Tutor") {
-                header("Location: TutorDashBoard.php");
+                header("Location: ../TutorDashBoard.php");
                 exit();
             } elseif ($role == "Admin") {
-                header("Location: AdminDashBoard.php");
+                header("Location: ../AdminDashBoard.php");
                 exit();
             }
         } else {
@@ -58,4 +58,6 @@ if(isset($_SESSION['email_error']) || isset($_SESSION['password_error'])) {
     header("Location: Login.php");
     exit();
 }
+
+// have to add the confiration token verification. but not until everyones phpmailer works
 ?>

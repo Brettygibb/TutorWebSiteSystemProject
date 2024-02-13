@@ -56,16 +56,7 @@ $(document).ready(function() {
 
 </head>
 <body>
-    <!--nav bar-->
-    <div id="container">
-        <nav>
-            <a href="#">Home</a>
-            <a href="#">Find a Tutor</a>
-            <a href="#">Sign In</a>
-            <a href="#">Create an Account</a>
-        </nav>
-    </div>
-
+    <?php include 'Includes/StudentHeader.php'; ?>
     <!--wrapper for main content-->
     <div class="wrapper">
         <main>

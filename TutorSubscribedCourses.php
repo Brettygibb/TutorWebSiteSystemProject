@@ -26,20 +26,7 @@ $result_courses = mysqli_query($conn, $sql_courses);
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Subscribed Courses</h1>
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="TutorDashboard.php">Back to Dashboard</a></li>
-                <li><a href="#">Upcoming Sessions</a></li>
-                <li><a href="#">Logout</a></li>
-                <li><a href="TutorSubscribeCourse.php">Subscribe a New Course</a></li>
-                <li><a href="TutorEditProfile.php">Edit Profile</a></li>
-            </ul>
-        </nav>
-    </header>
-
+    <?php include 'Includes/TutorHeader.php'; ?>
     <section>
         <h2>Subscribed Courses</h2>
         <?php if(mysqli_num_rows($result_courses) > 0): ?>
