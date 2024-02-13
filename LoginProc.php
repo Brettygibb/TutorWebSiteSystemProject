@@ -2,53 +2,60 @@
 include 'Connect.php';
 session_start();
 
-
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
     $pass = $_POST['pass'];
 
-    // need a stored procedure
+    // Call the stored procedure
     $sql = "CALL UserLogin(?)";
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($stmt, "s", $email);
     mysqli_stmt_execute($stmt);
-    mysqli_stmt_store_result($stmt);
+    $result = mysqli_stmt_get_result($stmt); // Get the result set from the statement
 
-    if(mysqli_stmt_num_rows($stmt) == 1) {
-        mysqli_stmt_bind_result($stmt, $id, $fname, $lname, $email, $hashedPassword, $role);
-        mysqli_stmt_fetch($stmt);
+    if ($result && $row = mysqli_fetch_assoc($result)) {
+        $id = $row['UserId'];
+        $fname = $row['FirstName'];
+        $lname = $row['LastName'];
+        $hashedPassword = $row['PasswordHash'];
+        $role = $row['Role'];
 
         if (password_verify($pass, $hashedPassword)) {
+            // Set session variables
             $_SESSION['id'] = $id;
             $_SESSION['fname'] = $fname;
             $_SESSION['lname'] = $lname;
             $_SESSION['email'] = $email;
             $_SESSION['role'] = $role;
-            if($role == "Student"){
+
+            // Redirect based on role
+            if ($role == "Student") {
                 header("Location: StudentDashBoard.php");
                 exit();
-            }
-            else if($role == "Tutor"){
+            } elseif ($role == "Tutor") {
                 header("Location: TutorDashBoard.php");
                 exit();
-            }
-            else if($role == "Admin"){
+            } elseif ($role == "Admin") {
                 header("Location: AdminDashBoard.php");
                 exit();
             }
-
+        } else {
+            // Handle incorrect password
+            $_SESSION['password_error'] = "Incorrect password";
         }
-
-
-    
-    
+    } else {
+        // Handle invalid email
+        $_SESSION['email_error'] = "Invalid email";
     }
-    else{
-        echo "Invalid email or password";
-    }
+
+    // Clean up
+    mysqli_stmt_free_result($stmt);
     mysqli_stmt_close($stmt);
-
 }
 
+// Redirect to login page
+if(isset($_SESSION['email_error']) || isset($_SESSION['password_error'])) {
+    header("Location: Login.php");
+    exit();
+}
 ?>
