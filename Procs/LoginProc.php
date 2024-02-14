@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 // Redirect to login page
 if(isset($_SESSION['email_error']) || isset($_SESSION['password_error'])) {
-    header("Location: Login.php");
+    header("Location: ../Login.php");
     exit();
 }
 
