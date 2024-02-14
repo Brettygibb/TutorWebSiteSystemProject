@@ -2,8 +2,6 @@
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Add database connection details
-
-    //move to its own file for security reasons? ask Bruce
     $servername = "localhost";
     $username = "root";
     $password = "";
