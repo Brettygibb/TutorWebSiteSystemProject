@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <?php include 'Includes/StudentHeader.php'; ?>
+    <?php include 'Includes/TutorHeader.php'; ?>
     <form action="StudentEditProc.php" method="post" enctype="multipart/form-data">
         <input type="text" name="email" placeholder="Email">
         <input type="text" name="pass" placeholder="Password">
