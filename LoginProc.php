@@ -1,3 +1,4 @@
+<?php
 include 'Connect.php';
 session_start();
 
@@ -44,3 +45,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     mysqli_stmt_close($stmt);
 }
+
+?>
