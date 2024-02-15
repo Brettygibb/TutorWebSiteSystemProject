@@ -3,23 +3,37 @@ session_start();
 include 'Connect.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $studentId = $_SESSION['id'];
-    $status = 'Pending'; // Default status for new requests
-
-    // Insert the new tutor request into the database
-    $sql = "INSERT INTO becometutor_requests (StudentId, Status) VALUES (?, ?)";
+    // Retrieve the student ID associated with the session user ID
+    $userId = $_SESSION['id'];
+    $sql = "SELECT StudentId FROM students WHERE UserId = ?";
     $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "is", $studentId, $status);
+    mysqli_stmt_bind_param($stmt, "i", $userId);
     mysqli_stmt_execute($stmt);
-
-    // Check if the request was successfully inserted
-    if (mysqli_stmt_affected_rows($stmt) > 0) {
-        echo "Your request to become a tutor has been submitted. You will be notified once it's reviewed.";
-    } else {
-        echo "Error: Unable to submit your request at this time. Please try again later.";
-    }
-
+    mysqli_stmt_bind_result($stmt, $studentId);
+    mysqli_stmt_fetch($stmt);
     mysqli_stmt_close($stmt);
+
+    // Check if the student ID was successfully retrieved
+    if ($studentId) {
+        $status = 'Pending'; // Default status for new requests
+
+        // Insert the new tutor request into the database
+        $sql = "INSERT INTO becometutor_requests (StudentId, Status) VALUES (?, ?)";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "is", $studentId, $status);
+        mysqli_stmt_execute($stmt);
+
+        // Check if the request was successfully inserted
+        if (mysqli_stmt_affected_rows($stmt) > 0) {
+            echo "Your request to become a tutor has been submitted. You will be notified once it's reviewed.";
+        } else {
+            echo "Error: Unable to submit your request at this time. Please try again later.";
+        }
+
+        mysqli_stmt_close($stmt);
+    } else {
+        echo "Error: Student ID not found for the current user.";
+    }
 }
 ?>
 
