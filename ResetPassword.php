@@ -22,19 +22,35 @@
 
         // Check if token is valid
         //need a stored procedure
-        $verifyTokenQuery = "SELECT * FROM users WHERE ResetToken = ?";
+        $verifyTokenQuery = "CALL VerifyUserByResetToken(?)";
         $verifyTokenStmt = $conn->prepare($verifyTokenQuery);
+        if(!$verifyTokenStmt){
+            echo "Error: ".$conn->error;
+            exit();
+        }
         $verifyTokenStmt->bind_param("s", $token);
         $verifyTokenStmt->execute();
         $result = $verifyTokenStmt->get_result();
 
         if($result->num_rows > 0){
+            $result->free();
+            while($verifyTokenStmt->more_results()&&$verifyTokenStmt->next_result()){
+                if($res =$verifyTokenStmt->get_result()){
+                    $res->free();
+                }
+            }
+
             // Token is valid, update the password
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         
+
             //need a stored procedure
-            $updatePasswordQuery = "UPDATE users SET PasswordHash = ?, ResetToken = NULL WHERE ResetToken = ?";
+            $updatePasswordQuery = "CALL UpdateUserPasswordByToken(?,?)";
             $updatePasswordStmt = $conn->prepare($updatePasswordQuery);
+            if(!$updatePasswordStmt){
+                echo "Error: ".$conn->error;
+                exit();
+            }
             $updatePasswordStmt->bind_param("ss", $hashedPassword, $token);
             $updatePasswordStmt->execute();
 
