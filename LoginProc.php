@@ -21,7 +21,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['fname'] = $row['FirstName'];
             $_SESSION['lname'] = $row['LastName'];
             $_SESSION['email'] = $row['Email'];
-            $_SESSION['role'] = $row['RoleName'];
+            
+            // Check if the user has multiple roles
+            $roles = explode(",", $row['RoleName']);
+            if (count($roles) > 1) {
+                // Default to student role
+                $_SESSION['role'] = "Student";
+            } else {
+                $_SESSION['role'] = $roles[0];
+            }
             
             // Redirect based on role
             switch($_SESSION['role']) {
