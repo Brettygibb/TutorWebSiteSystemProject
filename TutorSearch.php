@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <script>
 $(document).ready(function() {
     $('#search').on('input', function() {
@@ -54,15 +55,16 @@ $(document).ready(function() {
 });
 </script>
 
+
 </head>
 <body>
     <!--nav bar-->
     <div id="container">
         <nav>
-            <a href="#">Home</a>
-            <a href="#">Find a Tutor</a>
-            <a href="#">Sign In</a>
-            <a href="#">Create an Account</a>
+            <a href="index.php">Home</a>
+            <a href="TutorSearch.php">Find a Tutor</a>
+            <a href="Login.php">Sign In</a>
+            <a href="studentSignUp.php">Create an Account</a>
         </nav>
     </div>
 

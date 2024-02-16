@@ -24,7 +24,7 @@ $row = mysqli_fetch_assoc($result);
         <nav>
             <ul>
                 <li><a href="#">Home</a></li>
-                <li><a href="#">Search Tutors</a></li>
+                <li><a href="TutorSearch.php">Search Tutors</a></li>
                 <li><a href="#">Logout</a></li>
                 <li><a href="StudentEditProfile.php">Edit Profile</a></li>
             </ul>
