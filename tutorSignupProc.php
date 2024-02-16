@@ -14,6 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = password_hash(isset($_POST["password"]) ? $_POST["password"] : "", PASSWORD_DEFAULT);
 
     // Insert data into the users table
+    //need a stored procedure to insert into the users table
     $sql = "INSERT INTO users (FirstName, LastName, Email, PasswordHash, Role) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
 
@@ -28,6 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $userId = $stmt->insert_id;
 
         // Insert data into the tutors table
+        //need a stored procedure to insert into the tutors table
         $sqlTutor = "INSERT INTO tutors (UserId) VALUES (?)";
         $stmtTutor = $conn->prepare($sqlTutor);
         $stmtTutor->bind_param("i", $userId);

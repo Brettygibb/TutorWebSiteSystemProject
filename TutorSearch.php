@@ -35,7 +35,7 @@ $(document).ready(function() {
                             table += '<td colspan="2">' + row.FirstName + '</td>';
                             table += '<td colspan="2">' + row.LastName + '</td>';
                             table += '<td colspan="2">' + row.CourseName + '</td>';
-                            table += '<td colspan="2"><button>View Sessions</button></td>';
+                            table += '<td colspan="2">'+'<a href=ViewAllSessions.php?Id=' + row.TutorId +'&Course=' + row.CourseName + '>View Sessions</a></td>';
                             table += '</tr>';
                         });
                         

@@ -2,12 +2,31 @@
 session_start();
 include 'Connect.php';
 
-$userid = $_SESSION['id'];
-$sql = "select * from users where UserID = $userid";
+if(isset($_SESSION['id'])) {
+    $userid = $_SESSION['id'];
 
-$result = mysqli_query($conn,$sql);
-$row = mysqli_fetch_assoc($result);
+    // Use stored procedure to get the user info
+    $sql = "CALL GetUserByUserID(?)";
+    $stmt = $conn->prepare($sql);
+    if(!$stmt){
+        echo "Error: ".$conn->error;
+        exit();
+    }
+    $stmt->bind_param("i", $userid);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if($result) {
+        $row = $result->fetch_assoc();
 
+        // You can now use $row to display user info
+    } else {
+        echo "No user found with ID: ".$userid;
+    }
+    $stmt->close();
+    $conn->close();
+} else {
+    echo "User is not logged in.";
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,7 +42,8 @@ $row = mysqli_fetch_assoc($result);
         <nav>
             <ul>
                 <li><a href="#">Home</a></li>
-                <li><a href="ReviewRequests.php">Review Requests</a></li>
+                <li><a href="ReviewBecomingTutorRequests.php">Review Becoming a Tutor</a></li>
+                <li><a href="ReviewRequests.php">Review Approve New Courses</a></li>
                 <li><a href="AddAdmin.php">Add another Admin</a></li>
                 <li><a href="#">Logout</a></li>
                 <li><a href="AdminEditProfile.php">Edit Profile</a></li>
