@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Insert a new record into the user_roles table
         $role = 1; // Assuming 1 represents the role for students
-        $sqlUserRole = "INSERT INTO user_roles (userid, role) VALUES ('$userid', '$role')";
+        $sqlUserRole = "INSERT INTO user_roles (userid, roleid) VALUES ('$userid', '$role')";
         if (mysqli_query($conn, $sqlUserRole)) {
             // Redirect user to index.php after successful signup
             header("Location: index.php");
