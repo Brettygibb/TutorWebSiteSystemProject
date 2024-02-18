@@ -16,14 +16,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     // Execute the SQL statement
     if (mysqli_query($conn, $sql)) {
-        // Redirect user to index.php after successful signup
-        header("Location: index.php");
-        exit();
+        // Retrieve the userid of the recently saved record
+        $userid = mysqli_insert_id($conn);
+
+        // Insert a new record into the user_roles table
+        $role = 1; // Assuming 1 represents the role for students
+        $sqlUserRole = "INSERT INTO user_roles (userid, role) VALUES ('$userid', '$role')";
+        if (mysqli_query($conn, $sqlUserRole)) {
+            // Redirect user to index.php after successful signup
+            header("Location: index.php");
+            exit();
+        } else {
+            echo "Error inserting into user_roles table: " . mysqli_error($conn);
+        }
     } else {
         echo "Error: " . $sql . "<br>" . mysqli_error($conn);
     }
 }
 ?>
+
 
 
 
