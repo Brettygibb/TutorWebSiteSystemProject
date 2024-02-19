@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    
     <form action = "LoginProc.php" method = "post">
         <input type = "text" name = "email" placeholder = "Email">
         <input type = "password"  name = "pass" placeholder = "Password">
