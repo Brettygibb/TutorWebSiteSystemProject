@@ -26,8 +26,10 @@ $row = mysqli_fetch_assoc($result);
                 <li><a href="#">Home</a></li>
                 <li><a href="#">Search Tutors</a></li>
                 <li><a href="BecomeTutor.php">Become a Tutor</a></li>
-                <li><a href="#">Logout</a></li>
+                <li><a href="SwitchTutor.php">Switch as Tutor</a></li>
                 <li><a href="StudentEditProfile.php">Edit Profile</a></li>
+                <li><a href="#">Logout</a></li>
+                
             </ul>
         </nav>
     </header>
