@@ -1,8 +1,6 @@
 <?php
     session_start();
 
-    
-
     if(!isset($_SESSION['tutorID'])){
         header("Location: Login.php");
     }
@@ -34,6 +32,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<?php include 'Includes/TutorHeader.php'; ?>
     <form action="Procs/TutorAvailabilityProc.php" method="post">
         <label for="availableDate">Date:</label>
         <input type="date" id="availableDate" name="availableDate" required>
