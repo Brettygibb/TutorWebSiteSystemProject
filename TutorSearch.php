@@ -34,12 +34,21 @@ $(document).ready(function() {
                             table += '<td colspan="2">' + row.FirstName + '</td>';
                             table += '<td colspan="2">' + row.LastName + '</td>';
                             table += '<td colspan="2">' + row.CourseName + '</td>';
+<<<<<<< Updated upstream
                             table += '<td colspan="2">'+'<a href=ViewSession.php?Id=' + row.TutorId +'&Course=' + row.CourseName + '>View Sessions</a></td>';
+=======
+                            table += '<td colspan="2"><button>View Sessions</button></td>';
+>>>>>>> Stashed changes
                             table += '</tr>';
                         });
                         
                         table += '</table>';
                         $('#searchResults').html(table);
+
+                        // Add event listener to the button
+                        $('.view-sessions').click(function(){
+                            var tutor
+                        })
                     } else {
                         // Display message for no results
                         $('#searchResults').html('<p>No results found.</p>');
@@ -75,5 +84,6 @@ $(document).ready(function() {
             
         </main>
     </div>
+    
 </body>
 </html>

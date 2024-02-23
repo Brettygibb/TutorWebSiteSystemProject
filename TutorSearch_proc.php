@@ -1,20 +1,7 @@
 <?php
+include 'Connect.php';
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Add database connection details
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "nbcctutordb";
-
-    // Create connection
-    $conn = new mysqli($servername, $username, $password, $dbname);
-
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
     // Prepare and execute the stored procedure
     $searchSubmit = $_POST["search"];
     $stmt = $conn->prepare("CALL SearchTutors(?)");

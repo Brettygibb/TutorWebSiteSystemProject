@@ -3,7 +3,7 @@ session_start();
 include 'Connect.php';
 
 //$userid = $_SESSION['id'];
-$userid = 12;
+//$userid = 12;
 //need a stored procedure
 $sql = "select * from users where UserID = $userid";
 
