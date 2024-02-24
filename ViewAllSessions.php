@@ -21,7 +21,7 @@ $row = mysqli_fetch_assoc($result);
 </head>
 <body>
     <header>
-        <h1>Student Dashboard</h1>
+        <h1>All Sessions</h1>
         <nav>
             <ul>
                 <li><a href="#">Home</a></li>
