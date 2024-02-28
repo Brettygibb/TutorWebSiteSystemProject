@@ -3,10 +3,12 @@ session_start();
 include 'Connect.php';
 
 // Check if the user is logged in and is an admin
+/*
 if (!isset($_SESSION['id']) || $_SESSION['role'] !== 'Admin') {
     header("Location: index.php");
     exit();
 }
+*/
 
 // Process form submission if any
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

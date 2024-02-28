@@ -1,29 +1,16 @@
 <?php
-include 'Connect.php';
+require_once "TutorSearchDAO.php";
+
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Prepare and execute the stored procedure
+    // Handle search request
     $searchSubmit = $_POST["search"];
-    $stmt = $conn->prepare("CALL SearchTutors(?)");
-    $stmt->bind_param("s", $searchSubmit);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    $rows = [];
-
-    if ($result->num_rows > 0) {
-        // Store the results in an array
-        while ($row = $result->fetch_assoc()) {
-            $rows[] = $row;
-        }
-    }
-
-    // Close the database connection
-    $conn->close();
-    $stmt->close();
+    $searchResults = searchTutors($searchSubmit);
 
     // Return the results as JSON
     header('Content-Type: application/json');
-    echo json_encode($rows);
+    echo json_encode($searchResults);
+
+
 }
 ?>

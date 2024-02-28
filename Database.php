@@ -6,7 +6,7 @@
         $dbname = "nbcctutordb";
 
 
-/*class Database {
+ class Database {
     private $conn;
     
 
@@ -27,4 +27,4 @@
     public function closeConnection() {
         $this->conn->close();
     }
-}*/
+}

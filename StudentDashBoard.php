@@ -1,6 +1,15 @@
 <?php
 session_start();
-include 'Connect.php';
+include 'Database.php';
+
+//jays test////////////////////////////////////////////////////////////////////// WORKED
+// Create a new instance of the Database class
+$database = new Database($servername, $username, $password, $dbname);
+
+// Get the database connection
+$conn = $database->getConnection();
+/////////////////////////////////////////////////////////////////////////////////
+
 
 $userid = $_SESSION['id'];
 //need a stored procedure

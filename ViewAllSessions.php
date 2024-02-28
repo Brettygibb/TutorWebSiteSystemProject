@@ -1,11 +1,23 @@
 <?php
 session_start();
-include 'Connect.php';
+include 'Database.php';
 
 //$userid = $_SESSION['id'];
 //$userid = 12;
 //need a stored procedure
 $sql = "select * from users where UserID = $userid";
+
+
+//jays test////////////////////////////////////////////////////////////////////// WORKED
+// Create a new instance of the Database class
+$database = new Database($servername, $username, $password, $dbname);
+
+// Get the database connection
+$conn = $database->getConnection();
+/////////////////////////////////////////////////////////////////////////////////
+
+
+
 
 $result = mysqli_query($conn,$sql);
 $row = mysqli_fetch_assoc($result);
@@ -16,12 +28,12 @@ $row = mysqli_fetch_assoc($result);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard</title>
+    <title>All Sessions</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <h1>Student Dashboard</h1>
+        <h1>All Sessions</h1>
         <nav>
             <ul>
                 <li><a href="#">Home</a></li>
