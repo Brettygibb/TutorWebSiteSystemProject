@@ -21,25 +21,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Check if the student ID was successfully retrieved
     if ($studentId) {
-        $status = 'Pending'; // Default status for new requests
+        // Check if there is already a record for the student in the becometutor_requests table
+        $sql_check = "SELECT * FROM becometutor_requests WHERE StudentId = ?";
+        $stmt_check = mysqli_prepare($conn, $sql_check);
+        mysqli_stmt_bind_param($stmt_check, "i", $studentId);
+        mysqli_stmt_execute($stmt_check);
+        mysqli_stmt_store_result($stmt_check);
 
-        // Insert the new tutor request into the database
-        $sql = "INSERT INTO becometutor_requests (StudentId, Status) VALUES (?, ?)";
-        $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "is", $studentId, $status);
-        mysqli_stmt_execute($stmt);
+        if (mysqli_stmt_num_rows($stmt_check) > 0) {
+            echo "Previously you made an application for becoming a tutor.";
+            header("refresh:3; url=StudentDashboard.php");
+            exit();
+        }
+
+        // If no existing record, proceed with inserting the new request
+        $status = 'Pending'; // Default status for new requests
+        $sql_insert = "INSERT INTO becometutor_requests (StudentId, Status) VALUES (?, ?)";
+        $stmt_insert = mysqli_prepare($conn, $sql_insert);
+        mysqli_stmt_bind_param($stmt_insert, "is", $studentId, $status);
+        mysqli_stmt_execute($stmt_insert);
 
         // Check if the request was successfully inserted
-        if (mysqli_stmt_affected_rows($stmt) > 0) {
+        if (mysqli_stmt_affected_rows($stmt_insert) > 0) {
             echo "Your request to become a tutor has been submitted. You will be notified once it's reviewed.";
         } else {
             echo "Error: Unable to submit your request at this time. Please try again later.";
         }
 
-        mysqli_stmt_close($stmt);
+        mysqli_stmt_close($stmt_insert);
     } else {
         echo "Error: Student ID not found for the current user.";
     }
+
+    mysqli_close($conn);
 }
 ?>
 

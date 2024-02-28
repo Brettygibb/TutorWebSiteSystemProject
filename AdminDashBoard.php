@@ -43,10 +43,10 @@ if(isset($_SESSION['id'])) {
             <ul>
                 <li><a href="#">Home</a></li>
                 <li><a href="ReviewBecomingTutorRequests.php">Review Becoming a Tutor</a></li>
-                <li><a href="ReviewRequests.php">Review Approve New Courses</a></li>
+                <li><a href="ReviewRequests.php">Approve New Courses for Tutors</a></li>
                 <li><a href="AddAdmin.php">Add another Admin</a></li>
-                <li><a href="#">Logout</a></li>
                 <li><a href="AdminEditProfile.php">Edit Profile</a></li>
+                <li><a href="#">Logout</a></li>
             </ul>
         </nav>
     </header>

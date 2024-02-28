@@ -1,58 +1,43 @@
 <?php
 include("Connect.php");
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Retrieve form data
-    $firstname = isset($_POST["firstname"]) ? $_POST["firstname"] : "";
-    $lastname = isset($_POST["lastname"]) ? $_POST["lastname"] : "";
-    $email = isset($_POST["email"]) ? $_POST["email"] : "";
-    $phone = isset($_POST["phone"]) ? $_POST["phone"] : "";
-    $studentid = isset($_POST["studentid"]) ? $_POST["studentid"] : "";
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $firstName = $_POST['firstname'];
+    $lastName = $_POST['lastname'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
 
-    // Add validation and sanitization here (for example, if the account already exists)
+    // Hash the password
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    $password = password_hash(isset($_POST["password"]) ? $_POST["password"] : "", PASSWORD_DEFAULT);
+    // Prepare SQL statement to insert user data into users table
+    $sql = "INSERT INTO users (firstName, lastName, email, PasswordHash, resetToken, confirmationToken, isConfirmed) 
+            VALUES ('$firstName', '$lastName', '$email', '$hashedPassword', '', '', 1)";
+    
+    // Execute the SQL statement
+    if (mysqli_query($conn, $sql)) {
+        // Retrieve the userid of the recently saved record
+        $userid = mysqli_insert_id($conn);
 
-    // Insert data into the users table
-    //need a stored procedure to insert into the users table
-    $sql = "INSERT INTO users (FirstName, LastName, Email, PasswordHash, Role) VALUES (?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-
-    // Set the role for the tutor
-    $role = 'Tutor';
-
-    $stmt->bind_param("sssss", $firstname, $lastname, $email, $password, $role);
-    $stmt->execute();
-
-    if ($stmt->affected_rows == 1) {
-        // Get the UserId of the newly inserted user
-        $userId = $stmt->insert_id;
-
-        // Insert data into the tutors table
-        //need a stored procedure to insert into the tutors table
-        $sqlTutor = "INSERT INTO tutors (UserId) VALUES (?)";
-        $stmtTutor = $conn->prepare($sqlTutor);
-        $stmtTutor->bind_param("i", $userId);
-        $stmtTutor->execute();
-
-        if ($stmtTutor->affected_rows == 1) {
-            // Redirect to a success page or handle success
-            header("Location: Login.php");
+        // Insert a new record into the user_roles table
+        $role = 2; // Assuming 1 represents the role for students
+        $sqlUserRole = "INSERT INTO user_roles (userid, roleid) VALUES ('$userid', '$role')";
+        if (mysqli_query($conn, $sqlUserRole)) {
+            // Insert a record into the tutor table
+            $sqlStudent = "INSERT INTO tutors (TutorId, UserId) VALUES (NULL, '$userid')";
+            if (mysqli_query($conn, $sqlStudent)) {
+                // Redirect user to index.php after successful signup
+                header("Location: index.php");
+                exit();
+            } else {
+                echo "Error inserting into student table: " . mysqli_error($conn);
+            }
         } else {
-            // Redirect to an error page or handle errors
-            header("Location: tutorSignup.php");
+            echo "Error inserting into user_roles table: " . mysqli_error($conn);
         }
-
-        $stmtTutor->close();
     } else {
-        // Redirect to an error page or handle errors
-        header("Location: tutorSignup.php");
+        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
     }
-
-    $stmt->close();
-    $conn->close();
-
-    exit();
 }
 ?>
 

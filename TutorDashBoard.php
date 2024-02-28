@@ -45,8 +45,10 @@ if(isset($_SESSION['id'])) {
                 <li><a href="TutorSubscribedCourses.php">Subscribed Courses</a></li>
                 <li><a href="TutorSubscribeCourse.php">Subscribe a New Course</a></li>
                 <li><a href="#">Upcoming Sessions</a></li>
-                <li><a href="#">Logout</a></li>
+                <li><a href="SwitchStudent.php">Switch as Student</a></li>
                 <li><a href="StudentEditProfile.php">Edit Profile</a></li>
+                <li><a href="#">Logout</a></li>
+                
             </ul>
         </nav>
     </header>

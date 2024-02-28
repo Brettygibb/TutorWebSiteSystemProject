@@ -28,12 +28,12 @@ $row = mysqli_fetch_assoc($result);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard</title>
+    <title>All Sessions</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <h1>Student Dashboard</h1>
+        <h1>All Sessions</h1>
         <nav>
             <ul>
                 <li><a href="#">Home</a></li>
