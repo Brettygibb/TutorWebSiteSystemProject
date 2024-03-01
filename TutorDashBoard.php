@@ -1,6 +1,10 @@
 <?php
 session_start();
-include 'Connect.php';
+include 'Database.php';
+
+$db = new Database($servername, $username, $password, $dbname);
+
+$conn = $db->getConnection();
 
 if(isset($_SESSION['id'])) {
     $userid = $_SESSION['id'];

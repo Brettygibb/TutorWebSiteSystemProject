@@ -1,7 +1,10 @@
 <?php
 session_start();
-include '../Connect.php';
+include '../Database.php';
 
+$db = new Database($servername, $username, $password, $dbname);
+
+$conn = $db->getConnection();
 // Check if the user is logged in as a tutor
 if (!isset($_SESSION['tutorID'])) {
     die("You are not logged in.");

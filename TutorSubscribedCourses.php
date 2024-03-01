@@ -1,43 +1,52 @@
 <?php
 session_start();
-include 'Connect.php';
+include 'Database.php';
+$db = new Database($servername, $username, $password, $dbname);
+$conn = $db->getConnection();
 
 $userid = $_SESSION['id'];
-// Get tutor ID based on the user ID
-$sql_tutor_id = "SELECT TutorId FROM tutors WHERE UserId = $userid";
-$result_tutor_id = mysqli_query($conn, $sql_tutor_id);
-$row_tutor_id = mysqli_fetch_assoc($result_tutor_id);
-$tutor_id = $row_tutor_id['TutorId'];
 
-// Get list of courses taught by the tutor
-$sql_courses = "SELECT c.CourseName
-                FROM tutor_courses tc
-                INNER JOIN courses c ON tc.CourseId = c.CourseId
-                WHERE tc.TutorId = $tutor_id";
-$result_courses = mysqli_query($conn, $sql_courses);
+$subscribedCoursesResult = null;
+
+$stmt =$conn->prepare("CALL GetTutorId(?)");
+$stmt->bind_param("i", $userid);
+$stmt->execute();
+$result = $stmt->get_result();
+if($row = $result->fetch_assoc()){
+    $tutorId = $row['TutorId'];
+    $stmt->free_result();
+    $stmt->close();
+
+
+    $stmt = $conn->prepare("CALL GetSubscribedCourses(?)");
+    $stmt->bind_param("i", $tutorId);
+    $stmt->execute();
+    $result_courses = $stmt->get_result();
+}
+else{
+    echo "No tutor found for user ID: ".$userid;
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subscribed Courses</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <?php include 'Includes/TutorHeader.php'; ?>
-    <section>
-        <h2>Subscribed Courses</h2>
-        <?php if(mysqli_num_rows($result_courses) > 0): ?>
-            <ul>
-                <?php while($row_courses = mysqli_fetch_assoc($result_courses)): ?>
-                    <li><?php echo $row_courses['CourseName']; ?></li>
-                <?php endwhile; ?>
-            </ul>
-        <?php else: ?>
-            <p>No courses subscribed yet.</p>
-        <?php endif; ?>
-    </section>
+    <h2>Subscribed Courses</h2>
+    <?php if ($result_courses && $result_courses->num_rows > 0): ?>
+        <ul>
+            <?php while ($course = $result_courses->fetch_assoc()): ?>
+                <li><?php echo htmlspecialchars($course['CourseName']); ?></li>
+            <?php endwhile; ?>
+        </ul>
+    <?php else: ?>
+        <p>You have not subscribed to any courses.</p>
+    <?php endif; ?>
 </body>
 </html>

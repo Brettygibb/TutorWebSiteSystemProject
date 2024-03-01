@@ -8,8 +8,7 @@
                 <li><a href="#">Upcoming Sessions</a></li>
                 <li><a href="Procs/LogoutProc.php">Logout</a></li>
                 <li><a href="TutorEditProfile.php">Edit Profile</a></li>
-                <li><a href="TutorAvailability.php">Enter Availability</a>!
-</li>
+                <li><a href="TutorAvailability.php">Enter Availability</a></li>
             </ul>
         </nav>
     </header>

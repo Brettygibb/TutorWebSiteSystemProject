@@ -1,41 +1,55 @@
 <?php
 session_start();
-include 'Connect.php';
+include 'Database.php';
 
+if (!isset($_SESSION['id'])) {
+    // Redirect user or handle the case where the session is not set
+    echo "User is not logged in.";
+    exit(); // Stop script execution
+}
+
+$db = new Database($servername, $username, $password, $dbname);
+$conn = $db->getConnection();
 $userid = $_SESSION['id'];
 
-// Get the tutorid based on the userid
-$getTutorIdSql = "SELECT TutorId FROM tutors WHERE UserId = $userid";
-$result = mysqli_query($conn, $getTutorIdSql);
+// Using prepared statements to prevent SQL injection
+$getTutorIdSql = "SELECT TutorId FROM tutors WHERE UserId = ?";
+$stmt = $conn->prepare($getTutorIdSql);
+$stmt->bind_param("i", $userid);
+$stmt->execute();
+$result = $stmt->get_result();
 
-if ($result) {
-    $row = mysqli_fetch_assoc($result);
+if ($result && $row = $result->fetch_assoc()) {
+    $tutorid = $row['TutorId'];
 
-    // Check if a tutorid is found for the given userid
-    if ($row) {
-        $tutorid = $row['TutorId'];
+    if (isset($_GET['courseId'])) {
+        $selectedCourseId = $_GET['courseId'];
 
-        // Get the selected course ID from the URL parameter
-        if (isset($_GET['courseId'])) {
-            $selectedCourseId = $_GET['courseId'];
-
-            // Insert the selected course into the requests table with Status 'Pending'
-            $insertSql = "INSERT INTO requests (TutorId, CourseId, Status) VALUES ($tutorid, $selectedCourseId, 'Pending')";
-            mysqli_query($conn, $insertSql);
-
-            // Redirect to the Tutor Dashboard or any other page
-            header("Location: TutorDashboard.php");
+        // Ensure that courseId is an integer to prevent SQL injection
+        if (!filter_var($selectedCourseId, FILTER_VALIDATE_INT)) {
+            echo "Invalid course ID.";
             exit();
-        } else {
-            // Handle the case where no course ID is provided
-            echo "Error: No course selected for subscription.";
         }
+
+        // Use prepared statement for insertion to prevent SQL injection
+        $insertSql = "INSERT INTO requests (TutorId, CourseId, Status) VALUES (?, ?, 'Pending')";
+        $insertStmt = $conn->prepare($insertSql);
+        $insertStmt->bind_param("ii", $tutorid, $selectedCourseId);
+        $insertStmt->execute();
+
+        // Redirect to the Tutor Dashboard
+        header("Location: TutorDashboard.php");
+        exit();
     } else {
-        // Handle the case where no tutorid is found for the given userid
-        echo "Error: Tutor ID not found for the given user ID.";
+        echo "Error: No course selected for subscription.";
     }
 } else {
-    // Handle the case where the SQL query fails
-    echo "Error: Unable to fetch tutor ID.";
+    echo "Error: Tutor ID not found for the given user ID or unable to fetch tutor ID.";
 }
+
+// Close statement and connection if open
+if (isset($stmt)) {
+    $stmt->close();
+}
+$conn->close();
 ?>
