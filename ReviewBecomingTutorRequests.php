@@ -1,6 +1,14 @@
 <?php
 session_start();
-include 'Connect.php';
+//include 'Connect.php';
+
+include 'Database.php';
+
+//Create a new instance of DB class 
+$database= new Database($servername, $username, $password, $dbname);
+
+//Get the database connection 
+$conn= $database ->getConnection();
 
 // Fetch pending tutor requests along with student details
 $sql = "SELECT u.FirstName, u.LastName, bt.StudentId
