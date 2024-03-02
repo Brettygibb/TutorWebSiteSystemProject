@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'Connect.php';
+//include 'Connect.php';
 
 // Check if the user is logged in and is an admin
 /*
@@ -9,6 +9,15 @@ if (!isset($_SESSION['id']) || $_SESSION['role'] !== 'Admin') {
     exit();
 }
 */
+
+include 'Database.php';
+
+//Create a new instance of DB class 
+$database= new Database($servername, $username, $password, $dbname);
+
+//Get the database connection 
+$conn= $database ->getConnection();
+
 
 // Process form submission if any
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
