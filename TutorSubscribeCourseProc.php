@@ -1,6 +1,14 @@
 <?php
 session_start();
-include 'Connect.php';
+//include 'Connect.php';
+
+include 'Database.php';
+
+//Create a new instance of DB class 
+$database= new Database($servername, $username, $password, $dbname);
+
+//Get the database connection 
+$conn= $database ->getConnection();
 
 $userid = $_SESSION['id'];
 
