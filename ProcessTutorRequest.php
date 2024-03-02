@@ -1,6 +1,13 @@
 <?php
 session_start();
-include 'Connect.php';
+//include 'Connect.php';
+include 'Database.php';
+
+//Create a new instance of DB class 
+$database= new Database($servername, $username, $password, $dbname);
+
+//Get the database connection 
+$conn= $database ->getConnection();
 
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && isset($_POST['student_id'])) {
