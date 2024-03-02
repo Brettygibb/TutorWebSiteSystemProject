@@ -1,7 +1,7 @@
 <?php
 //comment this whole page
 
-include 'Connect.php';
+//include 'Connect.php';
 include 'Database.php';
 
 //Create a new instance of DB class 
