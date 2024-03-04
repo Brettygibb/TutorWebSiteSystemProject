@@ -19,9 +19,9 @@ if ($result->num_rows === 0) {
 } else {
 
     $tutorId =$_POST['tutorId'];
-    $date = $_POST['date'];
-    $startTime = $_POST['startTime'];
-    $endTime = $_POST['endTime'];
+    $date = date('Y-m-d', strtotime($_POST['date']));
+    $startTime = date('H:i:s', strtotime($_POST['startTime']));
+    $endTime = date('H:i:s', strtotime($_POST['endTime']));
     $message = $_POST['message'];
     $status = "Pending";
     
@@ -30,10 +30,10 @@ if ($result->num_rows === 0) {
     $stmt->bind_param("iisssss", $tutorId, $studentId, $date, $startTime, $endTime, $message, $status);
     
     if ($stmt->execute()) {
-        header("Location: ../RequestSession.php?success=true");
+        header("Location: ../StudentDashBoard.php?success=true");
     } else {
         echo "Error: " . $conn->error;
-        header("Location: ../RequestSession.php?success=false");
+        header("Location: ../StudentDashBoard.php?success=false");
     }
     
     $stmt->close();

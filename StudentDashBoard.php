@@ -20,14 +20,21 @@ $stmt->bind_param("i", $userid);
 $stmt->execute();
 $result = $stmt->get_result();
 $userDetails = $result->fetch_assoc();
+//get student id
+$student = $conn->prepare("SELECT StudentId FROM students WHERE UserID = ?");
+$student->bind_param("i", $userid);
+$student->execute();
+$studentId = $student->get_result();
+$studentId = $studentId->fetch_assoc();
 
+$_SESSION['studentId'] = $studentId['StudentId'];
 // Fetch upcoming sessions
 $stmt = $conn->prepare("SELECT * FROM sessions WHERE StudentId = ?");
 $stmt->bind_param("i", $userid);
 $stmt->execute();
 $sessionsResult = $stmt->get_result();
 //stores the student id in a session
-$_SESSION['studentId'] = $userid;
+$_SESSION['userid'] = $userid;
 ?>
 <!DOCTYPE html>
 <html lang="en">
