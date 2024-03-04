@@ -2,22 +2,32 @@
 session_start();
 include 'Database.php';
 
-//jays test////////////////////////////////////////////////////////////////////// WORKED
-// Create a new instance of the Database class
+// Assuming Database.php includes logic to establish database connection
 $database = new Database($servername, $username, $password, $dbname);
-
-// Get the database connection
 $conn = $database->getConnection();
-/////////////////////////////////////////////////////////////////////////////////
 
+// Ensure the user ID is properly set in the session
+$userid = isset($_SESSION['id']) ? $_SESSION['id'] : null;
+if (!$userid) {
+    // Redirect to login page or show an error if the user ID isn't set
+    header("Location: login.php");
+    exit;
+}
 
-$userid = $_SESSION['id'];
-//need a stored procedure
-$sql = "select * from users where UserID = $userid";
+// Fetch user details
+$stmt = $conn->prepare("SELECT * FROM users WHERE UserID = ?");
+$stmt->bind_param("i", $userid);
+$stmt->execute();
+$result = $stmt->get_result();
+$userDetails = $result->fetch_assoc();
 
-$result = mysqli_query($conn,$sql);
-$row = mysqli_fetch_assoc($result);
-
+// Fetch upcoming sessions
+$stmt = $conn->prepare("SELECT * FROM sessions WHERE StudentId = ?");
+$stmt->bind_param("i", $userid);
+$stmt->execute();
+$sessionsResult = $stmt->get_result();
+//stores the student id in a session
+$_SESSION['studentId'] = $userid;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,44 +38,34 @@ $row = mysqli_fetch_assoc($result);
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <?php include 'Includes/StudentHeader.php'; ?>
+    <?php include 'Includes/StudentHeader.php'; ?>
 
     <section>
         <h2>Welcome to the Student Dashboard</h2>
         <!-- Users Info -->
-        <p>First Name: <?php echo $row['FirstName']; ?></p>
-        <p>Last Name: <?php echo $row['LastName']; ?></p>
-        <p>Email: <?php echo $row['Email']; ?></p>
-        <?php if (!empty($row['image'])): ?>
-            <img src="<?php echo $row['image']; ?>" alt="Profile Picture">
+        <p>First Name: <?php echo htmlspecialchars($userDetails['FirstName']); ?></p>
+        <p>Last Name: <?php echo htmlspecialchars($userDetails['LastName']); ?></p>
+        <p>Email: <?php echo htmlspecialchars($userDetails['Email']); ?></p>
+        <?php if (!empty($userDetails['image'])): ?>
+            <img src="<?php echo htmlspecialchars($userDetails['image']); ?>" alt="Profile Picture">
         <?php endif; ?>
     </section>
 
     <section>
         <h2>Upcoming Sessions</h2>
-        <?php
-        $sql = "SELECT * FROM sessions WHERE StudentId = 5031242";
-
-        $results = mysqli_query($conn,$sql);
-        //$row = mysqli_fetch_assoc($result);
-
-        $resultset = array();
-        while ($row = mysqli_fetch_array($results)) {
-            $resultset[] = $row;
-        }
-
-        echo '<form action="ViewSession.php" method="post">';
-
-        foreach ($resultset as $result){
-            echo "<p>";
-            echo $result['Course'], " ", $result['DateAndTime']," ", "<button name=submit value=$result[SessionId] >View Session</button>";
-            echo "</p>";
-        }
-
-        echo '</form>';
-
-        ?>
-
+        <?php if ($sessionsResult->num_rows > 0): ?>
+            <ul>
+                <?php while ($session = $sessionsResult->fetch_assoc()): ?>
+                    <li>
+                        Course: <?php echo htmlspecialchars($session['Course']); ?><br>
+                        Date and Time: <?php echo htmlspecialchars($session['DateAndTime']); ?><br>
+                        <a href="ViewSession.php?sessionId=<?php echo $session['SessionId']; ?>">View Session</a>
+                    </li>
+                <?php endwhile; ?>
+            </ul>
+        <?php else: ?>
+            <p>No upcoming sessions.</p>
+        <?php endif; ?>
     </section>
 </body>
 </html>

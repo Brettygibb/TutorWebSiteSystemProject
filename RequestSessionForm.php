@@ -6,6 +6,8 @@ $tutorId = isset($_GET['tutorId']) ? $_GET['tutorId'] : '';
 $date = isset($_GET['date']) ? $_GET['date'] : '';
 $startTime = isset($_GET['startTime']) ? $_GET['startTime'] : '';
 $endTime = isset($_GET['endTime']) ? $_GET['endTime'] : '';
+//get student id from session
+$studentId = $_SESSION['studentId'];
 ?>
 
 <!DOCTYPE html>
@@ -17,7 +19,7 @@ $endTime = isset($_GET['endTime']) ? $_GET['endTime'] : '';
 </head>
 <body>
     <h1>Request Session</h1>
-    <form action="submitRequest.php" method="post">
+    <form action="Procs/RequestSessionFormProc.php" method="post">
         <input type="hidden" name="tutorId" value="<?php echo htmlspecialchars($tutorId); ?>">
         <input type="hidden" name="date" value="<?php echo htmlspecialchars($date); ?>">
         <input type="hidden" name="startTime" value="<?php echo htmlspecialchars($startTime); ?>">
