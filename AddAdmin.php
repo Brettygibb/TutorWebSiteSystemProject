@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
     <header>
-        <h1>Review Becoming a Tutor Requests</h1>
+        <h1>Add another Admin</h1>
         <nav>
             <ul>
                 <li><a href="AdminDashboard.php">Back to Dashboard</a></li>
