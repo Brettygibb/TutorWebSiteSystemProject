@@ -7,7 +7,15 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <?php include 'Includes/AdminHeader.php'; ?>
+    <header>
+        <h1>Edit Admin Profile</h1>
+        <nav>
+            <ul>
+                <li><a href="AdminDashboard.php">Back to Dashboard</a></li>
+                <li><a href="#">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
     <form action="AdminEditProc.php" method="post" enctype="multipart/form-data">
         <input type="text" name="email" placeholder="Email">
         <input type="text" name="pass" placeholder="Password">
