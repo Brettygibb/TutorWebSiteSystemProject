@@ -76,14 +76,11 @@ $conn->close();
 </head>
 <body>
     <header>
-        <h1>Review Requests</h1>
+        <h1>Review Becoming a Tutor Requests</h1>
         <nav>
             <ul>
-                <li><a href="AdminDashboard.php">Home</a></li>
-                <li><a href="#">Review Requests</a></li>
-                <li><a href="AddAdmin.php">Add another Admin</a></li>
-                <li><a href="Logout.php">Logout</a></li>
-                <li><a href="AdminEditProfile.php">Edit Profile</a></li>
+                <li><a href="AdminDashboard.php">Back to Dashboard</a></li>
+                <li><a href="#">Logout</a></li>
             </ul>
         </nav>
     </header>
