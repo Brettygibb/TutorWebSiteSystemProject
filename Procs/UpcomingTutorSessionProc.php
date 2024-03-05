@@ -21,11 +21,22 @@ if(!in_array($action, ['accept', 'deny'])){
     exit;
 }
 
-$status = $action === 'accept' ? 'Approved' : 'Denied';
-$stmt = $conn->prepare("UPDATE session_request SET status = ? WHERE RequestId = ?");
-$stmt->bind_param("si", $status, $sessionid);
-$success = $stmt->execute();
-$stmt->close();
+$conn->begin_transaction();
+
+try{
+
+    $status = $action === 'accept' ? 'Approved' : 'Denied';
+    $stmt = $conn->prepare("UPDATE session_request SET status = ? WHERE RequestId = ?");
+    $stmt->bind_param("si", $status, $sessionid);
+    $success = $stmt->execute();
+    $stmt->close();
+
+    if($success){
+        $stmt = $conn->prepare("Delete from tutor_availability where tutorId = ? and date = ? and starttime = ?");
+    }
+}
+
+
 
 if($success){
     header("Location: ../UpcomingTutorSessions.php?success=true");
