@@ -8,6 +8,7 @@ $startTime = isset($_GET['startTime']) ? $_GET['startTime'] : '';
 $endTime = isset($_GET['endTime']) ? $_GET['endTime'] : '';
 //get student id from session
 $studentId = $_SESSION['studentId'];
+
 ?>
 
 <!DOCTYPE html>

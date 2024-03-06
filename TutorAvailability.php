@@ -1,11 +1,13 @@
 <?php
     session_start();
 
-    if(!isset($_SESSION['tutorID'])){
+    $tutorId = $_SESSION['tutorId'];
+
+    if(!isset($_SESSION['tutorId'])){
         header("Location: Login.php");
     }
 
-    $tutorId = $_SESSION['tutorID'];
+    
 
     if(isset($_GET['success'])){
         if($_GET['success'] == "true"){
