@@ -28,9 +28,10 @@ $studentId = $student->get_result();
 $studentId = $studentId->fetch_assoc();
 
 $_SESSION['studentId'] = $studentId['StudentId'];
+$studentgetid = $_SESSION['studentId'];
 // Fetch upcoming sessions
 $stmt = $conn->prepare("SELECT * FROM sessions WHERE StudentId = ?");
-$stmt->bind_param("i", $userid);
+$stmt->bind_param("i", $studentgetid);
 $stmt->execute();
 $sessionsResult = $stmt->get_result();
 //stores the student id in a session
@@ -65,7 +66,8 @@ $_SESSION['userid'] = $userid;
                 <?php while ($session = $sessionsResult->fetch_assoc()): ?>
                     <li>
                         Course: <?php echo htmlspecialchars($session['Course']); ?><br>
-                        Date and Time: <?php echo htmlspecialchars($session['DateAndTime']); ?><br>
+                        Date: <?php echo htmlspecialchars($session['DateAndTime']); ?><br>
+                        Start Time: <?php echo date("g:i A", strtotime($session['StartTime'])); ?><br>
                         <a href="ViewSession.php?sessionId=<?php echo $session['SessionId']; ?>">View Session</a>
                     </li>
                 <?php endwhile; ?>
