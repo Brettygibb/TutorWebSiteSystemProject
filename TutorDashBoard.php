@@ -3,7 +3,6 @@ session_start();
 include 'Database.php';
 
 $db = new Database($servername, $username, $password, $dbname);
-
 $conn = $db->getConnection();
 
 // Ensure the user ID is properly set in the session
@@ -13,19 +12,27 @@ if (!$userid) {
     header("Location: login.php");
     exit;
 }
+
+// Fetch user details
 $stmt = $conn->prepare("SELECT * FROM users WHERE UserID = ?");
 $stmt->bind_param("i", $userid);
 $stmt->execute();
 $result = $stmt->get_result();
 $userDetails = $result->fetch_assoc();
-//get tutorid
-$tutor = $conn->prepare("SELECT TutorId FROM tutors WHERE UserID = ?");
-$tutor->bind_param("i", $userid);
-$tutor->execute();
-$tutorId = $tutor->get_result();
-$tutorId = $tutorId->fetch_assoc();
-$_SESSION['tutorId'] = $tutorId['TutorId'];
-$_SESSION['userid'] = $userid;
+
+// Fetch tutor ID
+$tutorStmt = $conn->prepare("SELECT TutorId FROM tutors WHERE UserId = ?");
+$tutorStmt->bind_param("i", $userid);
+$tutorStmt->execute();
+$tutorResult = $tutorStmt->get_result();
+if ($tutorRow = $tutorResult->fetch_assoc()) {
+    // Correctly fetching and storing the TutorId in the session
+    $_SESSION['tutorId'] = $tutorRow['TutorId'];
+} else {
+    echo "Tutor ID not found for user.";
+    exit; // Or handle this scenario appropriately
+}
+$tutorStmt->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -44,6 +51,7 @@ $_SESSION['userid'] = $userid;
         <p>First Name: <?php echo htmlspecialchars($userDetails['FirstName']); ?></p>
         <p>Last Name: <?php echo htmlspecialchars($userDetails['LastName']); ?></p>
         <p>Email: <?php echo htmlspecialchars($userDetails['Email']); ?></p>
+        <p>Tutor ID: <?php echo htmlspecialchars($_SESSION['tutorId']); ?></p> <!-- Displaying TutorId -->
         <?php if (!empty($userDetails['image'])): ?>
             <img src="<?php echo htmlspecialchars($userDetails['image']); ?>" alt="Profile Picture">
         <?php endif; ?>

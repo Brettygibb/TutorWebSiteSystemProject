@@ -6,13 +6,13 @@ $db = new Database($servername, $username, $password, $dbname);
 
 $conn = $db->getConnection();
 // Check if the user is logged in as a tutor
-if (!isset($_SESSION['tutorID'])) {
+if (!isset($_SESSION['tutorId'])) {
     die("You are not logged in.");
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
-    $tutorId = $_SESSION['tutorID'];
+    $tutorId = $_SESSION['tutorId'];
     $availableDate = $_POST["availableDate"]; 
     $startTime = $_POST["startTime"]; 
    // $endTime = $_POST["endTime"]; 
