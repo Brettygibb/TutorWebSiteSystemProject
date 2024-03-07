@@ -89,7 +89,7 @@ try {
 
         //Remove tutor availability
         $stmt = $conn->prepare("DELETE FROM tutor_availability WHERE TutorId = ? AND AvailableDate = ? AND StartTime = ?");
-        $stmt->bind_param("iss", $tutorId, $requestDetails['requestdate'], $requestDetails['starttime']);
+        $stmt->bind_param("iss", $tutorId, $requestDetails['RequestDate'], $requestDetails['StartTime']);
         $stmt->execute();
         $stmt->close();
 

@@ -9,6 +9,16 @@ $conn = $database->getConnection();
 //need a stored procedure
 $tutorId = isset($_GET['Id']) ? $_GET['Id'] : 0;
 
+$sql = "SELECT u.FirstName, u.LastName, up.* 
+        FROM users_profiles up 
+        JOIN tutors t ON t.UserId = up.UserId 
+        JOIN users u ON t.UserId = u.UserId";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$result = $stmt->get_result();
+$tutor = $result->fetch_assoc();
+$stmt->close();
+
 //$courseId = isset($_GET['Course']) ? $_GET['Course'] : 0;
 $stmt = $conn->prepare("SELECT AvailableDate, StartTime, EndTime 
 FROM tutor_availability 
@@ -49,6 +59,14 @@ $conn->close();
 </head>
 <body>
     <?php include 'Includes/StudentHeader.php'; ?>
+    <h1><?php echo $tutor['FirstName'] . " " . $tutor['LastName']; ?></h1>
+    <p><?php echo $tutor['bio']; ?></p>
+    <p>Academic Background: <?php echo $tutor['academicBackground']; ?></p>
+    <p>Expertise: <?php echo $tutor['expertise']; ?></p>
+    <p>Achievements: <?php echo $tutor['achievements']; ?></p>
+    <p>Profile Picture: <img src="<?php echo $tutor['profilePicture']; ?>" alt="Profile Picture"></p>
+
+
     <h1>Available Sessions for Tutor ID: <?php echo $tutorId; ?></h1>
     <?php if (count($timeSlots) > 0): ?>
         <ul>

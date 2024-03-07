@@ -27,6 +27,14 @@ $studentId = $_SESSION['studentId'];
         <input type="hidden" name="endTime" value="<?php echo htmlspecialchars($endTime); ?>">
         
         <!-- Add any additional form fields here -->
+        <label for="FirstName">First Name</label>
+        <input type="text" id="FirstName" name="FirstName"><br>
+        <label for="LastName">Last Name</label>
+        <input type="text" id="LastName" name="LastName"><br>
+        <label for="email">Email</label>
+        <input type="text" id="email" name="email"><br>
+        <label for="Course">Course</label>
+        <input type="text" id="Course" name="Course"><br>
         <label for="message">Message:</label>
         <textarea id="message" name="message"></textarea><br>
         
