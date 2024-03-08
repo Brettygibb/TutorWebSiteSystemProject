@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Prepare the notification insertion query
             $sqlNotification = "INSERT INTO notifications (user_id, message) VALUES (?, ?)";
             $stmtNotification = mysqli_prepare($conn, $sqlNotification);
-            $message = "New tutor request submitted. Please review.";
+            $message = "New tutor request received. Please review.";
 
             while (mysqli_stmt_fetch($stmtAdmins)) {
                 // Insert a notification for each admin user
