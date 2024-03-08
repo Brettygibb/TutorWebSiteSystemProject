@@ -10,9 +10,9 @@ $database = new Database($servername, $username, $password, $dbname);
 // Get the database connection
 $conn = $database->getConnection();
 
-// Check if the admin user is logged in
+// Check if the user is logged in
 if (isset($_SESSION['id'])) {
-    $userId = $_SESSION['id']; // Modified variable name to $userId
+    $userId = $_SESSION['id']; 
 
     // Fetch notifications for the logged-in user
     $sql = "SELECT * FROM notifications WHERE user_id = ?";
@@ -31,6 +31,11 @@ if (isset($_SESSION['id'])) {
             echo "<div class='notification'>";
             echo "<p>" . $row['message'] . "</p>";
             echo "<span class='timestamp'>" . $row['created_at'] . "</span>";
+            // Add checkbox to mark notification as read
+            echo "<form action='markasread.php' method='post'>";
+            echo "<input type='hidden' name='notification_id' value='" . $row['id'] . "'>";
+            echo "<input type='submit' name='mark_as_read' value='Mark as Read'>";
+            echo "</form>";
             echo "</div>";
         }
     } else {
