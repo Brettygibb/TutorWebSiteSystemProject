@@ -12,16 +12,16 @@ $conn = $database->getConnection();
 
 // Check if the admin user is logged in
 if (isset($_SESSION['id'])) {
-    $adminId = $_SESSION['id'];
+    $userId = $_SESSION['id']; // Modified variable name to $userId
 
-    // Fetch notifications for the logged-in admin user
+    // Fetch notifications for the logged-in user
     $sql = "SELECT * FROM notifications WHERE user_id = ?";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         echo "Error: " . $conn->error;
         exit();
     }
-    $stmt->bind_param("i", $adminId);
+    $stmt->bind_param("i", $userId);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -30,7 +30,7 @@ if (isset($_SESSION['id'])) {
         while ($row = $result->fetch_assoc()) {
             echo "<div class='notification'>";
             echo "<p>" . $row['message'] . "</p>";
-            echo "<span class='timestamp'>" . $row['timestamp'] . "</span>";
+            echo "<span class='timestamp'>" . $row['created_at'] . "</span>";
             echo "</div>";
         }
     } else {
@@ -39,6 +39,7 @@ if (isset($_SESSION['id'])) {
     $stmt->close();
     $conn->close();
 } else {
-    echo "Admin user is not logged in.";
+    echo "User is not logged in.";
 }
 ?>
+
