@@ -32,7 +32,7 @@ if (isset($_SESSION['id'])) {
             echo "<p>" . $row['message'] . "</p>";
             echo "<span class='timestamp'>" . $row['created_at'] . "</span>";
             // Add checkbox to mark notification as read using AJAX
-            echo "<input type='checkbox' class='mark-as-read' data-notification-id='" . $row['id'] . "' onclick='markAsRead(this)'>";
+            echo "<label><input type='checkbox' class='mark-as-read' data-notification-id='" . $row['id'] . "' onclick='markAsRead(this)'> Read</label>";
             echo "</div>";
         }
     } else {
@@ -54,9 +54,10 @@ if (isset($_SESSION['id'])) {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 // Handle the response, if needed
                 console.log(xhr.responseText);
+                // Disable the checkbox after marking as read
+                checkbox.disabled = true;
             }
         };
         xhr.send("notification_id=" + notificationId);
     }
 </script>
-
