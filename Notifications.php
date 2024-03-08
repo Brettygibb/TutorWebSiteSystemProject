@@ -12,7 +12,7 @@ $conn = $database->getConnection();
 
 // Check if the user is logged in
 if (isset($_SESSION['id'])) {
-    $userId = $_SESSION['id']; 
+    $userId = $_SESSION['id']; // Modified variable name to $userId
 
     // Fetch notifications for the logged-in user
     $sql = "SELECT * FROM notifications WHERE user_id = ?";
@@ -31,11 +31,8 @@ if (isset($_SESSION['id'])) {
             echo "<div class='notification'>";
             echo "<p>" . $row['message'] . "</p>";
             echo "<span class='timestamp'>" . $row['created_at'] . "</span>";
-            // Add checkbox to mark notification as read
-            echo "<form action='markasread.php' method='post'>";
-            echo "<input type='hidden' name='notification_id' value='" . $row['id'] . "'>";
-            echo "<input type='submit' name='mark_as_read' value='Mark as Read'>";
-            echo "</form>";
+            // Add checkbox to mark notification as read using AJAX
+            echo "<input type='checkbox' class='mark-as-read' data-notification-id='" . $row['id'] . "' onclick='markAsRead(this)'>";
             echo "</div>";
         }
     } else {
@@ -47,4 +44,19 @@ if (isset($_SESSION['id'])) {
     echo "User is not logged in.";
 }
 ?>
+<script>
+    function markAsRead(checkbox) {
+        var notificationId = checkbox.getAttribute('data-notification-id');
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "markasread.php", true);
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                // Handle the response, if needed
+                console.log(xhr.responseText);
+            }
+        };
+        xhr.send("notification_id=" + notificationId);
+    }
+</script>
 
