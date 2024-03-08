@@ -44,6 +44,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Check if the request was successfully inserted
         if (mysqli_stmt_affected_rows($stmt_insert) > 0) {
             echo "Your request to become a tutor has been submitted. You will be notified once it's reviewed.";
+            
+            // After inserting the tutor request, insert notifications for all admin users
+            $sqlAdmins = "SELECT u.UserId FROM users u
+                          INNER JOIN user_roles ur ON u.UserId = ur.UserId
+                          INNER JOIN roles r ON ur.RoleId = r.RoleId
+                          WHERE r.RoleName = 'Admin'";
+            $stmtAdmins = mysqli_prepare($conn, $sqlAdmins);
+            mysqli_stmt_execute($stmtAdmins);
+            mysqli_stmt_store_result($stmtAdmins);
+            mysqli_stmt_bind_result($stmtAdmins, $adminId);
+
+            // Prepare the notification insertion query
+            $sqlNotification = "INSERT INTO notifications (user_id, message) VALUES (?, ?)";
+            $stmtNotification = mysqli_prepare($conn, $sqlNotification);
+            $message = "New tutor request submitted. Please review.";
+
+            while (mysqli_stmt_fetch($stmtAdmins)) {
+                // Insert a notification for each admin user
+                mysqli_stmt_bind_param($stmtNotification, "is", $adminId, $message);
+                mysqli_stmt_execute($stmtNotification);
+            }
+
+            mysqli_stmt_close($stmtAdmins);
+            mysqli_stmt_close($stmtNotification);
+            
+            
         } else {
             echo "Error: Unable to submit your request at this time. Please try again later.";
         }
