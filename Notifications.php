@@ -15,7 +15,7 @@ if (isset($_SESSION['id'])) {
     $adminId = $_SESSION['id'];
 
     // Fetch notifications for the logged-in admin user
-    $sql = "SELECT * FROM notifications WHERE admin_id = ?";
+    $sql = "SELECT * FROM notifications WHERE user_id = ?";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         echo "Error: " . $conn->error;
