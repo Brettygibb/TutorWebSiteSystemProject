@@ -72,6 +72,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && isset($_P
             exit();
         }
         mysqli_stmt_close($stmt);
+
+        // Add a notification for tutor request approval
+        $notificationMessage = "Tutor request was approved.";
+        $insertNotificationSql = "INSERT INTO notifications (user_id, message, is_read) VALUES (?, ?, 0)";
+        $stmt = mysqli_prepare($conn, $insertNotificationSql);
+        if (!$stmt) {
+            echo "Error preparing statement: " . mysqli_error($conn);
+            exit();
+        }
+        mysqli_stmt_bind_param($stmt, "is", $userId, $notificationMessage);
+        if (!mysqli_stmt_execute($stmt)) {
+            echo "Error adding notification: " . mysqli_stmt_error($stmt);
+            exit();
+        }
+        mysqli_stmt_close($stmt);
+
     } elseif ($action === 'deny') {
         $status = 'Denied';
 
@@ -88,6 +104,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && isset($_P
             exit();
         }
         mysqli_stmt_close($stmt);
+
+        // Get the UserId associated with the StudentId
+        $userIdSql = "SELECT UserId FROM students WHERE StudentId = ?";
+        $stmt = mysqli_prepare($conn, $userIdSql);
+        if (!$stmt) {
+            echo "Error preparing statement: " . mysqli_error($conn);
+            exit();
+        }
+        mysqli_stmt_bind_param($stmt, "i", $studentId);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_bind_result($stmt, $userId);
+        mysqli_stmt_fetch($stmt);
+        mysqli_stmt_close($stmt);
+
+        // Add a notification for tutor request denial
+        $notificationMessage = "Tutor request was denied.";
+        $insertNotificationSql = "INSERT INTO notifications (user_id, message, is_read) VALUES (?, ?, 0)";
+        $stmt = mysqli_prepare($conn, $insertNotificationSql);
+        if (!$stmt) {
+            echo "Error preparing statement: " . mysqli_error($conn);
+            exit();
+        }
+        mysqli_stmt_bind_param($stmt, "is", $userId, $notificationMessage);
+        if (!mysqli_stmt_execute($stmt)) {
+            echo "Error adding notification: " . mysqli_stmt_error($stmt);
+            exit();
+        }
+        mysqli_stmt_close($stmt);
     } else {
         echo "Invalid action!";
         exit();
@@ -100,4 +144,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && isset($_P
     exit();
 }
 ?>
-
