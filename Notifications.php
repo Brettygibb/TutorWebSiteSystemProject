@@ -8,7 +8,9 @@
 </head>
 <body>
     <?php include 'Includes/AdminHeader.php'; ?>
+
     <section>
+        <h1>Notifications</h1>
         <table>
             <thead>
                 <tr>
