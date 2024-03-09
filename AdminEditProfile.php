@@ -7,15 +7,10 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Edit Admin Profile</h1>
-        <nav>
-            <ul>
-                <li><a href="AdminDashboard.php">Back to Dashboard</a></li>
-                <li><a href="#">Logout</a></li>
-            </ul>
-        </nav>
-    </header>
+    <?php include 'Includes/AdminHeader.php'; ?>
+
+    <section>
+    <h1>Edit Admin Profile</h1>
     <form action="AdminEditProc.php" method="post" enctype="multipart/form-data">
         <input type="text" name="email" placeholder="Email">
         <input type="text" name="pass" placeholder="Password">
@@ -28,5 +23,6 @@
         <label for="profilePicture">Profile Picture:</label>              
         <input type="file" name="image" placeholder="Profile Picture">
         <button type="submit">Submit</button>
+    </section>
 </body>
 </html>
