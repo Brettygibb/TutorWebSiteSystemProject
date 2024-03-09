@@ -41,20 +41,13 @@ $stmt->bind_param("i", $tutorid);
 $stmt->execute();
 $availableCoursesResult = $stmt->get_result();
 
-
 // Handle form submission
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["courseId"])) {
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $selectedCourseId = $_POST["courseId"];
 
-    $insertSql = "INSERT INTO tutor_courses (TutorId, CourseId) VALUES (?, ?)";
-    $stmt = $conn->prepare($insertSql);
-    $stmt->bind_param("ii", $tutorid, $selectedCourseId);
-    if($stmt->execute()){
-        header("Location: TutorSubscribeCourse.php?success=true");
-    }else{
-        echo "Error: " . $conn->error;
-        header("Location: TutorSubscribeCourse.php?success=false");
-    }
+    // Redirect to TutorSubscribeProc.php with selected course ID
+    header("Location: TutorSubscribeCourseProc.php?courseId=$selectedCourseId&tutorId=$tutorid");
+    exit();
 }
 
 ?>
