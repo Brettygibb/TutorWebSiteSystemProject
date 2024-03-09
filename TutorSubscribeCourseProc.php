@@ -34,19 +34,28 @@ if ($result && $row = $result->fetch_assoc()) {
         // Use prepared statement for insertion to prevent SQL injection
         $insertSql = "INSERT INTO requests (TutorId, CourseId, Status) VALUES (?, ?, 'Pending')";
         $insertStmt = $conn->prepare($insertSql);
+
+        // Bind parameters
         $insertStmt->bind_param("ii", $tutorid, $selectedCourseId);
+        $tutoridRef = $tutorid; // Assign tutorid to another variable
+        $selectedCourseIdRef = $selectedCourseId; // Assign selectedCourseId to another variable
+        $insertStmt->bind_param("ii", $tutoridRef, $selectedCourseIdRef);
+
+        // Execute the statement
         $insertStmt->execute();
 
-        // Insert notification records for all admins
-        $getAdminIdsSql = "SELECT UserId FROM admins";
-        $adminIdsResult = $conn->query($getAdminIdsSql);
-        while ($adminIdRow = $adminIdsResult->fetch_assoc()) {
-            $adminId = $adminIdRow['UserId'];
-            $notificationSql = "INSERT INTO notifications (user_id, message, is_read) VALUES (?, ?, 0)";
-            $notificationStmt = $conn->prepare($notificationSql);
-            $notificationStmt->bind_param("is", $adminId, "A new course request is pending approval.");
-            $notificationStmt->execute();
-        }
+        // Close statement
+        $insertStmt->close();
+        
+        // Insert a record in the notifications table for all admins
+        $notificationMessage = "A new course subscription request has been made.";
+        $insertNotificationSql = "INSERT INTO notifications (user_id, message, created_at) SELECT id, ?, NOW() FROM admins";
+        $insertNotificationStmt = $conn->prepare($insertNotificationSql);
+        $insertNotificationStmt->bind_param("s", $notificationMessage);
+        $insertNotificationStmt->execute();
+
+        // Close statement
+        $insertNotificationStmt->close();
 
         // Redirect to the Tutor Dashboard
         header("Location: TutorDashboard.php");
@@ -59,8 +68,6 @@ if ($result && $row = $result->fetch_assoc()) {
 }
 
 // Close statement and connection if open
-if (isset($stmt)) {
-    $stmt->close();
-}
+$stmt->close();
 $conn->close();
 ?>
