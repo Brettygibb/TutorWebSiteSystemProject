@@ -49,7 +49,7 @@ if ($result && $row = $result->fetch_assoc()) {
         
         // Insert a record in the notifications table for all admins
         $notificationMessage = "A new course subscription request has been made.";
-        $insertNotificationSql = "INSERT INTO notifications (user_id, message, created_at) SELECT id, ?, NOW() FROM admins";
+        $insertNotificationSql = "INSERT INTO notifications (user_id, message, created_at) SELECT admin_id, ?, NOW() FROM admins";
         $insertNotificationStmt = $conn->prepare($insertNotificationSql);
         $insertNotificationStmt->bind_param("s", $notificationMessage);
         $insertNotificationStmt->execute();
