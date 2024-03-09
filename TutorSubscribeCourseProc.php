@@ -32,30 +32,35 @@ if ($result && $row = $result->fetch_assoc()) {
         }
 
         // Use prepared statement for insertion to prevent SQL injection
-        $insertSql = "INSERT INTO requests (TutorId, CourseId, Status) VALUES (?, ?, 'Pending')";
+        $insertSql = "INSERT INTO requests (TutorId, CourseId, Status) VALUES (?, ?, ?)";
         $insertStmt = $conn->prepare($insertSql);
 
+        // Status variable to hold the value
+        $status = "Pending";
+
         // Bind parameters
-        $insertStmt->bind_param("ii", $tutorid, $selectedCourseId);
-        $tutoridRef = $tutorid; // Assign tutorid to another variable
-        $selectedCourseIdRef = $selectedCourseId; // Assign selectedCourseId to another variable
-        $insertStmt->bind_param("ii", $tutoridRef, $selectedCourseIdRef);
+        $insertStmt->bind_param("iis", $tutorid, $selectedCourseId, $status);
 
         // Execute the statement
         $insertStmt->execute();
 
-        // Close statement
-        $insertStmt->close();
-        
-        // Insert a record in the notifications table for all admins
-        $notificationMessage = "A new course subscription request has been made.";
-        $insertNotificationSql = "INSERT INTO notifications (user_id, message, created_at) SELECT admin_id, ?, NOW() FROM admins";
-        $insertNotificationStmt = $conn->prepare($insertNotificationSql);
-        $insertNotificationStmt->bind_param("s", $notificationMessage);
-        $insertNotificationStmt->execute();
+        // Insert notification records for all admins
+        $getAdminIdsSql = "SELECT UserId FROM admins";
+        $adminIdsResult = $conn->query($getAdminIdsSql);
+        while ($adminIdRow = $adminIdsResult->fetch_assoc()) {
+            $adminId = $adminIdRow['UserId'];
+            $notificationSql = "INSERT INTO notifications (user_id, message, is_read) VALUES (?, ?, 0)";
+            $notificationStmt = $conn->prepare($notificationSql);
+            $notificationStmt->bind_param("is", $adminId, $message);
+            $message = "A new course request is pending approval.";
+            $notificationStmt->execute();
+        }
 
         // Close statement
-        $insertNotificationStmt->close();
+        $notificationStmt->close();
+
+        // Close statement
+        $insertStmt->close();
 
         // Redirect to the Tutor Dashboard
         header("Location: TutorDashboard.php");
