@@ -46,10 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             echo "Your request to become a tutor has been submitted. You will be notified once it's reviewed.";
             
             // After inserting the tutor request, insert notifications for all admin users
-            $sqlAdmins = "SELECT u.UserId FROM users u
-                          INNER JOIN user_roles ur ON u.UserId = ur.UserId
-                          INNER JOIN roles r ON ur.RoleId = r.RoleId
-                          WHERE r.RoleName = 'Admin'";
+            $sqlAdmins = "SELECT UserId FROM admins";
             $stmtAdmins = mysqli_prepare($conn, $sqlAdmins);
             mysqli_stmt_execute($stmtAdmins);
             mysqli_stmt_store_result($stmtAdmins);
