@@ -75,18 +75,10 @@ $conn->close();
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Approve New Courses for Tutors</h1>
-        <nav>
-            <ul>
-                <li><a href="AdminDashboard.php">Back to Dashboard</a></li>
-                <li><a href="#">Logout</a></li>
-            </ul>
-        </nav>
-    </header>
+    <?php include 'Includes/AdminHeader.php'; ?>
 
     <section>
-        <h2>Pending Requests List</h2>
+        <h1>Review New Courses for Tutors</h1>
 
         <table>
             <tr>
