@@ -52,7 +52,7 @@ if ($result && $row = $result->fetch_assoc()) {
             $notificationSql = "INSERT INTO notifications (user_id, message, is_read) VALUES (?, ?, 0)";
             $notificationStmt = $conn->prepare($notificationSql);
             $notificationStmt->bind_param("is", $adminId, $message);
-            $message = "A new course request is pending approval.";
+            $message = "New course request received. Please review.";
             $notificationStmt->execute();
         }
 

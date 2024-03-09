@@ -41,7 +41,7 @@
                     $userId = $_SESSION['id']; // Modified variable name to $userId
 
                     // Fetch notifications for the logged-in user
-                    $sql = "SELECT * FROM notifications WHERE user_id = ?";
+                    $sql = "SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC";
                     $stmt = $conn->prepare($sql);
                     if (!$stmt) {
                         echo "Error: " . $conn->error;
@@ -90,4 +90,5 @@
     </script>
 </body>
 </html>
+
 
