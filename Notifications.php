@@ -7,15 +7,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Notifications</h1>
-        <nav>
-            <ul>
-                <li><a href="AdminDashboard.php">Back to Dashboard</a></li>
-                <li><a href="#">Logout</a></li>
-            </ul>
-        </nav>
-    </header>
+    <?php include 'Includes/AdminHeader.php'; ?>
     <section>
         <table>
             <thead>
