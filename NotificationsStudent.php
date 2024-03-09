@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <?php include 'Includes/AdminHeader.php'; ?>
+    <?php include 'Includes/StudentHeader.php'; ?>
 
     <section>
         <h1>Notifications</h1>
