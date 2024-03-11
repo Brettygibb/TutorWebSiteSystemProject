@@ -35,9 +35,10 @@ $userRow = $userResult->fetch_assoc();
 
 // Query to get available courses for the tutor to subscribe
 //need a stored procedure to get the available courses
-$availableCoursesSql = "SELECT * FROM courses WHERE CourseId NOT IN (SELECT CourseId FROM tutor_courses WHERE TutorId = ?)";
+//$availableCoursesSql = "SELECT * FROM courses WHERE CourseId NOT IN (SELECT CourseId FROM tutor_courses WHERE TutorId = ?)";
+$availableCoursesSql = "SELECT * FROM courses WHERE CourseId NOT IN (SELECT CourseId FROM tutor_courses WHERE TutorId = ?) AND CourseId NOT IN (SELECT CourseId FROM requests WHERE TutorId = ? AND Status = 'Pending')";
 $stmt = $conn->prepare($availableCoursesSql);
-$stmt->bind_param("i", $tutorid);
+$stmt->bind_param("ii", $tutorid, $tutorid);
 $stmt->execute();
 $availableCoursesResult = $stmt->get_result();
 
