@@ -1,5 +1,5 @@
 <?php
-class User {
+class user {
     protected $firstName;
     protected $lastName;
     protected $email;
