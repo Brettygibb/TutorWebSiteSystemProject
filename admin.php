@@ -1,7 +1,16 @@
 <?php
+class Admin extends User {
+    private $adminId;
 
-/* 
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHP.php to edit this template
- */
+    public function __construct($first_name, $last_name, $email, $adminId) {
+        parent::__construct($first_name, $last_name, $email);
+        $this->adminId = $adminId;
+    }
+    public function getAdminId() {
+        return $this->adminId;
+    }
 
+    public function setAdminId($adminId) {
+        $this->adminId = $adminId;
+    }
+}
