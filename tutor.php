@@ -2,7 +2,7 @@
 
 require_once 'user.php';
 
-class Tutor extends User implements JsonSerializable {
+class tutor extends User implements JsonSerializable {
     protected $tutorId;
     protected $classesTaught;
 
