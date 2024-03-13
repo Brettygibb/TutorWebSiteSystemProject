@@ -1,5 +1,5 @@
 <?php
-class Admin extends User {
+class admin extends User {
     private $adminId;
 
     public function __construct($first_name, $last_name, $email, $adminId) {
