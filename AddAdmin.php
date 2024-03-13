@@ -16,8 +16,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
     // Insert user into users table
-    $sql_insert_user = "INSERT INTO users (FirstName, LastName, Email, PasswordHash, Role)
-                        VALUES ('$firstname', '$lastname', '$email', '$password', 'Admin')";
+    $sql_insert_user = "INSERT INTO users (FirstName, LastName, Email, PasswordHash)
+                        VALUES ('$firstname', '$lastname', '$email', '$password')";
     mysqli_query($conn, $sql_insert_user);
     
     $user_id = mysqli_insert_id($conn); // Get the ID of the inserted user
