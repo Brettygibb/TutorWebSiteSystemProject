@@ -1,8 +1,8 @@
 <?php
-class user {
-    protected $firstName;
-    protected $lastName;
-    protected $email;
+class User {
+    private $firstName;
+    private $lastName;
+    private $email;
 
     public function __construct($firstName, $lastName, $email) {
         $this->firstName = $firstName;
@@ -22,8 +22,8 @@ class user {
         return $this->lastName;
     }
 
-    public function setLastName($LastName) {
-        $this->LastName = $LastName;
+    public function setLastName($lastName) {
+        $this->lastName = $lastName;
     }
 
     public function getEmail() {
@@ -33,8 +33,5 @@ class user {
     public function setEmail($email) {
         $this->email = $email;
     }
-
-
 }
-
 
