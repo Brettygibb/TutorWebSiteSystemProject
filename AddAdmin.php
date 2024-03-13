@@ -35,17 +35,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Add another Admin</h1>
-        <nav>
-            <ul>
-                <li><a href="AdminDashboard.php">Back to Dashboard</a></li>
-                <li><a href="#">Logout</a></li>
-            </ul>
-        </nav>
-    </header>
+    <?php include 'Includes/AdminHeader.php'; ?>
     <section>
-        <h2>Enter Admin Details</h2>
+        <h1>Add another Admin</h1>
         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
             <label for="firstname">First Name:</label>
             <input type="text" id="firstname" name="firstname" required><br><br>
