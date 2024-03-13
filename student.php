@@ -1,5 +1,5 @@
 <?php
-class Student extends User {
+class student extends User {
     private $studentId;
 
     public function __construct($first_name, $last_name, $email, $studentId) {
