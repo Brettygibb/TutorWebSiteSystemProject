@@ -16,7 +16,7 @@ class Admin extends User {
         $this->adminId = $adminId;
     }
 
-    public function insertIntoDatabase($conn) {
+    public function insertAdminDatabase($conn) {
         // Prepare the SQL statement
         $sql_insert_user = "INSERT INTO users (FirstName, LastName, Email, PasswordHash)
                             VALUES (?, ?, ?, ?)";
