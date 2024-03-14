@@ -193,6 +193,38 @@ class Admin extends User {
     }
     
     
+    public function obtainNewCoursesRequests($conn) {
+        // Fetch only pending requests with tutor names and course names from the database
+        $sql = "CALL GetPendingTutorRequests()";
+        $result = mysqli_query($conn, $sql);
+        
+        // Array to store fetched results
+        $requests = array();
+
+        // Fetch each row and append the course name to the result
+        while ($row = mysqli_fetch_assoc($result)) {
+            // Fetch the course name
+            $getCourseNameSql = "SELECT CourseName FROM courses WHERE CourseId = ?";
+            $stmt = $conn->prepare($getCourseNameSql);
+            $stmt->bind_param("i", $row['CourseId']);
+            $stmt->execute();
+            $stmt->bind_result($courseName);
+            $stmt->fetch();
+            $stmt->close();
+
+            // Add course name to the row
+            $row['CourseName'] = $courseName;
+
+            // Add the modified row to the result array
+            $requests[] = $row;
+        }
+
+        // Close the connection
+        $conn->close();
+
+        return $requests;
+    }
+    
     
 }
 ?>
