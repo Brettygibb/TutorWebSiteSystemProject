@@ -1,13 +1,12 @@
 <?php
-
-require_once 'user.php';
+require_once 'User.php'; // Include the parent class definition
 
 class Tutor extends User implements JsonSerializable {
     protected $tutorId;
     protected $classesTaught;
 
-    public function __construct($firstName, $lastName, $tutorId, $classesTaught = [], $email = null) {
-        parent::__construct($firstName, $lastName, $email);
+    public function __construct($firstName, $lastName, $tutorId, $classesTaught = [], $email = null, $password= null) {
+        parent::__construct($firstName, $lastName, $email,$password);
         $this->tutorId = $tutorId;
         $this->classesTaught = $classesTaught;
     }
@@ -34,6 +33,3 @@ class Tutor extends User implements JsonSerializable {
         return get_object_vars($this);
     }
 }
-
-
-//look into optional parameters

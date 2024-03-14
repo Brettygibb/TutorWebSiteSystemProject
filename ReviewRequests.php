@@ -1,23 +1,11 @@
 <?php
 session_start();
-//include 'Connect.php';
-
-// Check if the user is logged in and is an admin
-/*
-if (!isset($_SESSION['id']) || $_SESSION['role'] !== 'Admin') {
-    header("Location: index.php");
-    exit();
-}
-*/
 
 include 'Database.php';
+include 'Admin.php';
 
-//Create a new instance of DB class 
-$database= new Database($servername, $username, $password, $dbname);
-
-//Get the database connection 
-$conn= $database ->getConnection();
-
+$database = new Database($servername, $username, $password, $dbname);
+$conn = $database->getConnection();
 
 // Process form submission if any
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -26,80 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $status = $_POST['status'];
         $courseId = $_POST['courseId'];
 
-        // Update the status of the request in the database with specific TutorId and CourseId
-        $updateSql = "CALL UpdateRequestStatus(?, ?, ?)";
-        $stmt = $conn->prepare($updateSql);
-        $stmt->bind_param("iss", $requestId, $courseId, $status);
-        $stmt->execute();
-        $stmt->close();
-
-        // Fetch the course name
-        $getCourseNameSql = "SELECT CourseName FROM courses WHERE CourseId = ?";
-        $stmt = $conn->prepare($getCourseNameSql);
-        $stmt->bind_param("i", $courseId);
-        $stmt->execute();
-        $stmt->bind_result($courseName);
-        $stmt->fetch();
-        $stmt->close();
-
-        // Check if the status is 'Approved' and insert into tutor_courses table
-        if ($status === 'Approved') {
-            // Update the status in the requests table
-            $updateStatusSql = "UPDATE requests SET Status = 'Approved' WHERE TutorId = ? AND CourseId = ?";
-            $stmt = $conn->prepare($updateStatusSql);
-            $stmt->bind_param("ii", $requestId, $courseId);
-            $stmt->execute();
-            $stmt->close();            
-            
-            $insertSql = "CALL InsertTutorCourse(?, ?)";
-            $stmt = $conn->prepare($insertSql);
-            $stmt->bind_param("is", $requestId, $courseId);
-            $stmt->execute();
-            $stmt->close();
-
-            // Fetch the userId of the tutor associated with the request
-            $userIdSql = "SELECT UserId FROM tutors WHERE TutorId = ?";
-            $stmt = $conn->prepare($userIdSql);
-            $stmt->bind_param("i", $requestId);
-            $stmt->execute();
-            $stmt->bind_result($userId);
-            $stmt->fetch();
-            $stmt->close();
-
-            // Add a notification for course request approval
-            $notificationMessage = "Course request for $courseName was approved.";
-            $insertNotificationSql = "INSERT INTO notifications (user_id, message, is_read) VALUES (?, ?, 0)";
-            $stmt = $conn->prepare($insertNotificationSql);
-            $stmt->bind_param("is", $userId, $notificationMessage);
-            $stmt->execute();
-            $stmt->close();
-
-        } elseif ($status === 'Denied') {
-            // Update the status in the requests table
-            $updateStatusSql = "UPDATE requests SET Status = 'Denied' WHERE TutorId = ? AND CourseId = ?";
-            $stmt = $conn->prepare($updateStatusSql);
-            $stmt->bind_param("ii", $requestId, $courseId);
-            $stmt->execute();
-            $stmt->close(); 
-
-
-            // Fetch the userId of the tutor associated with the request
-            $userIdSql = "SELECT UserId FROM tutors WHERE TutorId = ?";
-            $stmt = $conn->prepare($userIdSql);
-            $stmt->bind_param("i", $requestId);
-            $stmt->execute();
-            $stmt->bind_result($userId);
-            $stmt->fetch();
-            $stmt->close();
-
-            // Add a notification for course request denial
-            $notificationMessage = "Course request for $courseName was denied.";
-            $insertNotificationSql = "INSERT INTO notifications (user_id, message, is_read) VALUES (?, ?, 0)";
-            $stmt = $conn->prepare($insertNotificationSql);
-            $stmt->bind_param("is", $userId, $notificationMessage);
-            $stmt->execute();
-            $stmt->close();
-        }
+        $admin = new Admin();
+        $admin->processRequestedCourses($requestId, $courseId, $status, $conn);
     }
 }
 

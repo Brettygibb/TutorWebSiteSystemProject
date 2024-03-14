@@ -1,6 +1,13 @@
 <?php
 session_start();
-include 'Connect.php';
+include 'Database.php';
+require_once 'Admin.php'; // Include the Admin class definition
+
+// Create a new instance of the Database class 
+$database = new Database($servername, $username, $password, $dbname);
+
+// Get the database connection 
+$conn = $database->getConnection();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $firstname = $_POST['firstname'];
@@ -8,17 +15,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    // Insert user into users table
-    $sql_insert_user = "INSERT INTO users (FirstName, LastName, Email, PasswordHash, Role)
-                        VALUES ('$firstname', '$lastname', '$email', '$password', 'Admin')";
-    mysqli_query($conn, $sql_insert_user);
-    
-    $user_id = mysqli_insert_id($conn); // Get the ID of the inserted user
-    
+    // Create an Admin object
+    $admin = new Admin($firstname, $lastname, $email, $password);
+
     // Insert admin into admins table
-    $sql_insert_admin = "INSERT INTO admins (UserId)
-                         VALUES ($user_id)";
-    mysqli_query($conn, $sql_insert_admin);
+    $admin->insertAdminDatabase($conn);
 
     // Redirect to Admin Dashboard or any other page after successful submission
     header("Location: AdminDashboard.php");
