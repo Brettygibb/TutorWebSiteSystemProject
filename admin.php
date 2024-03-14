@@ -192,27 +192,6 @@ class Admin extends User {
         exit();
     }
     
-   
-    public function obtainRequestedCourses($requestId, $courseId, $status, $conn) {
-        // Update the status of the request in the database with specific TutorId and CourseId
-        $updateSql = "CALL UpdateRequestStatus(?, ?, ?)";
-        $stmt = $conn->prepare($updateSql);
-        $stmt->bind_param("iss", $requestId, $courseId, $status);
-        $stmt->execute();
-        $stmt->close();
-
-        // Fetch the course name
-        $getCourseNameSql = "SELECT CourseName FROM courses WHERE CourseId = ?";
-        $stmt = $conn->prepare($getCourseNameSql);
-        $stmt->bind_param("i", $courseId);
-        $stmt->execute();
-        $stmt->bind_result($courseName);
-        $stmt->fetch();
-        $stmt->close();
-
-        return $courseName;
-    }
-    
     
     public function processRequestedCourses($requestId, $courseId, $status, $conn) {
         // Check if the status is 'Approved' and insert into tutor_courses table
