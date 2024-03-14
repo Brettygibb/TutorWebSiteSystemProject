@@ -5,36 +5,34 @@ include '../Classes/Sessions.php';
 
 $db = new Database($servername, $username, $password, $dbname);
 $conn = $db->getConnection();
-$studentId = $_SESSION['studentId']??null;
 
-if($studentId){
-    $tutorId = $_POST['tutorId'];
-    $firstName = $_POST['FirstName'];
-    $lastName = $_POST['LastName'];
-    $email = $_POST['email'];
-    $course = $_POST['Course'];
-    $date = date('Y-m-d', strtotime($_POST['date']));
-    $startTime = date('H:i:s', strtotime($_POST['startTime']));
-    $endTime = date('H:i:s', strtotime($_POST['endTime']));
-    $message = $_POST['message'];
-    $status = "Pending";
 
-    $session = new Sessions($conn);
 
-    if($session->createSessionRequest($tutorId, $studentId, $firstName, $lastName, $email, $course, $date, $startTime, $endTime, $message, $status)){
-        header("Location: ../StudentDashboard.php?success=true");
-    } else {
-        header("Location: ../StudentDashboard.php?success=false");
-    }
-}
-else{
-    echo "Please login to request a session";
+// Assume other variables like $tutorId, $date, etc., are retrieved similarly
+$tutorId = $_POST['tutorId'] ?? '';
+$date = $_POST['date'] ?? '';
+$startTime = $_POST['startTime'] ?? '';
+$endTime = $_POST['endTime'] ?? '';
+$courseId = $_POST['courseId'] ?? 0; // Default to 0 if not set
+
+
+$studentId = $_SESSION['studentId'] ?? ''; // Assuming the student ID is stored in the session
+
+// Other data might be retrieved from a form submission, for example
+$firstName = $_POST['FirstName'] ?? '';
+$lastName = $_POST['LastName'] ?? '';
+$email = $_POST['email'] ?? '';
+$message = $_POST['message'] ?? '';
+$status = 'Pending'; // Default status for a new session request
+$subject = $_POST['Subject'] ?? '';
+
+$session = new Sessions($conn);
+if ($session->createSessionRequest($tutorId, $studentId, $courseId, $firstName, $lastName, $email,$subject, $date, $startTime, $endTime, $message, $status)) {
+    header("Location: ../StudentDashboard.php?success=true");
+    exit();
+} else {
+    header("Location: ../StudentDashboard.php?error=Failed to create session.");
     exit();
 }
 
-
-
-
-
 ?>
-

@@ -1,5 +1,4 @@
 <?php
-
 session_start();
 include '../Database.php';
 include '../Classes/Sessions.php';
@@ -9,24 +8,30 @@ if (!isset($_SESSION['tutorId']) || !isset($_GET['sessionId']) || !isset($_GET['
     die("Unauthorized access.");
 }
 
-$tutorId = $_SESSION['tutorId'];
-$sessionId = $_GET['sessionId'];
-$action = $_GET['action'];
-
-$db = new Database($servername, $username, $password, $dbname);
-$conn = $db->getConnection();
-$session = new Sessions($conn); // Adjusted to match the revised constructor
-
-// Begin transaction for data integrity
-$conn->begin_transaction();
-
 try {
+    // Sanitize input
+    $tutorId = intval($_SESSION['tutorId']);
+    $sessionId = intval($_GET['sessionId']);
+    $action = $_GET['action'];
+
+    // Create database connection
+    $db = new Database($servername, $username, $password, $dbname);
+    $conn = $db->getConnection();
+
+    // Initialize Sessions class with database connection
+    $session = new Sessions($conn);
+
+    // Begin transaction for data integrity
+    $conn->begin_transaction();
+
+    // Retrieve session details
     $sessionDetailsResult = $session->getSessionDetails($sessionId);
-    
-    if (!$sessionDetailsResult['found']) {
+
+    if (!$sessionDetailsResult) {
         throw new Exception("Session request not found.");
     }
-    $requestDetails = $sessionDetailsResult['data'];
+
+    $requestDetails = $sessionDetailsResult;
 
     if ($action == 'accept') {
         // Actions for accepting the session request
@@ -41,11 +46,11 @@ try {
     // Commit transaction
     $conn->commit();
     header("Location: ../UpcomingTutorSessions.php?success=true");
+    exit(); // Terminate script execution after redirect
 } catch (Exception $e) {
     // Rollback transaction on error
     $conn->rollback();
     header("Location: ../UpcomingTutorSessions.php?error=" . urlencode($e->getMessage()));
+    exit(); // Terminate script execution after redirect
 }
-
-$conn->close();
 ?>
