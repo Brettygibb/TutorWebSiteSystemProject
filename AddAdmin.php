@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $admin = new Admin($firstname, $lastname, $email, $password);
 
     // Insert admin into admins table
-    $admin->insertIntoDatabase($conn);
+    $admin->insertAdminDatabase($conn);
 
     // Redirect to Admin Dashboard or any other page after successful submission
     header("Location: AdminDashboard.php");
