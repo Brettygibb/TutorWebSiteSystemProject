@@ -12,7 +12,7 @@ $conn = $database->getConnection();
 // Create a new instance of the Admin class
 $admin = new Admin();
 
-// Fetch pending tutor requests along with student details using the obtainBecomeTutor method
+// Fetch pending tutor requests along with student details using the obtainWhoWantBecomeTutor method
 $result = $admin->obtainWhoWantBecomeTutor($conn);
 ?>
 
