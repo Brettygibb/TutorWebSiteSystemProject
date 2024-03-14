@@ -11,6 +11,7 @@ if (!isset($_SESSION['id']) || $_SESSION['role'] !== 'Admin') {
 */
 
 include 'Database.php';
+include 'Admin.php';
 
 //Create a new instance of DB class 
 $database= new Database($servername, $username, $password, $dbname);
@@ -26,21 +27,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $status = $_POST['status'];
         $courseId = $_POST['courseId'];
 
-        // Update the status of the request in the database with specific TutorId and CourseId
-        $updateSql = "CALL UpdateRequestStatus(?, ?, ?)";
-        $stmt = $conn->prepare($updateSql);
-        $stmt->bind_param("iss", $requestId, $courseId, $status);
-        $stmt->execute();
-        $stmt->close();
+        // Create a new instance of Admin class
+        $admin = new Admin();
 
-        // Fetch the course name
-        $getCourseNameSql = "SELECT CourseName FROM courses WHERE CourseId = ?";
-        $stmt = $conn->prepare($getCourseNameSql);
-        $stmt->bind_param("i", $courseId);
-        $stmt->execute();
-        $stmt->bind_result($courseName);
-        $stmt->fetch();
-        $stmt->close();
+        // Call the obtainRequestedCourses method
+        $courseName = $admin->obtainRequestedCourses($requestId, $courseId, $status, $conn);
+
 
         // Check if the status is 'Approved' and insert into tutor_courses table
         if ($status === 'Approved') {
