@@ -1,26 +1,19 @@
 <?php
 session_start();
-//include 'Connect.php';
-
 include 'Database.php';
+require_once 'Admin.php'; // Include the Admin class definition
 
-//Create a new instance of DB class 
-$database= new Database($servername, $username, $password, $dbname);
+// Create a new instance of the Database class 
+$database = new Database($servername, $username, $password, $dbname);
 
-//Get the database connection 
-$conn= $database ->getConnection();
+// Get the database connection 
+$conn = $database->getConnection();
 
-// Fetch pending tutor requests along with student details
-$sql = "SELECT u.FirstName, u.LastName, bt.StudentId
-        FROM becometutor_requests bt
-        INNER JOIN students s ON bt.StudentId = s.StudentId
-        INNER JOIN users u ON s.UserId = u.UserId
-        WHERE bt.Status = 'Pending'";
-$result = mysqli_query($conn, $sql);
-if (!$result) {
-    echo "Error fetching tutor requests: " . mysqli_error($conn);
-    exit();
-}
+// Create a new instance of the Admin class
+$admin = new Admin();
+
+// Fetch pending tutor requests along with student details using the obtainBecomeTutor method
+$result = $admin->obtainWhoWantBecomeTutor($conn);
 ?>
 
 <!DOCTYPE html>
@@ -62,4 +55,3 @@ if (!$result) {
     </section>
 </body>
 </html>
-

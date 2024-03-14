@@ -4,10 +4,11 @@ require_once 'User.php'; // Include the parent class definition
 class Admin extends User {
     private $adminId;
 
-    public function __construct($firstName, $lastName, $email, $password, $adminId = null) {
+    public function __construct($firstName= null, $lastName= null, $email= null, $password= null, $adminId = null) {
         parent::__construct($firstName, $lastName, $email, $password);
         $this->adminId = $adminId;
     }
+    
 
     public function getAdminId() {
         return $this->adminId;
