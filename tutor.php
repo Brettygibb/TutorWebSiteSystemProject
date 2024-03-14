@@ -5,7 +5,7 @@ class Tutor extends User implements JsonSerializable {
     protected $tutorId;
     protected $classesTaught;
 
-    public function __construct($firstName=null, $lastName=null, $tutorId=null, $classesTaught = [], $email = null, $password= null) {
+    public function __construct($firstName, $lastName, $tutorId, $classesTaught = [], $email = null, $password= null) {
         parent::__construct($firstName, $lastName, $email,$password);
         $this->tutorId = $tutorId;
         $this->classesTaught = $classesTaught;
