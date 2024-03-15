@@ -15,28 +15,40 @@ if (!$userid) {
 }
 
 // Fetch user details
-$stmt = $conn->prepare("SELECT * FROM users WHERE UserID = ?");
-$stmt->bind_param("i", $userid);
-$stmt->execute();
-$result = $stmt->get_result();
-$userDetails = $result->fetch_assoc();
-//get student id
-$student = $conn->prepare("SELECT StudentId FROM students WHERE UserID = ?");
-$student->bind_param("i", $userid);
-$student->execute();
-$studentId = $student->get_result();
-$studentId = $studentId->fetch_assoc();
+$userDetailsStmt = $conn->prepare("CALL GetUserDetails(?)");
+$userDetailsStmt->bind_param("i", $userid);
+$userDetailsStmt->execute();
+$userDetailsResult = $userDetailsStmt->get_result();
+$userDetails = $userDetailsResult->fetch_assoc();
+$userDetailsStmt->close();
+
+// Fetch student ID 
+$studentIdStmt = $conn->prepare("CALL GetStudentId(?)");
+$studentIdStmt->bind_param("i", $userid);
+$studentIdStmt->execute();
+$studentIdResult = $studentIdStmt->get_result();
+$studentId = $studentIdResult->fetch_assoc();
+$studentIdStmt->close();
 
 $_SESSION['studentId'] = $studentId['StudentId'];
 $studentgetid = $_SESSION['studentId'];
+
 // Fetch upcoming sessions
-$stmt = $conn->prepare("SELECT * FROM sessions WHERE StudentId = ?");
-$stmt->bind_param("i", $studentgetid);
-$stmt->execute();
-$sessionsResult = $stmt->get_result();
-//stores the student id in a session
+$sessionsStmt = $conn->prepare("CALL GetUpcomingSessions(?)");
+$sessionsStmt->bind_param("i", $studentgetid);
+$sessionsStmt->execute();
+$sessionsResult = $sessionsStmt->get_result();
+
+// Store the user ID in session
 $_SESSION['userid'] = $userid;
+
+// Close statements and connection
+$sessionsStmt->close();
+$conn->close();
 ?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

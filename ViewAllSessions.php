@@ -10,10 +10,7 @@ $conn = $database->getConnection();
 $tutorId = isset($_GET['Id']) ? $_GET['Id'] : 0;
 
 //$courseId = isset($_GET['Course']) ? $_GET['Course'] : 0;
-$stmt = $conn->prepare("SELECT AvailableDate, StartTime, EndTime 
-FROM tutor_availability 
-WHERE TutorId = ?
-ORDER BY AvailableDate, StartTime;");
+$stmt = $conn->prepare("CALL GetSessions(?)");
 $stmt->bind_param("i", $tutorId);
 $stmt->execute();
 $result = $stmt->get_result();
