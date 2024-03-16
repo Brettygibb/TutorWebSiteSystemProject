@@ -1,6 +1,10 @@
 <?php
 
-require_once 'Connect.php';
+include 'Database.php';
+
+$db = new Database($servername, $username, $password, $dbname);
+
+$conn = $db->getConnection();
 require_once 'Email_Confirmation.php';
 session_start();
 

@@ -1,12 +1,11 @@
 <?php
 session_start();
-include 'Connect.php';
 
-// Check if the user is logged in and is an admin
-if (!isset($_SESSION['id']) || $_SESSION['role'] !== 'Admin') {
-    header("Location: index.php");
-    exit();
-}
+include 'Database.php';
+include 'Admin.php';
+
+$database = new Database($servername, $username, $password, $dbname);
+$conn = $database->getConnection();
 
 // Process form submission if any
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -15,51 +14,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $status = $_POST['status'];
         $courseId = $_POST['courseId'];
 
-        // Update the status of the request in the database with specific TutorId and CourseId
-        $updateSql = "CALL UpdateRequestStatus(?, ?, ?)";
-        $stmt = $conn->prepare($updateSql);
-        $stmt->bind_param("iss", $requestId, $courseId, $status);
-        $stmt->execute();
-        $stmt->close();
-        $result->free();
-        while($conn->more_results()&&$conn->next_result()){
-            if($result =$conn->use_result()){
-                $result->free();
-            }
-        }
-
-
-        // Check if the status is 'Approved' and insert into tutor_courses table
-        if ($status === 'Approved') {
-            $insertSql = "CALL InsertTutorCourse(?, ?)";
-            $stmt = $conn->prepare($insertSql);
-            if (!$stmt) {
-                echo "Error: Unable to prepare statement.";
-                exit();
-            }
-            $stmt->bind_param("is", $requestId, $courseId);
-            $stmt->execute();
-            
-            $stmt->close();
-            $result->free();
-            while($conn->more_results()&&$conn->next_result()){
-                if($result =$conn->use_result()){
-                    $result->free();
-                }
-            }
-
-        }
+        $admin = new Admin();
+        $admin->processRequestedCourses($requestId, $courseId, $status, $conn);
     }
 }
 
 // Fetch only pending requests with tutor names from the database
 $sql = "CALL GetPendingTutorRequests()";
 $result = mysqli_query($conn, $sql);
-
-if (!$result) {
-    // Error message for failed database query
-    echo "Error: Unable to fetch pending requests from the database.";
-}
 
 $conn->close();
 ?>
@@ -73,21 +35,10 @@ $conn->close();
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Review Requests</h1>
-        <nav>
-            <ul>
-                <li><a href="AdminDashboard.php">Home</a></li>
-                <li><a href="#">Review Requests</a></li>
-                <li><a href="AddAdmin.php">Add another Admin</a></li>
-                <li><a href="Logout.php">Logout</a></li>
-                <li><a href="AdminEditProfile.php">Edit Profile</a></li>
-            </ul>
-        </nav>
-    </header>
+    <?php include 'Includes/AdminHeader.php'; ?>
 
     <section>
-        <h2>Pending Requests List</h2>
+        <h1>Review New Courses for Tutors</h1>
 
         <table>
             <tr>

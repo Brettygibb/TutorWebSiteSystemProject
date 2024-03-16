@@ -1,6 +1,13 @@
 <?php
 session_start();
-include 'Connect.php';
+//include 'Connect.php';
+include 'Database.php';
+
+//Create a new instance of DB class 
+$database= new Database($servername, $username, $password, $dbname);
+
+//Get the database connection 
+$conn= $database ->getConnection();
 
 if(isset($_SESSION['id'])) {
     $userid = $_SESSION['id'];
@@ -37,18 +44,7 @@ if(isset($_SESSION['id'])) {
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Admin Dashboard</h1>
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="ReviewRequests.php">Review Requests</a></li>
-                <li><a href="AddAdmin.php">Add another Admin</a></li>
-                <li><a href="#">Logout</a></li>
-                <li><a href="AdminEditProfile.php">Edit Profile</a></li>
-            </ul>
-        </nav>
-    </header>
+    <?php include 'Includes/AdminHeader.php'; ?>
 
     <section>
         <h2>Welcome to the Admin Dashboard</h2>

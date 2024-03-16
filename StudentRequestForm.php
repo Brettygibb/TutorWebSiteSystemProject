@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Request Form</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <?php include 'Includes/StudentHeader.php'; ?>
     <h1>Student Request Form</h1>
     <form action="StudentRequestProc.php" method="post">
         <label for="firstName">First Name</label>

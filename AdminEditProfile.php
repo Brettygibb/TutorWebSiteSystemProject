@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <?php include 'Includes/AdminHeader.php'; ?>
+
+    <section>
+    <h1>Edit Admin Profile</h1>
     <form action="AdminEditProc.php" method="post" enctype="multipart/form-data">
         <input type="text" name="email" placeholder="Email">
         <input type="text" name="pass" placeholder="Password">
@@ -18,5 +23,6 @@
         <label for="profilePicture">Profile Picture:</label>              
         <input type="file" name="image" placeholder="Profile Picture">
         <button type="submit">Submit</button>
+    </section>
 </body>
 </html>

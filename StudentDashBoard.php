@@ -1,26 +1,54 @@
 <?php
 session_start();
-include 'Connect.php';
+include 'Database.php';
 
-$userid = $_SESSION['id'];
-//need a stored procedure
-$sql = "select * from users where UserID = $userid";
+// Assuming Database.php includes logic to establish database connection
+$database = new Database($servername, $username, $password, $dbname);
+$conn = $database->getConnection();
 
-$result = mysqli_query($conn,$sql);
-
-// Check if query was successful
-if (!$result) {
-    die("Error: Failed to retrieve user information from the database.");
+// Ensure the user ID is properly set in the session
+$userid = isset($_SESSION['id']) ? $_SESSION['id'] : null;
+if (!$userid) {
+    // Redirect to login page or show an error if the user ID isn't set
+    header("Location: login.php");
+    exit;
 }
 
-$row = mysqli_fetch_assoc($result);
+// Fetch user details
+$userDetailsStmt = $conn->prepare("CALL GetUserDetails(?)");
+$userDetailsStmt->bind_param("i", $userid);
+$userDetailsStmt->execute();
+$userDetailsResult = $userDetailsStmt->get_result();
+$userDetails = $userDetailsResult->fetch_assoc();
+$userDetailsStmt->close();
 
-// Check if user data exists
-if (!$row) {
-    die("Error: User information not found.");
-}
+// Fetch student ID 
+$studentIdStmt = $conn->prepare("CALL GetStudentId(?)");
+$studentIdStmt->bind_param("i", $userid);
+$studentIdStmt->execute();
+$studentIdResult = $studentIdStmt->get_result();
+$studentId = $studentIdResult->fetch_assoc();
+$studentIdStmt->close();
 
+$_SESSION['studentId'] = $studentId['StudentId'];
+$studentgetid = $_SESSION['studentId'];
+
+// Fetch upcoming sessions
+$sessionsStmt = $conn->prepare("CALL GetUpcomingSessions(?)");
+$sessionsStmt->bind_param("i", $studentgetid);
+$sessionsStmt->execute();
+$sessionsResult = $sessionsStmt->get_result();
+
+// Store the user ID in session
+$_SESSION['userid'] = $userid;
+
+// Close statements and connection
+$sessionsStmt->close();
+$conn->close();
 ?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,59 +58,35 @@ if (!$row) {
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Student Dashboard</h1>
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Search Tutors</a></li>
-                <li><a href="#">Logout</a></li>
-                <li><a href="StudentEditProfile.php">Edit Profile</a></li>
-            </ul>
-        </nav>
-    </header>
+    <?php include 'Includes/StudentHeader.php'; ?>
 
     <section>
         <h2>Welcome to the Student Dashboard</h2>
         <!-- Users Info -->
-        <p>First Name: <?php echo $row['FirstName']; ?></p>
-        <p>Last Name: <?php echo $row['LastName']; ?></p>
-        <p>Email: <?php echo $row['Email']; ?></p>
-        <?php if (!empty($row['image'])): ?>
-            <img src="<?php echo $row['image']; ?>" alt="Profile Picture">
+        <p>First Name: <?php echo htmlspecialchars($userDetails['FirstName']); ?></p>
+        <p>Last Name: <?php echo htmlspecialchars($userDetails['LastName']); ?></p>
+        <p>Email: <?php echo htmlspecialchars($userDetails['Email']); ?></p>
+        <?php if (!empty($userDetails['image'])): ?>
+            <img src="<?php echo htmlspecialchars($userDetails['image']); ?>" alt="Profile Picture">
         <?php endif; ?>
     </section>
 
     <section>
         <h2>Upcoming Sessions</h2>
-        <?php
-        $sql = "SELECT * FROM sessions WHERE StudentId = 5031242";
-
-        $results = mysqli_query($conn,$sql);
-        //$row = mysqli_fetch_assoc($result);
-
-        // Check if query was successful
-        if (!$results) {
-            die("Error: Failed to retrieve upcoming sessions from the database.");
-        }
-
-        $resultset = array();
-        while ($row = mysqli_fetch_array($results)) {
-            $resultset[] = $row;
-        }
-
-        echo '<form action="ViewSession.php" method="post">';
-
-        foreach ($resultset as $result){
-            echo "<p>";
-            echo $result['Course'], " ", $result['DateAndTime']," ", "<button name=submit value=$result[SessionId] >View Session</button>";
-            echo "</p>";
-        }
-
-        echo '</form>';
-
-        ?>
-
+        <?php if ($sessionsResult->num_rows > 0): ?>
+            <ul>
+                <?php while ($session = $sessionsResult->fetch_assoc()): ?>
+                    <li>
+                        Course: <?php echo htmlspecialchars($session['Course']); ?><br>
+                        Date: <?php echo htmlspecialchars($session['DateAndTime']); ?><br>
+                        Start Time: <?php echo date("g:i A", strtotime($session['StartTime'])); ?><br>
+                        <a href="ViewSession.php?sessionId=<?php echo $session['SessionId']; ?>">View Session</a>
+                    </li>
+                <?php endwhile; ?>
+            </ul>
+        <?php else: ?>
+            <p>No upcoming sessions.</p>
+        <?php endif; ?>
     </section>
 </body>
 </html>

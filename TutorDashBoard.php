@@ -1,32 +1,38 @@
 <?php
 session_start();
-include 'Connect.php';
+include 'Database.php';
 
-if(isset($_SESSION['id'])) {
-    $userid = $_SESSION['id'];
+$db = new Database($servername, $username, $password, $dbname);
+$conn = $db->getConnection();
 
-    // Use stored procedure to get the user info
-    $sql = "CALL GetUserByUserID(?)";
-    $stmt = $conn->prepare($sql);
-    if(!$stmt){
-        echo "Unable to prepare statement. Error: ".$conn->error;
-        exit();
-    }
-    $stmt->bind_param("i", $userid);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if($result) {
-        $row = $result->fetch_assoc();
-
-        // You can now use $row to display user info
-    } else {
-        echo "Error: No user found with ID: ".$userid;
-    }
-    $stmt->close();
-    $conn->close();
-} else {
-    echo "Error: User is not logged in.";
+// Ensure the user ID is properly set in the session
+$userid = isset($_SESSION['id']) ? $_SESSION['id'] : null;
+if (!$userid) {
+    // Redirect to login page or show an error if the user ID isn't set
+    header("Location: login.php");
+    exit;
 }
+
+// Fetch user details
+$stmt = $conn->prepare("SELECT * FROM users WHERE UserID = ?");
+$stmt->bind_param("i", $userid);
+$stmt->execute();
+$result = $stmt->get_result();
+$userDetails = $result->fetch_assoc();
+
+// Fetch tutor ID
+$tutorStmt = $conn->prepare("SELECT TutorId FROM tutors WHERE UserId = ?");
+$tutorStmt->bind_param("i", $userid);
+$tutorStmt->execute();
+$tutorResult = $tutorStmt->get_result();
+if ($tutorRow = $tutorResult->fetch_assoc()) {
+    // Correctly fetching and storing the TutorId in the session
+    $_SESSION['tutorId'] = $tutorRow['TutorId'];
+} else {
+    echo "Tutor ID not found for user.";
+    exit; // Or handle this scenario appropriately
+}
+$tutorStmt->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,29 +43,19 @@ if(isset($_SESSION['id'])) {
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Tutor Dashboard</h1>
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="TutorSubscribedCourses.php">Subscribed Courses</a></li>
-                <li><a href="TutorSubscribeCourse.php">Subscribe a New Course</a></li>
-                <li><a href="#">Upcoming Sessions</a></li>
-                <li><a href="#">Logout</a></li>
-                <li><a href="StudentEditProfile.php">Edit Profile</a></li>
-            </ul>
-        </nav>
-    </header>
+    <?php include 'Includes/TutorHeader.php'; ?>
 
     <section>
         <h2>Welcome to the Tutor Dashboard</h2>
         <!-- Users Info -->
-        <p>First Name: <?php echo $row['FirstName']; ?></p>
-        <p>Last Name: <?php echo $row['LastName']; ?></p>
-        <p>Email: <?php echo $row['Email']; ?></p>
-        <?php if (!empty($row['image'])): ?>
-            <img src="<?php echo $row['image']; ?>" alt="Profile Picture">
+        <p>First Name: <?php echo htmlspecialchars($userDetails['FirstName']); ?></p>
+        <p>Last Name: <?php echo htmlspecialchars($userDetails['LastName']); ?></p>
+        <p>Email: <?php echo htmlspecialchars($userDetails['Email']); ?></p>
+        <p>Tutor ID: <?php echo htmlspecialchars($_SESSION['tutorId']); ?></p> <!-- Displaying TutorId -->
+        <?php if (!empty($userDetails['image'])): ?>
+            <img src="<?php echo htmlspecialchars($userDetails['image']); ?>" alt="Profile Picture">
         <?php endif; ?>
+        
     </section>
 </body>
 </html>
