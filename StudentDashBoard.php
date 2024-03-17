@@ -13,42 +13,62 @@ if (!$userid) {
     header("Location: login.php");
     exit;
 }
+if(isset($_GET['success'])){
+    if($_GET['success'] == "true"){
+        echo "<script>alert('Request Sent Successfully');</script>";
+    }else{
+        echo "<script>alert('Request Failed');</script>";
+    }
+}
 
 // Fetch user details
-$userDetailsStmt = $conn->prepare("CALL GetUserDetails(?)");
-$userDetailsStmt->bind_param("i", $userid);
-$userDetailsStmt->execute();
-$userDetailsResult = $userDetailsStmt->get_result();
-$userDetails = $userDetailsResult->fetch_assoc();
-$userDetailsStmt->close();
-
-// Fetch student ID 
-$studentIdStmt = $conn->prepare("CALL GetStudentId(?)");
-$studentIdStmt->bind_param("i", $userid);
-$studentIdStmt->execute();
-$studentIdResult = $studentIdStmt->get_result();
-$studentId = $studentIdResult->fetch_assoc();
-$studentIdStmt->close();
-
+$stmt = $conn->prepare("SELECT * FROM users WHERE UserID = ?");
+$stmt->bind_param("i", $userid);
+$stmt->execute();
+$result = $stmt->get_result();
+$userDetails = $result->fetch_assoc();
+//get student id
+$student = $conn->prepare("SELECT StudentId FROM students WHERE UserID = ?");
+$student->bind_param("i", $userid);
+$student->execute();
+$studentId = $student->get_result();
+$studentId = $studentId->fetch_assoc();
 $_SESSION['studentId'] = $studentId['StudentId'];
 $studentgetid = $_SESSION['studentId'];
-
 // Fetch upcoming sessions
-$sessionsStmt = $conn->prepare("CALL GetUpcomingSessions(?)");
-$sessionsStmt->bind_param("i", $studentgetid);
-$sessionsStmt->execute();
-$sessionsResult = $sessionsStmt->get_result();
-
-// Store the user ID in session
+$stmt = $conn->prepare("SELECT * FROM sessions WHERE StudentId = ?");
+$stmt->bind_param("i", $studentgetid);
+$stmt->execute();
+$sessionsResult = $stmt->get_result();
+//stores the student id in a session
 $_SESSION['userid'] = $userid;
+//get pending session requests for the student
+$stmt = $conn->prepare("SELECT 
+sr.RequestId, 
+sr.TutorId, 
+sr.StudentId, 
+sr.RequestDate, 
+sr.StartTime, 
+sr.EndTime, 
+sr.Message, 
+sr.Status, 
+u.FirstName AS TutorFirstName, 
+u.LastName AS TutorLastName, 
+u.Email AS TutorEmail
+FROM 
+session_request AS sr
+JOIN 
+tutors AS t ON sr.TutorId = t.TutorId
+JOIN 
+users AS u ON t.UserId = u.UserId
+WHERE 
+sr.Status = 'Pending';");
+$stmt->execute();
+$pendingRequests = $stmt->get_result();
 
-// Close statements and connection
-$sessionsStmt->close();
-$conn->close();
+
+
 ?>
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -70,6 +90,22 @@ $conn->close();
             <img src="<?php echo htmlspecialchars($userDetails['image']); ?>" alt="Profile Picture">
         <?php endif; ?>
     </section>
+    <section>
+        <h2>Pending Session Requests</h2>
+        <?php if ($pendingRequests->num_rows > 0): ?>
+            <ul>
+                <?php while ($request = $pendingRequests->fetch_assoc()): ?>
+                    <li>
+                        Tutor: <?php echo htmlspecialchars($request['TutorFirstName'] . ' ' . $request['TutorLastName']); ?><br>
+                        Date: <?php echo htmlspecialchars($request['RequestDate']); ?><br>
+                        Start Time: <?php echo date("g:i A", strtotime($request['StartTime'])); ?><br>
+                        Status: <?php echo htmlspecialchars($request['Status']); ?><br>
+                    </li>
+                <?php endwhile; ?>
+            </ul>
+        <?php else: ?>
+            <p>No pending session requests.</p>
+        <?php endif; ?>
 
     <section>
         <h2>Upcoming Sessions</h2>
