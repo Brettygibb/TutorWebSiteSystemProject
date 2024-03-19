@@ -1,8 +1,8 @@
 <?php
 class User {
-    private $firstName;
-    private $lastName;
-    private $email;
+    public $firstName;
+    public $lastName;
+    public $email;
     private $password;
 
     public function __construct($firstName, $lastName, $email, $password) {
