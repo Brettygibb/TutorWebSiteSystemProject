@@ -1,11 +1,12 @@
 <?php
 session_start();
 include 'Database.php';
+require_once 'Student.php'; // Incluye la definición de la clase Student
 
 $db = new Database($servername, $username, $password, $dbname);
 $conn = $db->getConnection();
 
-if(!isset($_SESSION['tutorId'])){
+if (!isset($_SESSION['tutorId'])) {
     header("Location: Login.php");
     exit;
 }
@@ -20,6 +21,10 @@ $result = $stmt->get_result();
 
 $sessions = $result->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
+
+// Create an instance of the Student class
+$student = new Student("", "", "");
+
 ?>
 
 <!DOCTYPE html>
@@ -38,7 +43,7 @@ $stmt->close();
             <thead>
                 <tr>
                     <th>Session ID</th>
-                    <th>Student ID</th>
+                    <th>Student Name</th> <!-- Cambiado de Student ID a Student Name -->
                     <th>Date and Time</th>
                     <th>Start Time</th>
                     <th>Notes</th>
@@ -48,7 +53,12 @@ $stmt->close();
                 <?php foreach ($sessions as $session): ?>
                     <tr>
                         <td><?= htmlspecialchars($session['SessionId']) ?></td> 
-                        <td><?= htmlspecialchars($session['StudentId']) ?></td>
+                        <?php
+                            // Establece el ID del estudiante y luego obtén su nombre
+                            $student->setStudentId($session['StudentId']);
+                            $studentName = $student->getFullName(); // Método para obtener el nombre completo del estudiante
+                        ?>
+                        <td><?= htmlspecialchars($studentName) ?></td>
                         <td><?= htmlspecialchars($session['DateAndTime']) ?></td>
                         <td><?= htmlspecialchars($session['StartTime']) ?></td>
                         <td><?= htmlspecialchars($session['Notes']) ?></td>
@@ -61,3 +71,4 @@ $stmt->close();
     <?php endif; ?>
 </body>
 </html>
+

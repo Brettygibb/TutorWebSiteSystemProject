@@ -17,4 +17,8 @@ class Student extends User {
     public function setStudentId($studentId) {
         $this->studentId = $studentId;
     }
+    
+    public function getFullName() {
+        return $this->getFirstName() . ' ' . $this->getLastName();
+    }
 }
