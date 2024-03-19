@@ -75,7 +75,9 @@ $conn->close();
                 <li>
                     <?php echo $slot['AvailableDate'] . " from " . $slot['StartTime'] . " to " . $slot['EndTime']; ?>
                     <!-- Link to requestSession.php with session details -->
-                    <a href="RequestSessionForm.php?tutorId=<?php echo urlencode($tutorId); ?>&date=<?php echo urlencode($slot['AvailableDate']); ?>&startTime=<?php echo urlencode($slot['StartTime']); ?>&endTime=<?php echo urlencode($slot['EndTime']); ?>">Request Session</a>
+                    <!--<a href="RequestSessionForm.php?tutorId=<?php echo urlencode($tutorId); ?>&date=<?php echo urlencode($slot['AvailableDate']); ?>&startTime=<?php echo urlencode($slot['StartTime']); ?>&endTime=<?php echo urlencode($slot['EndTime']); ?>">Request Session</a> -->
+                    <a href="RequestSessionForm.php?tutorId=<?php echo urlencode($tutorId); ?>&courseId=<?php echo urlencode($courseId); ?>&date=<?php echo urlencode($slot['AvailableDate']); ?>&startTime=<?php echo urlencode($slot['StartTime']); ?>&endTime=<?php echo urlencode($slot['EndTime']); ?>">Request Session</a>
+
                 </li>
             <?php endforeach; ?>
         </ul>
