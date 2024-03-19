@@ -11,12 +11,8 @@ if(!isset($_SESSION['tutorId'])){
 }
 $tutorId = $_SESSION['tutorId'];
 
-// Adjust the SQL query
-$sql = "SELECT sr.RequestId, sr.RequestDate, sr.StartTime, sr.EndTime, sr.Message, sr.Status, u.FirstName AS StudentFirstName, u.LastName AS StudentLastName
-        FROM session_request sr
-        INNER JOIN students s ON sr.StudentId = s.StudentId
-        INNER JOIN users u ON s.UserId = u.UserId
-        WHERE sr.TutorId = ? AND sr.Status = 'Pending'";
+// Adjust the SQL query to fetch all sessions for the tutor
+$sql = "SELECT * FROM sessions WHERE TutorId = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $tutorId);
 $stmt->execute();
@@ -31,43 +27,37 @@ $stmt->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upcoming Tutor Sessions</title>
+    <title>Confirmed Tutor Sessions</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <?php include 'Includes/TutorHeader.php'; ?>
-    <h1>Upcoming Sessions</h1>
+    <h1>Confirmed Tutor Sessions</h1>
     <?php if (count($sessions) > 0): ?>
         <table>
             <thead>
                 <tr>
-                    <th>Request ID</th>
-                    <th>Student Name</th>
+                    <th>Session ID</th>
+                    <th>Student ID</th>
                     <th>Date and Time</th>
-                    <th>Course Name</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>Start Time</th>
+                    <th>Notes</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($sessions as $session): ?>
                     <tr>
-                        <td><?= htmlspecialchars($session['RequestId']) ?></td> 
-                        <td><?= htmlspecialchars($session['StudentFirstName'] . " " . $session['StudentLastName']) ?></td>
-                        <td><?= htmlspecialchars($session['RequestDate']) . " " . htmlspecialchars($session['StartTime']) ?></td>
-                        <!--<td><?= htmlspecialchars($session['CourseName']) ?></td> -->
-                        <td><?= htmlspecialchars($session['Message']) ?></td>
-                        <td><?= htmlspecialchars($session['Status']) ?></td>
-                        <td>
-                            <a href="Procs\UpcomingTutorSessionProc.php?sessionId=<?= $session['RequestId'] ?>&action=accept">Accept</a> | 
-                            <a href="Procs\UpcomingTutorSessionProc.php?sessionId=<?= $session['RequestId'] ?>&action=deny">Deny</a>
-                        </td>
+                        <td><?= htmlspecialchars($session['SessionId']) ?></td> 
+                        <td><?= htmlspecialchars($session['StudentId']) ?></td>
+                        <td><?= htmlspecialchars($session['DateAndTime']) ?></td>
+                        <td><?= htmlspecialchars($session['StartTime']) ?></td>
+                        <td><?= htmlspecialchars($session['Notes']) ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
     <?php else: ?>
-        <p>No upcoming sessions.</p>
+        <p>No confirmed sessions.</p>
     <?php endif; ?>
 </body>
 </html>
