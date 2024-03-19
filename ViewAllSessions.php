@@ -10,6 +10,8 @@ $database = new Database($servername, $username, $password, $dbname);
 $conn = $database->getConnection();
 
 $tutorId = isset($_GET['Id']) ? $_GET['Id'] : 0;
+$courseId = isset($_GET['Course']) ? $_GET['Course'] : 0; // Add this line to get the courseId
+
 
 // Fetch tutor details including the first name
 $stmt = $conn->prepare("SELECT u.FirstName
