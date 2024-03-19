@@ -26,10 +26,10 @@ if ($result->num_rows === 0) {
     $message = $_POST['message'];
     $status = "Pending";
     
-    $sql = "INSERT INTO session_request (tutorId, studentId, courseId, requestdate, starttime, endtime, message, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO session_request (tutorId, studentId, courseId, requestdate, starttime, endtime, message, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iisssss", $tutorId, $studentId, $courseId, $date, $startTime, $endTime, $message, $status);
-    
+    $stmt->bind_param("iiisssss", $tutorId, $studentId, $courseId, $date, $startTime, $endTime, $message, $status);
+
     if ($stmt->execute()) {
         header("Location: ../StudentDashBoard.php?success=true");
     } else {
