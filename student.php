@@ -19,6 +19,8 @@ class Student extends User {
     }
     
     public function getFullName() {
-        return $this->getFirstName() . ' ' . $this->getLastName();
+        return $this->firstName . ' ' . $this->lastName;
     }
+    
+
 }
