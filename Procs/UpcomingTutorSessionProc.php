@@ -98,6 +98,16 @@ try {
         $stmt->bind_param("iisss", $tutorId, $requestDetails['StudentId'], $requestDetails['RequestDate'], $requestDetails['StartTime'], $requestDetails['Message']);
         $stmt->execute();
         $stmt->close();
+        
+        // Prepare the notification insertion query for the student
+        $sqlNotification = "INSERT INTO notifications (user_id, message) VALUES (?, ?)";
+        $stmtNotification = $conn->prepare($sqlNotification);
+        $message = "Your session request has been approved. Please review.";
+        $stmtNotification->bind_param("is", $requestDetails['StudentId'], $message);
+        $stmtNotification->execute();
+        $stmtNotification->close();
+        
+
 
     } elseif ($action == 'deny') {
         // Update the session request status to 'Denied'
@@ -105,6 +115,14 @@ try {
         $stmt->bind_param("ii", $sessionId, $tutorId);
         $stmt->execute();
         $stmt->close();
+        
+        // Prepare the notification insertion query for the student
+        $sqlNotification = "INSERT INTO notifications (user_id, message) VALUES (?, ?)";
+        $stmtNotification = $conn->prepare($sqlNotification);
+        $message = "Your session request has been denied. Please review.";
+        $stmtNotification->bind_param("is", $requestDetails['StudentId'], $message);
+        $stmtNotification->execute();
+        $stmtNotification->close();
     }
 
     // Commit transaction
