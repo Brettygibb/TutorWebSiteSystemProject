@@ -44,7 +44,7 @@ if ($result->num_rows === 0) {
     // Notification insertion query
     $sqlNotification = "INSERT INTO notifications (user_id, message) VALUES (?, ?)";
     $stmtNotification = $conn->prepare($sqlNotification);
-    $stmtNotification->bind_param("is", $userId, $message); // Bind userId and message to the statement
+    $stmtNotification->bind_param("is", $userIdSql, $message); // Bind userId and message to the statement
     $message = "New session request received. Please review.";
 
         header("Location: ../StudentDashBoard.php?success=true");
