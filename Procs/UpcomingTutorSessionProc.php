@@ -92,12 +92,13 @@ try {
         $stmt->bind_param("iss", $tutorId, $requestDetails['requestdate'], $requestDetails['starttime']);
         $stmt->execute();
         $stmt->close();
-
+        
         // Insert into sessions table
-        $stmt = $conn->prepare("INSERT INTO sessions (TutorId, StudentId, DateAndTime, StartTime, Notes) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("iisss", $tutorId, $requestDetails['StudentId'], $requestDetails['RequestDate'], $requestDetails['StartTime'], $requestDetails['Message']);
+        $stmt = $conn->prepare("INSERT INTO sessions (TutorId, StudentId, DateAndTime, StartTime, Notes, CourseId) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("iisssi", $tutorId, $requestDetails['StudentId'], $requestDetails['RequestDate'], $requestDetails['StartTime'], $requestDetails['Message'], $requestDetails['CourseId']);
         $stmt->execute();
         $stmt->close();
+        
         
         // Prepare the notification insertion query for the student
         $sqlNotification = "INSERT INTO notifications (user_id, message) VALUES (?, ?)";

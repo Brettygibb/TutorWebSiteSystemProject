@@ -65,7 +65,7 @@ $_SESSION['userid'] = $userid;
             <ul>
                 <?php while ($session = $sessionsResult->fetch_assoc()): ?>
                     <li>
-                        Course: <?php echo htmlspecialchars($session['Course']); ?><br>
+                        Course: <?php echo htmlspecialchars($session['CourseId']); ?><br>
                         Date: <?php echo htmlspecialchars($session['DateAndTime']); ?><br>
                         Start Time: <?php echo date("g:i A", strtotime($session['StartTime'])); ?><br>
                         <a href="ViewSession.php?sessionId=<?php echo $session['SessionId']; ?>">View Session</a>
