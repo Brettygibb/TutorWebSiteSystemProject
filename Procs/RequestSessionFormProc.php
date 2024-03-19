@@ -31,6 +31,22 @@ if ($result->num_rows === 0) {
     $stmt->bind_param("iiisssss", $tutorId, $studentId, $courseId, $date, $startTime, $endTime, $message, $status);
 
     if ($stmt->execute()) {
+            
+    // Fetch the userId of the tutor associated with the request
+    $userIdSql = "SELECT UserId FROM tutors WHERE TutorId = ?";
+    $stmt = $conn->prepare($userIdSql);
+    $stmt->bind_param("i", $tutorId); 
+    $stmt->execute();
+    $stmt->bind_result($userId);
+    $stmt->fetch();
+    $stmt->close();
+
+    // Notification insertion query
+    $sqlNotification = "INSERT INTO notifications (user_id, message) VALUES (?, ?)";
+    $stmtNotification = $conn->prepare($sqlNotification);
+    $stmtNotification->bind_param("is", $userId, $message); // Bind userId and message to the statement
+    $message = "New session request received. Please review.";
+
         header("Location: ../StudentDashBoard.php?success=true");
     } else {
         echo "Error: " . $conn->error;
