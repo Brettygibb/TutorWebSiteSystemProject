@@ -19,15 +19,16 @@ if ($result->num_rows === 0) {
 } else {
 
     $tutorId =$_POST['tutorId'];
+    $courseId =$_POST['courseId'];
     $date = date('Y-m-d', strtotime($_POST['date']));
     $startTime = date('H:i:s', strtotime($_POST['startTime']));
     $endTime = date('H:i:s', strtotime($_POST['endTime']));
     $message = $_POST['message'];
     $status = "Pending";
     
-    $sql = "INSERT INTO session_request (tutorId, studentId, requestdate, starttime, endtime, message, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO session_request (tutorId, studentId, courseId, requestdate, starttime, endtime, message, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iisssss", $tutorId, $studentId, $date, $startTime, $endTime, $message, $status);
+    $stmt->bind_param("iisssss", $tutorId, $studentId, $courseId, $date, $startTime, $endTime, $message, $status);
     
     if ($stmt->execute()) {
         header("Location: ../StudentDashBoard.php?success=true");
