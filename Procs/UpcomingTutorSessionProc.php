@@ -103,8 +103,17 @@ try {
         // Prepare the notification insertion query for the student
         $sqlNotification = "INSERT INTO notifications (user_id, message) VALUES (?, ?)";
         $stmtNotification = $conn->prepare($sqlNotification);
+
+        // Fetch the UserId associated with the StudentId
+        $stmt = $conn->prepare("SELECT UserId FROM students WHERE StudentId = ?");
+        $stmt->bind_param("i", $requestDetails['StudentId']);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $userId = $row['UserId'];
+
         $message = "Your session request has been approved. Please review.";
-        $stmtNotification->bind_param("is", $requestDetails['StudentId'], $message);
+        $stmtNotification->bind_param("is", $userId, $message);
         $stmtNotification->execute();
         $stmtNotification->close();
         
@@ -117,11 +126,21 @@ try {
         $stmt->execute();
         $stmt->close();
         
+
         // Prepare the notification insertion query for the student
         $sqlNotification = "INSERT INTO notifications (user_id, message) VALUES (?, ?)";
         $stmtNotification = $conn->prepare($sqlNotification);
+
+        // Fetch the UserId associated with the StudentId
+        $stmt = $conn->prepare("SELECT UserId FROM students WHERE StudentId = ?");
+        $stmt->bind_param("i", $requestDetails['StudentId']);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $userId = $row['UserId'];
+
         $message = "Your session request has been denied. Please review.";
-        $stmtNotification->bind_param("is", $requestDetails['StudentId'], $message);
+        $stmtNotification->bind_param("is", $userId, $message);
         $stmtNotification->execute();
         $stmtNotification->close();
     }
