@@ -1,9 +1,9 @@
 <?php
 class User {
-    private $firstName;
-    private $lastName;
-    private $email;
-    private $password;
+    protected $firstName;
+    protected $lastName;
+    protected $email;
+    protected $password;
 
     public function __construct($firstName, $lastName, $email, $password) {
         $this->firstName = $firstName;
