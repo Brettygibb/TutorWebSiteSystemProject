@@ -12,6 +12,7 @@ try {
     // Sanitize input
     $tutorId = intval($_SESSION['tutorId']);
     $sessionId = intval($_GET['sessionId']);
+
     $action = $_GET['action'];
 
     // Create database connection
@@ -37,10 +38,14 @@ try {
         // Actions for accepting the session request
         $session->updateSessionRequestStatus($sessionId, 'Approved');
         $session->deleteTutorAvailability($tutorId, $requestDetails['RequestDate'], $requestDetails['StartTime']);
-        $session->createSession($tutorId, $requestDetails['StudentId'], $requestDetails['RequestDate'], $requestDetails['StartTime'], $requestDetails['Message']);
+        $session->createSession($tutorId, $requestDetails['StudentId'], $requestDetails['CourseId'], $requestDetails['RequestDate'], $requestDetails['StartTime'], $requestDetails['Message']);
+        
     } elseif ($action == 'deny') {
         // Action for denying the session request
         $session->updateSessionRequestStatus($sessionId, 'Denied');
+    }
+    else {
+        throw new Exception("Invalid action.");
     }
 
     // Commit transaction

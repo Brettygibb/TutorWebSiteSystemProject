@@ -36,10 +36,38 @@ $studentId = $studentId->fetch_assoc();
 $_SESSION['studentId'] = $studentId['StudentId'];
 $studentgetid = $_SESSION['studentId'];
 // Fetch upcoming sessions
-$stmt = $conn->prepare("SELECT * FROM sessions WHERE StudentId = ?");
-$stmt->bind_param("i", $studentgetid);
-$stmt->execute();
-$sessionsResult = $stmt->get_result();
+$sql = "SELECT 
+s.SessionId,
+t.TutorId,
+u.FirstName AS TutorFirstName,
+u.LastName AS TutorLastName,
+c.CourseId,
+c.CourseName,
+s.DateAndTime,
+s.StartTime
+FROM 
+sessions s
+INNER JOIN 
+tutors t ON s.TutorId = t.TutorId
+INNER JOIN 
+users u ON t.UserId = u.UserId
+INNER JOIN 
+courses c ON s.CourseId = c.CourseId
+WHERE 
+s.DateAndTime >= CURDATE()
+ORDER BY 
+s.DateAndTime ASC, s.StartTime ASC;
+";
+
+$result = $conn->query($sql);
+
+if ($result && $result->num_rows > 0) {
+    $sessionsResult = $result; // Use $sessionsResult in your HTML/PHP output
+} else {
+    $sessionsResult = null;
+    echo "<p>No upcoming sessions.</p>";
+}
+
 //stores the student id in a session
 $_SESSION['userid'] = $userid;
 //get pending session requests for the student
@@ -113,7 +141,10 @@ $pendingRequests = $stmt->get_result();
             <ul>
                 <?php while ($session = $sessionsResult->fetch_assoc()): ?>
                     <li>
-                        Course: <?php echo htmlspecialchars($session['Course']); ?><br>
+                        Tutor: <?php echo htmlspecialchars($session['TutorId']); ?><br>
+                        Tutors Name: <?php echo htmlspecialchars($session['TutorFirstName'] . ' ' . $session['TutorLastName']); ?><br>
+                        Course: <?php echo htmlspecialchars($session['CourseId']); ?><br>
+                        Course Name: <?php echo htmlspecialchars($session['CourseName']); ?><br>
                         Date: <?php echo htmlspecialchars($session['DateAndTime']); ?><br>
                         Start Time: <?php echo date("g:i A", strtotime($session['StartTime'])); ?><br>
                         <a href="ViewSession.php?sessionId=<?php echo $session['SessionId']; ?>">View Session</a>

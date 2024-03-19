@@ -72,8 +72,8 @@ class Sessions {
 
         return $result;
     }
-    public function createSession($tutorId, $studentId, $date, $startTime, $message) {
-        $query = "INSERT INTO sessions (TutorId, StudentId, DateANdTime, StartTime, Notes) VALUES (?, ?, ?, ?, ?)";
+    public function createSession($tutorId, $studentId,$courseId, $date, $startTime, $message) {
+        $query = "INSERT INTO sessions (TutorId, StudentId, CourseId,DateANdTime, StartTime, Notes) VALUES (?, ?, ?, ?, ?, ?)";
         
         $stmt = $this->db->prepare($query);
         if (!$stmt) {
@@ -82,7 +82,7 @@ class Sessions {
             return false;
         }
 
-        $stmt->bind_param("iisss", $tutorId, $studentId, $date, $startTime, $message);
+        $stmt->bind_param("iiisss", $tutorId,$courseId, $studentId, $date, $startTime, $message);
         $result = $stmt->execute();
         $stmt->close();
 
