@@ -1,7 +1,7 @@
 <?php
 session_start();
 include 'Database.php';
-
+include 'Calendar.php';
 // Assuming Database.php includes logic to establish database connection
 $database = new Database($servername, $username, $password, $dbname);
 $conn = $database->getConnection();
@@ -30,12 +30,15 @@ $studentId = $studentId->fetch_assoc();
 $_SESSION['studentId'] = $studentId['StudentId'];
 $studentgetid = $_SESSION['studentId'];
 // Fetch upcoming sessions
-$stmt = $conn->prepare("SELECT * FROM sessions WHERE StudentId = ?");
+$stmt = $conn->prepare("SELECT sessions.*, courses.CourseName FROM sessions JOIN courses ON sessions.CourseId=courses.CourseId WHERE StudentId = ?");
 $stmt->bind_param("i", $studentgetid);
 $stmt->execute();
 $sessionsResult = $stmt->get_result();
 //stores the student id in a session
 $_SESSION['userid'] = $userid;
+
+//create calendar object
+$calendar = new SimpleCalendar();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -44,6 +47,7 @@ $_SESSION['userid'] = $userid;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="Calendar.css" rel="stylesheet" type="text/css">
 </head>
 <body>
     <?php include 'Includes/StudentHeader.php'; ?>
@@ -63,18 +67,27 @@ $_SESSION['userid'] = $userid;
         <h2>Upcoming Sessions</h2>
         <?php if ($sessionsResult->num_rows > 0): ?>
             <ul>
-                <?php while ($session = $sessionsResult->fetch_assoc()): ?>
+                <?php while ($session = $sessionsResult->fetch_assoc()):?>
                     <li>
+                        <?php  $calendar->addSession($session['CourseName'], $session['DateAndTime'], "blue"); ?>
                         Course: <?php echo htmlspecialchars($session['CourseId']); ?><br>
                         Date: <?php echo htmlspecialchars($session['DateAndTime']); ?><br>
                         Start Time: <?php echo date("g:i A", strtotime($session['StartTime'])); ?><br>
-                        <a href="ViewSession.php?sessionId=<?php echo $session['SessionId']; ?>">View Session</a>
+                        <a href="ViewSession.php?sessionId=<?php echo $session['SessionId']; ?>&tutorId=<?php echo $session['TutorId']; ?>">View Session</a>
                     </li>
+                    
                 <?php endwhile; ?>
             </ul>
         <?php else: ?>
             <p>No upcoming sessions.</p>
         <?php endif; ?>
     </section>
+
+    
+    
+    
 </body>
+<?php
+        echo $calendar->render();
+    ?>
 </html>
