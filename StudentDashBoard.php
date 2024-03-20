@@ -15,20 +15,25 @@ if (!$userid) {
 }
 
 // Fetch user details
-$stmt = $conn->prepare("SELECT * FROM users WHERE UserID = ?");
-$stmt->bind_param("i", $userid);
-$stmt->execute();
-$result = $stmt->get_result();
-$userDetails = $result->fetch_assoc();
-//get student id
-$student = $conn->prepare("SELECT StudentId FROM students WHERE UserID = ?");
-$student->bind_param("i", $userid);
-$student->execute();
-$studentId = $student->get_result();
-$studentId = $studentId->fetch_assoc();
+$userDetailsStmt = $conn->prepare("CALL GetUserDetails(?)");
+$userDetailsStmt->bind_param("i", $userid);
+$userDetailsStmt->execute();
+$userDetailsResult = $userDetailsStmt->get_result();
+$userDetails = $userDetailsResult->fetch_assoc();
+$userDetailsStmt->close();
 
+// Fetch student ID 
+$studentIdStmt = $conn->prepare("CALL GetStudentId(?)");
+$studentIdStmt->bind_param("i", $userid);
+$studentIdStmt->execute();
+$studentIdResult = $studentIdStmt->get_result();
+$studentId = $studentIdResult->fetch_assoc();
+$studentIdStmt->close();
+
+//
 $_SESSION['studentId'] = $studentId['StudentId'];
 $studentgetid = $_SESSION['studentId'];
+//WE NEED TO ADD THE NEXT CODE TO CALL GetUpcomingSessions(?)
 // Fetch upcoming sessions
 $stmt = $conn->prepare("SELECT sessions.*, courses.CourseName FROM sessions JOIN courses ON sessions.CourseId=courses.CourseId WHERE StudentId = ?");
 $stmt->bind_param("i", $studentgetid);
