@@ -33,15 +33,6 @@ if ($tutorRow = $tutorResult->fetch_assoc()) {
     exit; // Or handle this scenario appropriately
 }
 $tutorStmt->close();
-
-// Fetch tutor profile details
-$profileStmt = $conn->prepare("SELECT * FROM users_profiles WHERE UserId = ?");
-$profileStmt->bind_param("i", $_SESSION['id']);
-$profileStmt->execute();
-$profileResult = $profileStmt->get_result();
-$profileDetails = $profileResult->fetch_assoc();
-$profileStmt->close();
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -60,11 +51,7 @@ $profileStmt->close();
         <p>First Name: <?php echo htmlspecialchars($userDetails['FirstName']); ?></p>
         <p>Last Name: <?php echo htmlspecialchars($userDetails['LastName']); ?></p>
         <p>Email: <?php echo htmlspecialchars($userDetails['Email']); ?></p>
-        <p>Tutor ID: <?php echo htmlspecialchars($_SESSION['tutorId']); ?></p>
-        <p>Academic Background: <?php echo htmlspecialchars($profileDetails['academicBackground']); ?></p>
-        <p>Expertise: <?php echo htmlspecialchars($profileDetails['expertise']); ?></p>
-        <p>Achievements: <?php echo htmlspecialchars($profileDetails['achievements']); ?></p>
-        <p>Bio: <?php echo htmlspecialchars($profileDetails['bio']); ?></p>
+        <p>Tutor ID: <?php echo htmlspecialchars($_SESSION['tutorId']); ?></p> <!-- Displaying TutorId -->
         <?php if (!empty($userDetails['image'])): ?>
             <img src="<?php echo htmlspecialchars($userDetails['image']); ?>" alt="Profile Picture">
         <?php endif; ?>

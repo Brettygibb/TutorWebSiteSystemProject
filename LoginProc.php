@@ -1,6 +1,16 @@
 <?php
-include '../Connect.php';
+include 'Database.php';
 session_start();
+
+
+//jays test////////////////////////////////////////////////////////////////////// WORKED
+// Create a new instance of the Database class
+$database = new Database($servername, $username, $password, $dbname);
+
+// Get the database connection
+$conn = $database->getConnection();
+/////////////////////////////////////////////////////////////////////////////////
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
