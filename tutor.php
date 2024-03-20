@@ -28,6 +28,10 @@ class Tutor extends User implements JsonSerializable {
     public function setClassesTaught($classesTaught) {
         $this->classesTaught = $classesTaught;
     }
+    
+    public function getFirstName() {
+        return $this->firstName; //  'firstName' is a property inherited from the parent class 'User'
+    }
 
     public function jsonSerialize(): mixed {
         return get_object_vars($this);

@@ -92,12 +92,32 @@ try {
         $stmt->bind_param("iss", $tutorId, $requestDetails['requestdate'], $requestDetails['starttime']);
         $stmt->execute();
         $stmt->close();
-
+        
         // Insert into sessions table
-        $stmt = $conn->prepare("INSERT INTO sessions (TutorId, StudentId, DateAndTime, StartTime, Notes) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("iisss", $tutorId, $requestDetails['StudentId'], $requestDetails['RequestDate'], $requestDetails['StartTime'], $requestDetails['Message']);
+        $stmt = $conn->prepare("INSERT INTO sessions (TutorId, StudentId, DateAndTime, StartTime, Notes, CourseId) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("iisssi", $tutorId, $requestDetails['StudentId'], $requestDetails['RequestDate'], $requestDetails['StartTime'], $requestDetails['Message'], $requestDetails['CourseId']);
         $stmt->execute();
         $stmt->close();
+        
+        
+        // Prepare the notification insertion query for the student
+        $sqlNotification = "INSERT INTO notifications (user_id, message) VALUES (?, ?)";
+        $stmtNotification = $conn->prepare($sqlNotification);
+
+        // Fetch the UserId associated with the StudentId
+        $stmt = $conn->prepare("SELECT UserId FROM students WHERE StudentId = ?");
+        $stmt->bind_param("i", $requestDetails['StudentId']);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $userId = $row['UserId'];
+
+        $message = "Your session request has been approved. Please review.";
+        $stmtNotification->bind_param("is", $userId, $message);
+        $stmtNotification->execute();
+        $stmtNotification->close();
+        
+
 
     } elseif ($action == 'deny') {
         // Update the session request status to 'Denied'
@@ -105,6 +125,24 @@ try {
         $stmt->bind_param("ii", $sessionId, $tutorId);
         $stmt->execute();
         $stmt->close();
+        
+
+        // Prepare the notification insertion query for the student
+        $sqlNotification = "INSERT INTO notifications (user_id, message) VALUES (?, ?)";
+        $stmtNotification = $conn->prepare($sqlNotification);
+
+        // Fetch the UserId associated with the StudentId
+        $stmt = $conn->prepare("SELECT UserId FROM students WHERE StudentId = ?");
+        $stmt->bind_param("i", $requestDetails['StudentId']);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $userId = $row['UserId'];
+
+        $message = "Your session request has been denied. Please review.";
+        $stmtNotification->bind_param("is", $userId, $message);
+        $stmtNotification->execute();
+        $stmtNotification->close();
     }
 
     // Commit transaction

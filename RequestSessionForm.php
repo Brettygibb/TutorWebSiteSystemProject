@@ -8,6 +8,8 @@ $startTime = isset($_GET['startTime']) ? $_GET['startTime'] : '';
 $endTime = isset($_GET['endTime']) ? $_GET['endTime'] : '';
 //get student id from session
 $studentId = $_SESSION['studentId'];
+$courseId = isset($_GET['courseId']) ? $_GET['courseId'] : ''; 
+
 
 ?>
 
@@ -25,6 +27,7 @@ $studentId = $_SESSION['studentId'];
         <input type="hidden" name="date" value="<?php echo htmlspecialchars($date); ?>">
         <input type="hidden" name="startTime" value="<?php echo htmlspecialchars($startTime); ?>">
         <input type="hidden" name="endTime" value="<?php echo htmlspecialchars($endTime); ?>">
+        <input type="hidden" name="courseId" value="<?php echo htmlspecialchars($courseId); ?>"> 
         
         <!-- Add any additional form fields here -->
         <label for="message">Message:</label>
