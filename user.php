@@ -3,7 +3,7 @@ class User {
     public $firstName;
     public $lastName;
     public $email;
-    private $password;
+    public $password;
 
     public function __construct($firstName, $lastName, $email, $password) {
         $this->firstName = $firstName;

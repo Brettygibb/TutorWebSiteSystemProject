@@ -54,6 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?>
 
 
+
+
+
 <?php
     //saveUserToDataBase($firstName,$lastName,$email,$pass,$token);    
     //sendVerificationEmail($email,$token,$firstName,$lastName);

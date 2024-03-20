@@ -14,7 +14,7 @@ if(isset($_SESSION['id'])) {
     $userId = $_SESSION['id'];
 
     // Check if the user exists in the students table
-    $sql = "CALL switchToStudent(?)";
+    $sql = "SELECT * FROM students WHERE UserId = ?";
     $stmt = $conn->prepare($sql);
     if(!$stmt){
         echo "Error: ".$conn->error;
