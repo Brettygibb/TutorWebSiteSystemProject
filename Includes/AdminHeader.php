@@ -1,7 +1,7 @@
 <header>
         <h1>Admin Dashboard</h1>
         <nav>
-            <ul>
+            <ul class="horizontal-nav">
                 <li><a href="AdminDashboard.php">Home</a></li>
                 <li><a href="NotificationsAdmin.php">Notifications</a></li>
                 <li><a href="ReviewBecomingTutorRequests.php">Review Becoming a Tutor</a></li>
