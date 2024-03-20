@@ -1,13 +1,20 @@
 <?php
 session_start();
-include 'Connect.php';
-
+include 'Database.php';
+$db = new Database($servername, $username, $password, $dbname);
+$conn = $db->getConnection();
 $userid = $_SESSION['id'];
 
 // Query to get the tutor ID based on the user ID
-$tutorIdSql = "SELECT TutorId FROM tutors WHERE UserId = $userid";
-$tutorIdResult = mysqli_query($conn, $tutorIdSql);
-$tutorIdRow = mysqli_fetch_assoc($tutorIdResult);
+//need a stored procedure to get the tutor id
+$tutorIdSql = "SELECT TutorId FROM tutors WHERE UserId = ?";
+$stmt = $conn->prepare($tutorIdSql);
+$stmt->bind_param("i", $userid);
+$stmt->execute();
+$tutorIdResult = $stmt->get_result();
+$tutorIdRow = $tutorIdResult->fetch_assoc();
+
+
 
 if (!$tutorIdRow) {
     // Handle the case where the tutor ID is not found
@@ -18,20 +25,22 @@ if (!$tutorIdRow) {
 $tutorid = $tutorIdRow['TutorId'];
 
 // Query to get the user information
-$userSql = "SELECT * FROM users WHERE UserID = $userid";
-$userResult = mysqli_query($conn, $userSql);
-$userRow = mysqli_fetch_assoc($userResult);
+//need a stored procedure to get the user info
+$userSql = "SELECT * FROM users WHERE UserID = ?";
+$stmt = $conn->prepare($userSql);
+$stmt->bind_param("i", $userid);
+$stmt->execute();
+$userResult = $stmt->get_result();
+$userRow = $userResult->fetch_assoc();
 
 // Query to get available courses for the tutor to subscribe
-$availableCoursesSql = "
-    SELECT *
-    FROM courses
-    WHERE CourseId NOT IN (
-        SELECT CourseId FROM tutor_courses WHERE TutorId = $tutorid
-    );
-";
-
-$availableCoursesResult = mysqli_query($conn, $availableCoursesSql);
+//need a stored procedure to get the available courses
+//$availableCoursesSql = "SELECT * FROM courses WHERE CourseId NOT IN (SELECT CourseId FROM tutor_courses WHERE TutorId = ?)";
+$availableCoursesSql = "SELECT * FROM courses WHERE CourseId NOT IN (SELECT CourseId FROM tutor_courses WHERE TutorId = ?) AND CourseId NOT IN (SELECT CourseId FROM requests WHERE TutorId = ? AND Status = 'Pending')";
+$stmt = $conn->prepare($availableCoursesSql);
+$stmt->bind_param("ii", $tutorid, $tutorid);
+$stmt->execute();
+$availableCoursesResult = $stmt->get_result();
 
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -41,6 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header("Location: TutorSubscribeCourseProc.php?courseId=$selectedCourseId&tutorId=$tutorid");
     exit();
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -52,28 +62,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Tutor Subscribe Courses</h1>
-        <nav>
-            <ul>
-                <li><a href="TutorDashboard.php">Home</a></li>
-                <li><a href="#">Subscribe Course</a></li>
-                <li><a href="#">Upcoming Sessions</a></li>
-                <li><a href="#">Logout</a></li>
-                <li><a href="StudentEditProfile.php">Edit Profile</a></li>
-            </ul>
-        </nav>
-    </header>
-
+    <?php include 'Includes/TutorHeader.php'; ?>
     <section>
         <h2>Welcome to the Tutor Subscribe Courses Page</h2>
-        <!-- Users Info -->
-        <p>First Name: <?php echo $userRow['FirstName']; ?></p>
-        <p>Last Name: <?php echo $userRow['LastName']; ?></p>
-        <p>Email: <?php echo $userRow['Email']; ?></p>
+        <!-- User Info -->
+        <p>First Name: <?php echo htmlspecialchars($userRow['FirstName']); ?></p>
+        <p>Last Name: <?php echo htmlspecialchars($userRow['LastName']); ?></p>
+        <p>Email: <?php echo htmlspecialchars($userRow['Email']); ?></p>
         
         <?php if (!empty($userRow['image'])): ?>
-            <img src="<?php echo $userRow['image']; ?>" alt="Profile Picture">
+            <img src="<?php echo htmlspecialchars($userRow['image']); ?>" alt="Profile Picture">
         <?php endif; ?>
 
         <!-- Display available courses -->
@@ -81,12 +79,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
             <label for="courseId">Select a Course:</label>
             <select name="courseId" id="courseId">
-                <?php
-                // Reset the pointer of the result set
-                mysqli_data_seek($availableCoursesResult, 0);
-
-                while ($courseRow = mysqli_fetch_assoc($availableCoursesResult)): ?>
-                    <option value="<?php echo $courseRow['CourseId']; ?>"><?php echo $courseRow['CourseName']; ?></option>
+                <?php while ($courseRow = $availableCoursesResult->fetch_assoc()): ?>
+                    <option value="<?php echo $courseRow['CourseId']; ?>"><?php echo htmlspecialchars($courseRow['CourseName']); ?></option>
                 <?php endwhile; ?>
             </select>
             <br>

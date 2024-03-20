@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,8 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="styles.css">
+    
 </head>
 <body>
+<?php session_start(); ?> 
+    
+    <!-- Display error messages -->
+    <?php if (!empty($_SESSION['email_error'])): ?>
+        <script>alert('<?php echo addslashes($_SESSION['email_error']); ?>');</script>
+        <?php unset($_SESSION['email_error']); ?>
+    <?php endif; ?>
+
+    <?php if (!empty($_SESSION['password_error'])): ?>
+        <script>alert('<?php echo addslashes($_SESSION['password_error']); ?>');</script>
+        <?php unset($_SESSION['password_error']); ?>
+    <?php endif; ?>
+    <h1>Login</h1>
     <form action = "LoginProc.php" method = "post">
         <input type = "text" name = "email" placeholder = "Email">
         <input type = "password"  name = "pass" placeholder = "Password">

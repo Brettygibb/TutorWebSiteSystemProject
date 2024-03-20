@@ -1,12 +1,11 @@
 <?php
 session_start();
-include 'Connect.php';
 
-// Check if the user is logged in and is an admin
-if (!isset($_SESSION['id']) || $_SESSION['role'] !== 'Admin') {
-    header("Location: index.php");
-    exit();
-}
+include 'Database.php';
+include 'Admin.php';
+
+$database = new Database($servername, $username, $password, $dbname);
+$conn = $database->getConnection();
 
 // Process form submission if any
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -15,26 +14,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $status = $_POST['status'];
         $courseId = $_POST['courseId'];
 
-        // Update the status of the request in the database with specific TutorId and CourseId
-        $updateSql = "UPDATE requests SET Status = '$status' WHERE TutorId = $requestId AND CourseId = $courseId AND Status = 'Pending'";
-        mysqli_query($conn, $updateSql);
-
-        // Check if the status is 'Approved' and insert into tutor_courses table
-        if ($status === 'Approved') {
-            $insertSql = "INSERT INTO tutor_courses (TutorId, CourseId) VALUES ($requestId, $courseId)";
-            mysqli_query($conn, $insertSql);
-        }
+        $admin = new Admin();
+        $admin->processRequestedCourses($requestId, $courseId, $status, $conn);
     }
 }
 
 // Fetch only pending requests with tutor names from the database
-$sql = "SELECT requests.TutorId, requests.CourseId, CONCAT(users.FirstName, ' ', users.LastName) AS TutorName, courses.CourseName, requests.Status 
-        FROM requests 
-        JOIN tutors ON requests.TutorId = tutors.TutorId
-        JOIN users ON tutors.UserId = users.UserId
-        JOIN courses ON requests.CourseId = courses.CourseId
-        WHERE requests.Status = 'Pending'";
+$sql = "CALL GetPendingTutorRequests()";
 $result = mysqli_query($conn, $sql);
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -46,21 +35,10 @@ $result = mysqli_query($conn, $sql);
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Review Requests</h1>
-        <nav>
-            <ul>
-                <li><a href="AdminDashboard.php">Home</a></li>
-                <li><a href="#">Review Requests</a></li>
-                <li><a href="AddAdmin.php">Add another Admin</a></li>
-                <li><a href="Logout.php">Logout</a></li>
-                <li><a href="AdminEditProfile.php">Edit Profile</a></li>
-            </ul>
-        </nav>
-    </header>
+    <?php include 'Includes/AdminHeader.php'; ?>
 
     <section>
-        <h2>Pending Requests List</h2>
+        <h1>Review New Courses for Tutors</h1>
 
         <table>
             <tr>

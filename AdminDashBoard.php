@@ -1,13 +1,39 @@
 <?php
 session_start();
-include 'Connect.php';
+//include 'Connect.php';
+include 'Database.php';
 
-$userid = $_SESSION['id'];
-$sql = "select * from users where UserID = $userid";
+//Create a new instance of DB class 
+$database= new Database($servername, $username, $password, $dbname);
 
-$result = mysqli_query($conn,$sql);
-$row = mysqli_fetch_assoc($result);
+//Get the database connection 
+$conn= $database ->getConnection();
 
+if(isset($_SESSION['id'])) {
+    $userid = $_SESSION['id'];
+
+    // Use stored procedure to get the user info
+    $sql = "CALL GetUserByUserID(?)";
+    $stmt = $conn->prepare($sql);
+    if(!$stmt){
+        echo "Error: ".$conn->error;
+        exit();
+    }
+    $stmt->bind_param("i", $userid);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if($result) {
+        $row = $result->fetch_assoc();
+
+        // You can now use $row to display user info
+    } else {
+        echo "No user found with ID: ".$userid;
+    }
+    $stmt->close();
+    $conn->close();
+} else {
+    echo "User is not logged in.";
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,21 +44,10 @@ $row = mysqli_fetch_assoc($result);
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Tutor Dashboard</h1>
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="ReviewRequests.php">Review Requests</a></li>
-                <li><a href="AddAdmin.php">Add another Admin</a></li>
-                <li><a href="#">Logout</a></li>
-                <li><a href="AdminEditProfile.php">Edit Profile</a></li>
-            </ul>
-        </nav>
-    </header>
+    <?php include 'Includes/AdminHeader.php'; ?>
 
     <section>
-        <h2>Welcome to the Tutor Dashboard</h2>
+        <h2>Welcome to the Admin Dashboard</h2>
         <!-- Users Info -->
         <p>First Name: <?php echo $row['FirstName']; ?></p>
         <p>Last Name: <?php echo $row['LastName']; ?></p>

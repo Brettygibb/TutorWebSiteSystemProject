@@ -1,66 +1,72 @@
-<?php
+<?php 
 session_start();
-include 'Connect.php';
+//include 'Connect.php';
 
-$userid = $_SESSION['id'];
-$sql = "SELECT * FROM users WHERE UserID = $userid";
+include 'Database.php';
 
-$result = mysqli_query($conn,$sql);
-$row = mysqli_fetch_assoc($result);
+//Create a new instance of DB class 
+$database= new Database($servername, $username, $password, $dbname);
 
+//Get the database connection 
+$conn= $database ->getConnection();
+
+$userid = isset($_SESSION['id']) ? $_SESSION['id'] : null;
+if (!$userid) {
+    // Redirect to login or show an error because the user is not logged in
+    header("Location: Login.php");
+    exit();
+}
+if ($stmt = $conn->prepare("SELECT FirstName, LastName, Email FROM users WHERE UserID = ?")) {
+    $stmt->bind_param("i", $userid);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $userRow = $result->fetch_assoc();
+    $stmt->close();
+}
+
+$tutor = isset($_GET['tutorId']) ? intval($_GET['tutorId']) : 0;
+
+
+$sessions = [];
+if ($tutorId > 0) {
+    if ($stmt = $conn->prepare("SELECT * FROM sessions WHERE TutorId = ? ORDER BY DateAndTime ASC")) { // Adjust 'DateAndTime' if using a different column name for the session date/time
+        $stmt->bind_param("i", $tutorId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        while ($row = $result->fetch_assoc()) {
+            $sessions[] = $row;
+        }
+        $stmt->close();
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Student Dashboard</h1>
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Search Tutors</a></li>
-                <li><a href="#">Logout</a></li>
-                <li><a href="StudentEditProfile.php">Edit Profile</a></li>
-            </ul>
-        </nav>
-    </header>
-
+    <?php include 'Includes/StudentHeader.php'; ?>
     <section>
         <h2>Welcome to the Student Dashboard</h2>
-        <!-- Users Info -->
-        <p>First Name: <?php echo $row['FirstName']; ?></p>
-        <p>Last Name: <?php echo $row['LastName']; ?></p>
-        <p>Email: <?php echo $row['Email']; ?></p>
-        <?php if (!empty($row['image'])): ?>
-            <img src="<?php echo $row['image']; ?>" alt="Profile Picture">
+        <p>First Name: <?php echo htmlspecialchars($userRow['FirstName'] ?? 'N/A'); ?></p>
+        <p>Last Name: <?php echo htmlspecialchars($userRow['LastName'] ?? 'N/A'); ?></p>
+        <p>Email: <?php echo htmlspecialchars($userRow['Email'] ?? 'N/A'); ?></p>
+        <?php if (!empty($userRow['image'])): ?>
+            <img src="<?php echo htmlspecialchars($userRow['image']); ?>" alt="Profile Picture" style="width:100px;height:100px;">
         <?php endif; ?>
     </section>
-
+    
     <section>
-        <?php
-
-        $value = $_POST["submit"];
-
-        //echo $value;
-        $sql = "SELECT * FROM sessions WHERE SessionId = $value";
-
-        $result = mysqli_query($conn,$sql);
-        $row = mysqli_fetch_assoc($result);
-        
-        echo "<p>";
-        echo $row['Course']; 
-        echo "</p>";
-        echo "<p>";
-        echo $row['Description']; 
-        echo "</p>";
-
-        ?>
-
+        <h2>Available Sessions</h2>
+        <?php foreach ($sessions as $session): ?>
+            <p>Course: <?php echo htmlspecialchars($session['CourseName']); ?></p> <!-- Assuming there's a 'CourseName' field -->
+            <p>Description: <?php echo htmlspecialchars($session['Description']); ?></p>
+            <p>Date and Time: <?php echo htmlspecialchars($session['DateAndTime']); ?></p> <!-- Adjust if using a different field for the session date/time -->
+            <hr>
+        <?php endforeach; ?>
     </section>
 </body>
 </html>
