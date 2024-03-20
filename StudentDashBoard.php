@@ -33,7 +33,7 @@ $studentIdStmt->close();
 //
 $_SESSION['studentId'] = $studentId['StudentId'];
 $studentgetid = $_SESSION['studentId'];
-//WE NEED TO ADD THE NEXT CODE TO CALL GetUpcomingSessions(?)
+//WE NEED TO CALL GetUpcomingSessions(?) WITH THE NEXT CODE
 // Fetch upcoming sessions
 $stmt = $conn->prepare("SELECT sessions.*, courses.CourseName FROM sessions JOIN courses ON sessions.CourseId=courses.CourseId WHERE StudentId = ?");
 $stmt->bind_param("i", $studentgetid);
