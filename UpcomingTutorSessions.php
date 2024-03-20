@@ -12,13 +12,10 @@ if(!isset($_SESSION['tutorId'])){
 $tutorId = $_SESSION['tutorId'];
 
 // Adjust the SQL query
-// Adjusted SQL query with course name
-// Adjusted SQL query with course name
-$sql = "SELECT sr.RequestId, sr.RequestDate, sr.StartTime, sr.EndTime, sr.Message, sr.Status, u.FirstName AS StudentFirstName, u.LastName AS StudentLastName, c.CourseName
+$sql = "SELECT sr.RequestId, sr.RequestDate, sr.StartTime, sr.EndTime, sr.Message, sr.Status, u.FirstName AS StudentFirstName, u.LastName AS StudentLastName
         FROM session_request sr
         INNER JOIN students s ON sr.StudentId = s.StudentId
         INNER JOIN users u ON s.UserId = u.UserId
-        INNER JOIN courses c ON sr.CourseId = c.CourseId
         WHERE sr.TutorId = ? AND sr.Status = 'Pending'";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $tutorId);
@@ -27,7 +24,6 @@ $result = $stmt->get_result();
 
 $sessions = $result->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
-
 ?>
 
 <!DOCTYPE html>
@@ -45,11 +41,10 @@ $stmt->close();
         <table>
             <thead>
                 <tr>
-                    <th>Session ID</th>
+                    <th>Request ID</th>
                     <th>Student Name</th>
                     <th>Date and Time</th>
                     <th>Course Name</th>
-                    <th>Message</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -57,10 +52,10 @@ $stmt->close();
             <tbody>
                 <?php foreach ($sessions as $session): ?>
                     <tr>
-                        <td><?= htmlspecialchars($session['RequestId']) ?></td>
+                        <td><?= htmlspecialchars($session['RequestId']) ?></td> 
                         <td><?= htmlspecialchars($session['StudentFirstName'] . " " . $session['StudentLastName']) ?></td>
-                        <td><?= htmlspecialchars($session['RequestDate']) . " " . htmlspecialchars($session['StartTime']) ?></td>  
-                        <td><?= htmlspecialchars($session['CourseName']) ?></td>
+                        <td><?= htmlspecialchars($session['RequestDate']) . " " . htmlspecialchars($session['StartTime']) ?></td>
+                        <!--<td><?= htmlspecialchars($session['CourseName']) ?></td> -->
                         <td><?= htmlspecialchars($session['Message']) ?></td>
                         <td><?= htmlspecialchars($session['Status']) ?></td>
                         <td>
