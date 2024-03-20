@@ -41,7 +41,7 @@ $stmt->close();
         <table>
             <thead>
                 <tr>
-                    <th>Request ID</th>
+                    <th>Session ID</th>
                     <th>Student Name</th>
                     <th>Date and Time</th>
                     <th>Course Name</th>
@@ -52,7 +52,7 @@ $stmt->close();
             <tbody>
                 <?php foreach ($sessions as $session): ?>
                     <tr>
-                        <td><?= htmlspecialchars($session['RequestId']) ?></td> 
+                        <td><?= htmlspecialchars($session['RequestId']) ?></td>
                         <td><?= htmlspecialchars($session['StudentFirstName'] . " " . $session['StudentLastName']) ?></td>
                         <td><?= htmlspecialchars($session['RequestDate']) . " " . htmlspecialchars($session['StartTime']) ?></td>
                         <!--<td><?= htmlspecialchars($session['CourseName']) ?></td> -->
