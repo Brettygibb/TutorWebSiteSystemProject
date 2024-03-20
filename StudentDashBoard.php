@@ -69,6 +69,7 @@ $calendar = new SimpleCalendar();
             <ul>
                 <?php while ($session = $sessionsResult->fetch_assoc()):?>
                     <li>
+                        <!-- Add session to calendar -->
                         <?php  $calendar->addSession($session['CourseName'], $session['DateAndTime'], "blue"); ?>
                         Course: <?php echo htmlspecialchars($session['CourseId']); ?><br>
                         Date: <?php echo htmlspecialchars($session['DateAndTime']); ?><br>
@@ -87,7 +88,10 @@ $calendar = new SimpleCalendar();
     
     
 </body>
+
+
 <?php
+    //render the calendar
         echo $calendar->render();
     ?>
 </html>
