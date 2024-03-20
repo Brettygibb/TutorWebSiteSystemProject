@@ -11,7 +11,7 @@ $conn = $database->getConnection();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Retrieve the student ID associated with the session user ID
     $userId = $_SESSION['id'];
-    $sql = "SELECT StudentId FROM students WHERE UserId = ?";
+    $sql = "CALL BecomeTutorIdFetch(?)";
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($stmt, "i", $userId);
     mysqli_stmt_execute($stmt);
@@ -19,14 +19,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     mysqli_stmt_fetch($stmt);
     mysqli_stmt_close($stmt);
 
+    
+
     // Check if the student ID was successfully retrieved
     if ($studentId) {
         // Check if there is already a record for the student in the becometutor_requests table
-        $sql_check = "SELECT * FROM becometutor_requests WHERE StudentId = ?";
+        $sql_check = "CALL BecomeTutorRequest(?);";
+        
         $stmt_check = mysqli_prepare($conn, $sql_check);
         mysqli_stmt_bind_param($stmt_check, "i", $studentId);
         mysqli_stmt_execute($stmt_check);
         mysqli_stmt_store_result($stmt_check);
+
+        //test
+        // Consume result set of the stored procedure call
+        while(mysqli_next_result($conn)) {;}
 
         if (mysqli_stmt_num_rows($stmt_check) > 0) {
             echo "Previously you made an application for becoming a tutor.";
@@ -36,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // If no existing record, proceed with inserting the new request
         $status = 'Pending'; // Default status for new requests
-        $sql_insert = "INSERT INTO becometutor_requests (StudentId, Status) VALUES (?, ?)";
+        $sql_insert = "CALL InsertBecomeTutorRequest(?, ?)";
         $stmt_insert = mysqli_prepare($conn, $sql_insert);
         mysqli_stmt_bind_param($stmt_insert, "is", $studentId, $status);
         mysqli_stmt_execute($stmt_insert);
