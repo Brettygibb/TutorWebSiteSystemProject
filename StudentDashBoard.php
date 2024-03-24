@@ -54,19 +54,20 @@ users u ON t.UserId = u.UserId
 INNER JOIN 
 courses c ON s.CourseId = c.CourseId
 WHERE 
-s.DateAndTime >= CURDATE()
+s.StudentId = ? AND
+(
+    s.DateAndTime > CURDATE() OR 
+    (s.DateAndTime = CURDATE() AND s.StartTime > CURTIME())
+)
 ORDER BY 
 s.DateAndTime ASC, s.StartTime ASC;
 ";
 
-$result = $conn->query($sql);
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $studentgetid); // Assuming $studentgetid holds the logged-in student's ID
+$stmt->execute();
+$sessionsResult = $stmt->get_result();
 
-if ($result && $result->num_rows > 0) {
-    $sessionsResult = $result; // Use $sessionsResult in your HTML/PHP output
-} else {
-    $sessionsResult = null;
-    echo "<p>No upcoming sessions.</p>";
-}
 
 //stores the student id in a session
 $_SESSION['userid'] = $userid;
