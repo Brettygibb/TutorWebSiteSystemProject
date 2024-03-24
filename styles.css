@@ -1,5 +1,167 @@
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    padding: 0.5rem;
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+}
+
+.nav-logo img {
+    width: 300px;
+    cursor: pointer;
+}
+
+.nav-item {
+    color: #0f6e90;
+    text-decoration: none;
+    padding: 10px 10px;
+    font-weight: bold;
+    margin-left: 40px;
+}
+
+.nav-item:not(.nav-logo):hover {
+    background-color: #0f6e90;
+    color: #fff;
+    border-radius: 4px;
+}
+
+.auth-buttons {
+    display: flex;
+}
+
+.auth-button {
+    border: 2px solid #0f6e90;
+    padding: 8px 16px;
+    margin-left: 8px;
+    color: #0f6e90;
+    background-color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.auth-button:hover {
+    background-color: #0f6e90;
+    color: #fff;
+}
+
+.nav-item--find-tutor {
+    color: #0f6e90; 
+    border-bottom: 2px solid #0f6e90; /* Creates the line below the button */
+    padding-bottom: 5px; /* Provides some space between the text and the line */
+}
+
+/* Footer CSS */
+.footer {
+    background-color: #0e5d78; 
+    color: white;
+    padding: 40px 0; 
+    text-align: center;
+    width: 100%; /* Ensures the footer is full width */
+    box-sizing: border-box; 
+    position: absolute; 
+    bottom: 0;
+    left: 0;
+}
+
+
+.footer p {
+    margin: 0; /* Removes default paragraph margin */
+    padding: 0; /* Removes default paragraph padding */
+}
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh; /* Full height of the viewport */
+    padding: 20px;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 20px; 
+}
+
+.form-logo {
+    width: 450px; 
+    height: auto;
+    margin-bottom: 40px;
+}
+
+form {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    padding: 70px;
+    width: 300%;
+    max-width: 600px;
+}
+
+form p {
+    text-align: center; /* Centers the text inside the paragraph */
+    margin-top: 20px; /* Adds space above the paragraph if needed */
+}
+
+.signup-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh; /* Full height of the viewport */
+    padding: 20px;
+}
+
+.signup-container h2 {
+    color: #0f6e90; 
+}
+
+header {
+    background-color: #fff; 
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+.horizontal-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: start; 
+    align-items: center;
+}
+
+.horizontal-nav li {
+    margin-right: 20px; 
+}
+
+.horizontal-nav li:last-child {
+    margin-right: 0; 
+}
+
+.horizontal-nav a {
+    text-decoration: none;
+    color: #0f6e90; 
+    font-weight: bold;
+}
+
+.horizontal-nav a:hover {
+    text-decoration: underline;
+}
+
+/* Styles for h1 or other headers across the site */
+h1 {
+    color: #0f6e90;
+}
+
 nav {
-    background-color: #333;
+    background-color: #fff;
     color: #fff;
     padding: 15px;
     text-align: center;
@@ -7,7 +169,7 @@ nav {
   }
 
   nav a {
-    color: #fff;
+    color: #0f6e90;
     text-decoration: none;
     padding: 10px 15px;
     margin: 0 10px;
@@ -16,30 +178,40 @@ nav {
   }
 
   nav a:hover {
-    background-color: #555;
+    background-color: #0f6e9042;
   }
 
   .nbccBanner{
     width: 100%;
-    max-width: 100%; /* Ensure the image doesn't exceed its natural size */
-    height: auto;   /* Maintain the aspect ratio */
+    max-width: 100%; 
+    height: auto;   
     
   }
 
   .wrapper {
+    display: flex; /* Use flexbox layout */
+    justify-content: space-between; /* Space between the content and image */
+    align-items: center; 
     width: 80%;
-    margin: 20px auto; /* Adjust the margin as needed */
-    padding: 20px;
-    border: 2px solid #333; /* Border color and style */
-    border-radius: 8px;
-    background-color: #cec1c1; /* Background color if needed */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    
-}
+    margin: 40px auto; 
+    padding: 60px;
+    border-radius: 25px;
+    background-color: #ffffff;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .wrapper-content { 
+    width: 50%; 
+  }
+  
+  .wrapper img.nbccPhoto { 
+    max-width: 45%; /* Adjust as needed */
+    height: auto; /* Maintain aspect ratio */
+  }
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #685f5f;
+    background-color: #ffffff;
     margin: 0;
     padding: 0;
     display: flex;
@@ -48,16 +220,7 @@ body {
     
     flex-direction: column;
 }
-form {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    width: 100%;
-    
-    color: #45a049;
-}
+
 h2 {
     text-align: center;
 }
@@ -74,16 +237,18 @@ input {
     border-radius: 4px;
 }
 button {
-    background-color: #4caf50;
+    background-color: #0f6e90;
     color: #fff;
     padding: 10px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     width: 100%;
+    margin-bottom: 30px;
+    margin-top: 10px;
 }
 button:hover {
-    background-color: #45a049;
+    background-color: #1596c5;
 }
 
 #indexParagraph{

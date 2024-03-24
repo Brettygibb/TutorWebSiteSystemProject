@@ -1,7 +1,7 @@
 <header>
         <h1>Student Dashboard</h1>
         <nav>
-            <ul>
+            <ul class="horizontal-nav">
                 <li><a href="StudentDashBoard.php">Home</a></li>
                 <li><a href="NotificationsStudent.php">Notifications</a></li>
                 <li><a href="TutorSearch.php">Search Tutors</a></li>

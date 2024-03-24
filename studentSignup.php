@@ -8,8 +8,11 @@
 </head>
 <body>
     <div class="signup-container">
-        <h2>Signup for Students</h2>
+        <h1>Signup for Students</h1>
         <form action="studentSignupProc.php" method="post">
+        <div class="form-header">
+                <img src="images/nbccLogo.png" alt="NBCC Tutoring Logo" class="form-logo">
+            </div>
             <label for="firstname">First Name:</label>
             <input type="text" id="firstname" name="firstname" required><br>
             
@@ -22,7 +25,7 @@
             <label for="password">Password:</label>
             <input type="text" id="password" name="password" required><br>
 
-            <input type="submit" value="Signup">
+            <button type="submit" value="Signup">Sign Up</button>
         </form>
     </div>
 </body>

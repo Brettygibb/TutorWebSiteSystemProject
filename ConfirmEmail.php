@@ -15,7 +15,7 @@ if(isset($_GET['token'])){
         exit();
     }
     else{
-        echo "Email verification failed";
+        echo "Email verification failed. Please try again later.";
     }
 
 }

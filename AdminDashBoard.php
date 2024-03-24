@@ -16,7 +16,7 @@ if(isset($_SESSION['id'])) {
     $sql = "CALL GetUserByUserID(?)";
     $stmt = $conn->prepare($sql);
     if(!$stmt){
-        echo "Error: ".$conn->error;
+        echo "An error occurred while preparing the statement: ".$conn->error;
         exit();
     }
     $stmt->bind_param("i", $userid);
