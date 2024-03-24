@@ -1,4 +1,15 @@
+<?php
 
+
+if(isset($_GET['error'])){
+    if($_GET['error'] == "invalidpassword"){
+        session_start();
+        $_SESSION['password_error'] = "Invalid password";
+        header("Location: Login.php");
+        exit();
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +33,7 @@
         <?php unset($_SESSION['password_error']); ?>
     <?php endif; ?>
     <h1>Login</h1>
-    <form action = "LoginProc.php" method = "post">
+    <form action = "Procs/LoginProc.php" method = "post">
         <input type = "text" name = "email" placeholder = "Email">
         <input type = "password"  name = "pass" placeholder = "Password">
         <button type = "submit">Login</button>
