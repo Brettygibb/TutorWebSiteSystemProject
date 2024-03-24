@@ -1,7 +1,7 @@
 <?php
 session_start();
 include 'Database.php';
-
+require_once 'Student.php'; // Incluye la definición de la clase Student
 $db = new Database($servername, $username, $password, $dbname);
 $conn = $db->getConnection();
 

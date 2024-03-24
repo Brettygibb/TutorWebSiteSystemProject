@@ -5,71 +5,65 @@ include '../Database.php';
 $database = new Database($servername, $username, $password, $dbname);
 $conn = $database->getConnection();
 
-if (isset($_SESSION['id'])) {
-    $userID = $_SESSION['id'];
+if (!isset($_SESSION['id'])) {
+    header("Location: ../Login.php");
+    exit;
+}
 
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        // Sanitize input data
-        $academic_background = htmlspecialchars($_POST['academic_background']);
-        $expertise = htmlspecialchars($_POST['expertise']);
-        $achievements = htmlspecialchars($_POST['achievements']);
-        $bio = htmlspecialchars($_POST['bio']);
+$userID = $_SESSION['id'];
 
-        $uploadOkay = 0;
-        $imageData = null;
-        
-        if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-            // Read the binary file content
-            $imageData = file_get_contents($_FILES['image']['tmp_name']);
-            $imageType = $_FILES['image']['type'];
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $first_name = htmlspecialchars($_POST['FirstName']);
+    $last_name = htmlspecialchars($_POST['LastName']);
+    $email = htmlspecialchars($_POST['email']);
+    $academic_background = htmlspecialchars($_POST['academic_background']);
+    $expertise = htmlspecialchars($_POST['expertise']);
+    $achievements = htmlspecialchars($_POST['achievements']);
+    $bio = htmlspecialchars($_POST['bio']);
 
-            if (substr($imageType, 0, 5) == "image") {
-                $uploadOkay = 1;
-            } else {
-                echo "File is not an image.";
-                exit; // Or handle error as appropriate
-            }
+    // Start transaction
+    $conn->begin_transaction();
+
+    try {
+        // Update user details
+        $userSql = "UPDATE users SET FirstName = ?, LastName = ?, Email = ? WHERE UserId = ?";
+        $userStmt = $conn->prepare($userSql);
+        $userStmt->bind_param("sssi", $first_name, $last_name, $email, $userID);
+        $userStmt->execute();
+
+        // Check if the user already has a profile
+        $checkQuery = "SELECT * FROM users_profiles WHERE UserId = ?";
+        $checkStmt = $conn->prepare($checkQuery);
+        $checkStmt->bind_param("i", $userID);
+        $checkStmt->execute();
+        $result = $checkStmt->get_result();
+
+        if ($result->num_rows > 0) {
+            // User already has a profile, so update it
+            $profileSql = "UPDATE users_profiles SET AcademicBackground = ?, Expertise = ?, Achievements = ?, Bio = ? WHERE UserId = ?";
         } else {
-            echo "No file uploaded or an error occurred.";
-            exit; // Or handle error as appropriate
+            // No profile exists, insert a new one
+            $profileSql = "INSERT INTO users_profiles (UserId, AcademicBackground, Expertise, Achievements, Bio) VALUES (?, ?, ?, ?, ?)";
         }
 
-        if ($uploadOkay == 1) {
-            // Check if the user already has a profile
-            $checkQuery = "SELECT * FROM users_profiles WHERE UserId = ?";
-            $checkStmt = $conn->prepare($checkQuery);
-            $checkStmt->bind_param("i", $userID);
-            $checkStmt->execute();
-            $result = $checkStmt->get_result();
-
-            if ($result->num_rows > 0) {
-                // User already has a profile, so update it
-                $sql = "UPDATE users_profiles SET academicBackground = ?, expertise = ?, achievements = ?, bio = ?, profilePicture = ? WHERE UserId = ?";
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("ssssbi", $academic_background, $expertise, $achievements, $bio, $imageData, $userID);
-            } else {
-                // No profile exists for this user, insert a new one
-                $sql = "INSERT INTO users_profiles (UserId, academicBackground, expertise, achievements, bio, profilePicture) VALUES (?, ?, ?, ?, ?, ?)";
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("issssb", $userID, $academic_background, $expertise, $achievements, $bio, $imageData);
-            }
-
-            if ($stmt->execute()) {
-                header("Location: ../TutorDashBoard.php?profile=success");
-                exit;
-            } else {
-                // Error handling
-                header("Location: ../TutorEditProfile.php?profile=error");
-                exit;
-            }
+        $profileStmt = $conn->prepare($profileSql);
+        if ($result->num_rows > 0) {
+            $profileStmt->bind_param("ssssi", $academic_background, $expertise, $achievements, $bio, $userID);
+        } else {
+            $profileStmt->bind_param("issss", $userID, $academic_background, $expertise, $achievements, $bio);
         }
-    } else {
+        $profileStmt->execute();
+
+        // Commit transaction
+        $conn->commit();
+
+        header("Location: ../TutorDashboard.php?profile=success");
+        exit;
+    } catch (Exception $e) {
+        $conn->rollback();
         header("Location: ../TutorEditProfile.php?profile=error");
         exit;
     }
-} else {
-    header("Location: ../TutorEditProfile.php?profile=error");
-    exit;
 }
 
 mysqli_close($conn);

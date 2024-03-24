@@ -35,12 +35,12 @@
 </head>
 <body>
 <?php include 'Includes/TutorHeader.php'; ?>
-    <form action="Procs/TutorAvailabilityProc.php" method="post">
-        <label for="availableDate">Date:</label>
-        <input type="date" id="availableDate" name="availableDate" required>
-        <label for="startTime">Start Time:</label>
-        <input type="time" id="startTime" name="startTime" required>
-        <button type="submit">Submit</button>
-    </form>
+<form action="Procs/TutorAvailabilityProc.php" method="post">
+    <label for="availableDate">Date:</label>
+    <input type="date" id="availableDate" name="availableDate" required>
+    <label for="startTime">Start Time:</label>
+    <input type="time" id="startTime" name="startTime" step="600" required>
+    <button type="submit">Submit</button>
+</form>
 </body>
 </html>

@@ -35,6 +35,7 @@ $studentIdStmt->execute();
 $studentIdResult = $studentIdStmt->get_result();
 $studentId = $studentIdResult->fetch_assoc();
 $studentIdStmt->close();
+//store student id in session
 $_SESSION['studentId'] = $studentId['StudentId'];
 $studentgetid = $_SESSION['studentId'];
 // Fetch upcoming sessions

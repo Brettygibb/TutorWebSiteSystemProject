@@ -12,6 +12,7 @@ if (!$userid) {
     header("Location: login.php");
     exit;
 }
+echo "User ID: " . $userid . "<br>";
 
 // Fetch user details
 $stmt = $conn->prepare("SELECT * FROM users WHERE UserID = ?");
@@ -19,7 +20,6 @@ $stmt->bind_param("i", $userid);
 $stmt->execute();
 $result = $stmt->get_result();
 $userDetails = $result->fetch_assoc();
-
 // Fetch tutor ID
 $tutorStmt = $conn->prepare("SELECT TutorId FROM tutors WHERE UserId = ?");
 $tutorStmt->bind_param("i", $userid);
@@ -65,9 +65,6 @@ $profileStmt->close();
         <p>Expertise: <?php echo htmlspecialchars($profileDetails['expertise']); ?></p>
         <p>Achievements: <?php echo htmlspecialchars($profileDetails['achievements']); ?></p>
         <p>Bio: <?php echo htmlspecialchars($profileDetails['bio']); ?></p>
-        <?php if (!empty($userDetails['image'])): ?>
-            <img src="<?php echo htmlspecialchars($userDetails['image']); ?>" alt="Profile Picture">
-        <?php endif; ?>
     </section>
     <div id="UpcomingSessions">
         <h2>Upcoming Sessions</h2>
@@ -117,6 +114,7 @@ $profileStmt->close();
                     echo "<input type='hidden' name='sessionId' value='" . $row['SessionId'] . "'>";
                     echo "<input type='hidden' name='tutorId' value='" . $_SESSION['tutorId'] . "'>";
                     echo "<input type='submit' name='complete' value='Complete'>";
+                    //post user id
                     echo "</form>";
                     echo "</td>";
                     echo "</tr>";
