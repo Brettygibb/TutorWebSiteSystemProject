@@ -72,8 +72,8 @@ class Sessions {
 
         return $result;
     }
-    public function createSession($tutorId, $studentId,$courseId, $date, $startTime, $message) {
-        $query = "INSERT INTO sessions (TutorId, StudentId, CourseId,DateANdTime, StartTime, Notes) VALUES (?, ?, ?, ?, ?, ?)";
+    public function createSession($tutorId, $studentId, $courseId, $date, $startTime, $message, $status) {
+        $query = "INSERT INTO sessions (TutorId, StudentId, CourseId, DateAndTime, StartTime, Notes, Status) VALUES (?, ?, ?, ?, ?, ?, ?)";
         
         $stmt = $this->db->prepare($query);
         if (!$stmt) {
@@ -81,8 +81,27 @@ class Sessions {
             echo "Error preparing statement: " . $this->db->error;
             return false;
         }
+    
+        // Corrected to match the placeholders in the query
+        $stmt->bind_param("iiissss", $tutorId, $studentId, $courseId, $date, $startTime, $message, $status);
+        $result = $stmt->execute();
+        $stmt->close();
+    
+        return $result;
+    }
+    
 
-        $stmt->bind_param("iiisss", $tutorId,$courseId, $studentId, $date, $startTime, $message);
+    public function markSessionAsComplete($sessionId) {
+        $query = "UPDATE sessions SET Status = 'Completed' WHERE SessionId = ?";
+
+        $stmt = $this->db->prepare($query);
+        if (!$stmt) {
+            // Handle error
+            echo "Error preparing statement: " . $this->db->error;
+            return false;
+        }
+
+        $stmt->bind_param("i", $sessionId);
         $result = $stmt->execute();
         $stmt->close();
 

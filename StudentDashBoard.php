@@ -94,6 +94,39 @@ sr.Status = 'Pending';");
 $stmt->execute();
 $pendingRequests = $stmt->get_result();
 
+$completedSessionsSql = "SELECT 
+    s.SessionId,
+    t.TutorId,
+    u.FirstName AS TutorFirstName,
+    u.LastName AS TutorLastName,
+    c.CourseId,
+    c.CourseName,
+    s.DateAndTime,
+    s.StartTime
+FROM 
+    sessions s
+INNER JOIN 
+    tutors t ON s.TutorId = t.TutorId
+INNER JOIN 
+    users u ON t.UserId = u.UserId
+INNER JOIN 
+    courses c ON s.CourseId = c.CourseId
+WHERE 
+    s.Status = 'Completed'
+AND 
+    s.StudentId = ?
+ORDER BY 
+    s.DateAndTime DESC, s.StartTime DESC;
+";
+
+$stmt = $conn->prepare($completedSessionsSql);
+$stmt->bind_param("i", $studentgetid); // Assuming $studentgetid holds the logged-in student's ID
+$stmt->execute();
+$completedSessionsResult = $stmt->get_result();
+
+echo $studentgetid;
+
+
 
 
 ?>
@@ -155,5 +188,25 @@ $pendingRequests = $stmt->get_result();
             <p>No upcoming sessions.</p>
         <?php endif; ?>
     </section>
+    <section>
+    <h2>Completed Sessions</h2>
+    <?php if ($completedSessionsResult->num_rows > 0): ?>
+        <ul>
+            <?php while ($sessions = $completedSessionsResult->fetch_assoc()): ?>
+                <li>
+
+                    Tutor: <?php echo htmlspecialchars($sessions['TutorFirstName'] . ' ' . $sessions['TutorLastName']); ?><br>
+                    Course: <?php echo htmlspecialchars($sessions['CourseName']); ?><br>
+                    Date: <?php echo htmlspecialchars($sessions['DateAndTime']); ?><br>
+                    Start Time: <?php echo date("g:i A", strtotime($sessions['StartTime'])); ?><br>
+                    <a href="LeaveReview.php?sessionId=<?php echo $sessions['SessionId']; ?>&tutorId=<?php echo $sessions['TutorId']; ?>">Leave a Review</a>
+                </li>
+            <?php endwhile; ?>
+        </ul>
+    <?php else: ?>
+        <p>No completed sessions.</p>
+    <?php endif; ?>
+</section>
+
 </body>
 </html>
