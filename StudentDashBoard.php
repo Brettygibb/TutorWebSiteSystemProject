@@ -1,7 +1,7 @@
 <?php
 session_start();
 include 'Database.php';
-
+include 'Calendar.php';
 // Assuming Database.php includes logic to establish database connection
 $database = new Database($servername, $username, $password, $dbname);
 $conn = $database->getConnection();
@@ -22,17 +22,19 @@ if(isset($_GET['success'])){
 }
 
 // Fetch user details
-$stmt = $conn->prepare("SELECT * FROM users WHERE UserID = ?");
-$stmt->bind_param("i", $userid);
-$stmt->execute();
-$result = $stmt->get_result();
-$userDetails = $result->fetch_assoc();
+$userDetailsStmt = $conn->prepare("CALL GetUserDetails(?)");
+$userDetailsStmt->bind_param("i", $userid);
+$userDetailsStmt->execute();
+$userDetailsResult = $userDetailsStmt->get_result();
+$userDetails = $userDetailsResult->fetch_assoc();
+$userDetailsStmt->close();
 //get student id
-$student = $conn->prepare("SELECT StudentId FROM students WHERE UserID = ?");
-$student->bind_param("i", $userid);
-$student->execute();
-$studentId = $student->get_result();
-$studentId = $studentId->fetch_assoc();
+$studentIdStmt = $conn->prepare("CALL GetStudentId(?)");
+$studentIdStmt->bind_param("i", $userid);
+$studentIdStmt->execute();
+$studentIdResult = $studentIdStmt->get_result();
+$studentId = $studentIdResult->fetch_assoc();
+$studentIdStmt->close();
 $_SESSION['studentId'] = $studentId['StudentId'];
 $studentgetid = $_SESSION['studentId'];
 // Fetch upcoming sessions
@@ -127,8 +129,12 @@ $completedSessionsResult = $stmt->get_result();
 
 echo $studentgetid;
 
-
-
+//create calendar object
+$calendar = new SimpleCalendar();
+$calenderstmt = $conn->prepare("SELECT sessions.*, courses.CourseName FROM sessions JOIN courses ON sessions.CourseId=courses.CourseId WHERE StudentId = ?");
+$calenderstmt->bind_param("i", $studentgetid);
+$calenderstmt->execute();
+$calenderresult = $calenderstmt->get_result();
 
 ?>
 <!DOCTYPE html>
@@ -138,6 +144,7 @@ echo $studentgetid;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="Calendar.css" rel="stylesheet" type="text/css">
 </head>
 <body>
     <?php include 'Includes/StudentHeader.php'; ?>
@@ -208,6 +215,30 @@ echo $studentgetid;
         <p>No completed sessions.</p>
     <?php endif; ?>
 </section>
+<section>
+        <h2>Upcoming Sessions</h2>
+        <?php if ($calenderresult->num_rows > 0): ?>
+            <ul>
+                <?php while ($session = $calenderresult->fetch_assoc()):?>
+                    <li>
+                        <!-- Add session to calendar -->
+                        <?php  $calendar->addSession($session['CourseName'], $session['DateAndTime'], "blue"); ?>
+                        Course: <?php echo htmlspecialchars($session['CourseId']); ?><br>
+                        Date: <?php echo htmlspecialchars($session['DateAndTime']); ?><br>
+                        Start Time: <?php echo date("g:i A", strtotime($session['StartTime'])); ?><br>
+                        <a href="ViewSession.php?sessionId=<?php echo $session['SessionId']; ?>&tutorId=<?php echo $session['TutorId']; ?>">View Session</a>
+                    </li>
+                    
+                <?php endwhile; ?>
+            </ul>
+        <?php else: ?>
+            <p>No upcoming sessions.</p>
+        <?php endif; ?>
+    </section>
 
 </body>
+<?php
+    //render the calendar
+        echo $calendar->render();
+    ?>
 </html>
