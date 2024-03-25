@@ -16,7 +16,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Project/PHP/PHPProject.php to edi
             <nav class="navbar">
     <div class="nav-logo">
         <img src="images/nbccLogo.png" alt="NBCC Logo" onclick="window.location.href='index.php'">
-        <a href="TutorSearch.php" class="nav-item nav-item--find-tutor">Find a Tutor</a>
+       <!-- <a href="TutorSearch.php" class="nav-item nav-item--find-tutor">Find a Tutor</a> -->
     </div>
     <div class="auth-buttons">
         <a href="Login.php" class="nav-item auth-button">Sign In</a>
