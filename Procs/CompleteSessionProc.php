@@ -27,8 +27,8 @@ $session = new Sessions($conn);
 $result = $session->markSessionAsComplete($sessionId);
 
 if ($result) {
-    header("Location: ../UpcomingTutorSessions.php?success=Session marked as completed");
+    header("Location: ../TutorDashBoard.php?success=Session marked as completed");
 } else {
-    header("Location: ../UpcomingTutorSessions.php?error=Unable to mark session as completed");
+    header("Location: ../TutorDashBoard.php.php?error=Unable to mark session as completed");
 }
 exit();
