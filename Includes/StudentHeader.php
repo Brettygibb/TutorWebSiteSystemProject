@@ -22,9 +22,9 @@
 
                     // If there are unread notifications, apply a CSS style to change the color of the "Notifications" link
                     if ($unreadNotificationsCount > 0) {
-                        echo '<li><a href="NotificationsTutor.php" style="color: red;">Notifications (' . $unreadNotificationsCount . ')</a></li>';
+                        echo '<li><a href="NotificationsStudent.php" style="color: red;">Notifications (' . $unreadNotificationsCount . ')</a></li>';
                     } else {
-                        echo '<li><a href="NotificationsTutor.php">Notifications</a></li>';
+                        echo '<li><a href="NotificationsStudent.php">Notifications</a></li>';
                     }
                 } else {
                     // If the user is not logged in, display the link without any special styling
