@@ -3,8 +3,6 @@
         <nav>
             <ul class="horizontal-nav">
                 <li><a href="StudentDashBoard.php">Home</a></li>
-                <li><a href="NotificationsStudent.php">Notifications</a></li>
-                
                <?php
                 // Check if the user is logged in
                 if (isset($_SESSION['id'])) {
