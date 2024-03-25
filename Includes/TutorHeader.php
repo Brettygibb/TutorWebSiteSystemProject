@@ -3,18 +3,19 @@
         <nav>
             <ul class="horizontal-nav">
                 <li><a href="TutorDashBoard.php">Home</a></li>
+
                 <?php
-                // Check if the tutor is logged in
-                if (isset($_SESSION['tutorId'])) {
-                    $tutorId = $_SESSION['tutorId'];
-                    // Fetch unread notifications for the current tutor
+                // Check if the user is logged in
+                if (isset($_SESSION['id'])) {
+                    $userId = $_SESSION['id'];
+                    // Fetch unread notifications for the current user
                     $sql = "SELECT * FROM notifications WHERE user_id = ? AND is_read = 0";
                     $stmt = $conn->prepare($sql);
                     if (!$stmt) {
                         echo "Error: " . $conn->error;
                         exit();
                     }
-                    $stmt->bind_param("i", $tutorId);
+                    $stmt->bind_param("i", $userId);
                     $stmt->execute();
                     $result = $stmt->get_result();
                     $unreadNotificationsCount = $result->num_rows;
@@ -27,10 +28,12 @@
                         echo '<li><a href="NotificationsTutor.php">Notifications</a></li>';
                     }
                 } else {
-                    // If the tutor is not logged in, display the link without any special styling
+                    // If the user is not logged in, display the link without any special styling
                     echo '<li><a href="NotificationsTutor.php">Notifications</a></li>';
                 }
                 ?>
+                
+                
                 <li><a href="TutorSubscribedCourses.php">Subscribed Courses</a></li>
                 <li><a href="TutorSubscribeCourse.php">Subscribe a New Course</a></li>
                 <li><a href="SwitchStudent.php">Student View</a></li>
