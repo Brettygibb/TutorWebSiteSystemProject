@@ -4,6 +4,9 @@
             <ul class="horizontal-nav">
                 <li><a href="StudentDashBoard.php">Home</a></li>
                 <li><a href="NotificationsStudent.php">Notifications</a></li>
+                
+                
+                
                 <li><a href="TutorSearch.php">Search Tutors</a></li>
                 <li><a href="BecomeTutor.php">Become a Tutor</a></li>
                 <li><a href="SwitchTutor.php">Tutor View</a></li>
