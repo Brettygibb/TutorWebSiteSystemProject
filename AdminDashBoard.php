@@ -1,13 +1,12 @@
 <?php
 session_start();
-//include 'Connect.php';
-include 'Database.php';
+include 'Database.php'; // Include the file where $servername, $username, $password, $dbname are defined
 
-//Create a new instance of DB class 
-$database= new Database($servername, $username, $password, $dbname);
+// Create a new instance of the Database class
+$database = new Database($servername, $username, $password, $dbname);
 
-//Get the database connection 
-$conn= $database ->getConnection();
+// Get the database connection
+$conn = $database->getConnection();
 
 if(isset($_SESSION['id'])) {
     $userid = $_SESSION['id'];
@@ -22,7 +21,7 @@ if(isset($_SESSION['id'])) {
     $stmt->bind_param("i", $userid);
     $stmt->execute();
     $result = $stmt->get_result();
-    if($result) {
+    if($result && $result->num_rows > 0) { // Check if result is not empty
         $row = $result->fetch_assoc();
 
         // You can now use $row to display user info
@@ -30,10 +29,11 @@ if(isset($_SESSION['id'])) {
         echo "No user found with ID: ".$userid;
     }
     $stmt->close();
-    $conn->close();
 } else {
     echo "User is not logged in.";
 }
+
+$conn->close(); // Close the connection after fetching user info
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,11 +49,13 @@ if(isset($_SESSION['id'])) {
     <section>
         <h2>Welcome to the Admin Dashboard</h2>
         <!-- Users Info -->
-        <p>First Name: <?php echo $row['FirstName']; ?></p>
-        <p>Last Name: <?php echo $row['LastName']; ?></p>
-        <p>Email: <?php echo $row['Email']; ?></p>
-        <?php if (!empty($row['image'])): ?>
-            <img src="<?php echo $row['image']; ?>" alt="Profile Picture">
+        <?php if (isset($row)): ?>
+            <p>First Name: <?php echo $row['FirstName']; ?></p>
+            <p>Last Name: <?php echo $row['LastName']; ?></p>
+            <p>Email: <?php echo $row['Email']; ?></p>
+            <?php if (!empty($row['image'])): ?>
+                <img src="<?php echo $row['image']; ?>" alt="Profile Picture">
+            <?php endif; ?>
         <?php endif; ?>
     </section>
 </body>
