@@ -46,7 +46,7 @@ $courseId = isset($_GET['courseId']) ? $_GET['courseId'] : '';
         <input type="text" name="subject" id="subject" required>
         <br>
         <label for="message">Message:</label>
-        <textarea id="message" name="message"></textarea><br>
+        <textarea id="message" name="message"required></textarea><br>
         
         <button type="submit">Send Request</button>
     </form>
