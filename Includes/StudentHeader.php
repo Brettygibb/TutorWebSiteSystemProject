@@ -28,7 +28,7 @@
                     }
                 } else {
                     // If the user is not logged in, display the link without any special styling
-                    echo '<li><a href="NotificationsTutor.php">Notifications</a></li>';
+                    echo '<li><a href="NotificationsStudent.php">Notifications</a></li>';
                 }
                 ?>
 
