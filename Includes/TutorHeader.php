@@ -6,7 +6,7 @@
                 <li><a href="NotificationsTutor.php">Notifications</a></li>
                 <li><a href="TutorSubscribedCourses.php">Subscribed Courses</a></li>
                 <li><a href="TutorSubscribeCourse.php">Subscribe a New Course</a></li>
-                <li><a href="SwitchStudent.php">Switch as Student</a></li>
+                <li><a href="SwitchStudent.php">Student View</a></li>
                 <li><a href="TutorEditProfile.php">Edit Profile</a></li>
                 <li><a href="UpcomingTutorSessions.php">Upcoming Sessions - To Confirm</a></li>
                 <li><a href="UpcomingTutorSessionsConfirmed.php">Upcoming Sessions - Confirmed</a></li>
