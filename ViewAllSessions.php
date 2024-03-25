@@ -12,7 +12,6 @@ $conn = $database->getConnection();
 $tutorId = isset($_GET['Id']) ? $_GET['Id'] : 0;
 $courseId = isset($_GET['Course']) ? $_GET['Course'] : 0; // Add this line to get the courseId
 
-
 // Fetch tutor details including the first name
 $stmt = $conn->prepare("SELECT u.FirstName
                        FROM tutors AS t
@@ -56,7 +55,6 @@ while ($row = $result->fetch_assoc()) {
 }
 
 $stmt->close();
-$conn->close();
 ?>
 
 <!DOCTYPE html>
