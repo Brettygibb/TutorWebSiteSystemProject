@@ -180,9 +180,6 @@ while ($compSession = $completedSessionsResult->fetch_assoc()) {
         <p>First Name: <?php echo htmlspecialchars($userDetails['FirstName']); ?></p>
         <p>Last Name: <?php echo htmlspecialchars($userDetails['LastName']); ?></p>
         <p>Email: <?php echo htmlspecialchars($userDetails['Email']); ?></p>
-        <?php if (!empty($userDetails['image'])): ?>
-            <img src="<?php echo htmlspecialchars($userDetails['image']); ?>" alt="Profile Picture">
-        <?php endif; ?>
     </section>
 
     <section>
