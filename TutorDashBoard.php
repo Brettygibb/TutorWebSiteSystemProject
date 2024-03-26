@@ -33,6 +33,17 @@ if ($tutorRow = $tutorResult->fetch_assoc()) {
     exit; // Or handle this scenario appropriately
 }
 $tutorStmt->close();
+
+
+// Fetch tutor profile details
+$profileStmt = $conn->prepare("SELECT * FROM users_profiles WHERE UserId = ?");
+$profileStmt->bind_param("i", $_SESSION['id']);
+$profileStmt->execute();
+$profileResult = $profileStmt->get_result();
+$profileDetails = $profileResult->fetch_assoc();
+$profileStmt->close();
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

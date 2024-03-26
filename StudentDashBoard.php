@@ -35,7 +35,7 @@ $_SESSION['studentId'] = $studentId['StudentId'];
 $studentgetid = $_SESSION['studentId'];
 
 
-
+/////
 // Fetch upcoming sessions
 $sql = "SELECT 
 s.SessionId,
@@ -156,6 +156,8 @@ while ($compSession = $completedSessionsResult->fetch_assoc()) {
     // Use a different CSS class to style completed sessions distinctively
     $calendar->addSession($eventText, $compSessionDate, "blue");
 }
+
+/////
 ?>
 
 
