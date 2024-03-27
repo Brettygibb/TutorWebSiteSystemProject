@@ -94,16 +94,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Become a Tutor</title>
     <link rel="stylesheet" href="styles.css">
+    <?php include 'Includes/StudentHeader.php'; ?>
 </head>
 <body>
     <header>
         <h1>Become a Tutor</h1>
-        <nav>
-            <ul>
-                <li><a href="StudentDashboard.php">Back to Dashboard</a></li>
-                <li><a href="#">Logout</a></li>
-            </ul>
-        </nav>
+       
     </header>
 
     <section>

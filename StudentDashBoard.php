@@ -1,7 +1,7 @@
 <?php
 session_start();
 include 'Database.php';
-
+include 'Calendar.php';
 // Assuming Database.php includes logic to establish database connection
 $database = new Database($servername, $username, $password, $dbname);
 $conn = $database->getConnection();
@@ -30,21 +30,134 @@ $studentIdResult = $studentIdStmt->get_result();
 $studentId = $studentIdResult->fetch_assoc();
 $studentIdStmt->close();
 
+//
 $_SESSION['studentId'] = $studentId['StudentId'];
 $studentgetid = $_SESSION['studentId'];
 
+
+/////
 // Fetch upcoming sessions
-$sessionsStmt = $conn->prepare("CALL GetUpcomingSessions(?)");
-$sessionsStmt->bind_param("i", $studentgetid);
-$sessionsStmt->execute();
-$sessionsResult = $sessionsStmt->get_result();
+$sql = "SELECT 
+s.SessionId,
+t.TutorId,
+u.FirstName AS TutorFirstName,
+u.LastName AS TutorLastName,
+c.CourseId,
+c.CourseName,
+s.DateAndTime,
+s.StartTime
+FROM 
+sessions s
+INNER JOIN 
+tutors t ON s.TutorId = t.TutorId
+INNER JOIN 
+users u ON t.UserId = u.UserId
+INNER JOIN 
+courses c ON s.CourseId = c.CourseId
+WHERE 
+s.StudentId = ? AND
+(
+    s.DateAndTime > CURDATE() OR 
+    (s.DateAndTime = CURDATE() AND s.StartTime > CURTIME())
+)
+ORDER BY 
+s.DateAndTime ASC, s.StartTime ASC;
+";
 
-// Store the user ID in session
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $studentgetid); // Assuming $studentgetid holds the logged-in student's ID
+$stmt->execute();
+$sessionsResult = $stmt->get_result();
+
+
+//stores the student id in a session
 $_SESSION['userid'] = $userid;
+//get pending session requests for the student
+$stmt = $conn->prepare("SELECT 
+sr.RequestId, 
+sr.TutorId, 
+sr.StudentId, 
+sr.RequestDate, 
+sr.StartTime, 
+sr.EndTime, 
+sr.Message, 
+sr.Status, 
+u.FirstName AS TutorFirstName, 
+u.LastName AS TutorLastName, 
+u.Email AS TutorEmail
+FROM 
+session_request AS sr
+JOIN 
+tutors AS t ON sr.TutorId = t.TutorId
+JOIN 
+users AS u ON t.UserId = u.UserId
+WHERE 
+sr.Status = 'Pending';");
+$stmt->execute();
+$pendingRequests = $stmt->get_result();
 
-// Close statements and connection
-$sessionsStmt->close();
-$conn->close();
+$completedSessionsSql = "SELECT 
+    s.SessionId,
+    t.TutorId,
+    u.FirstName AS TutorFirstName,
+    u.LastName AS TutorLastName,
+    c.CourseId,
+    c.CourseName,
+    s.DateAndTime,
+    s.StartTime
+FROM 
+    sessions s
+INNER JOIN 
+    tutors t ON s.TutorId = t.TutorId
+INNER JOIN 
+    users u ON t.UserId = u.UserId
+INNER JOIN 
+    courses c ON s.CourseId = c.CourseId
+WHERE 
+    s.StudentId = ?
+ORDER BY 
+    s.DateAndTime DESC, s.StartTime DESC;
+";
+
+
+
+$stmt = $conn->prepare($completedSessionsSql);
+$stmt->bind_param("i", $studentgetid); // Assuming $studentgetid holds the logged-in student's ID
+$stmt->execute();
+$completedSessionsResult = $stmt->get_result();
+
+//echo $studentgetid;
+
+//create calendar object
+$calendar = new SimpleCalendar();
+$calenderstmt = $conn->prepare("SELECT sessions.*, courses.CourseName FROM sessions JOIN courses ON sessions.CourseId=courses.CourseId WHERE StudentId = ?");
+$calenderstmt->bind_param("i", $studentgetid);
+$calenderstmt->execute();
+$calenderresult = $calenderstmt->get_result();
+
+while ($session = $calenderresult->fetch_assoc()) {
+    $sessionDate = date('Y-m-d', strtotime($session['DateAndTime']));
+    $sessionTime = date('g:i A', strtotime($session['StartTime']));
+    $eventText = htmlspecialchars($session['CourseName']) . ' at ' . $sessionTime;
+    // Ensure this matches your CSS classes and styling
+    $calendar->addSession($eventText, $sessionDate, "blue");
+}
+while ($request = $pendingRequests->fetch_assoc()) {
+    $requestDate = date('Y-m-d', strtotime($request['RequestDate']));
+    $startTime = date('g:i A', strtotime($request['StartTime']));
+    $eventText = "Pending: " .' with ' . htmlspecialchars($request['TutorFirstName']) .   ' at ' . $startTime;
+    // Use a different CSS class to style pending sessions distinctively
+    $calendar->addSession($eventText, $requestDate, "blue");
+}
+while ($compSession = $completedSessionsResult->fetch_assoc()) {
+    $compSessionDate = date('Y-m-d', strtotime($compSession['DateAndTime']));
+    $compSessionTime = date('g:i A', strtotime($compSession['StartTime']));
+    $eventText = "Completed: " . htmlspecialchars($compSession['CourseName']) . ' at ' . $compSessionTime;
+    // Use a different CSS class to style completed sessions distinctively
+    $calendar->addSession($eventText, $compSessionDate, "blue");
+}
+
+/////
 ?>
 
 
@@ -56,6 +169,7 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="Calendar.css" rel="stylesheet" type="text/css">
 </head>
 <body>
     <?php include 'Includes/StudentHeader.php'; ?>
@@ -66,27 +180,37 @@ $conn->close();
         <p>First Name: <?php echo htmlspecialchars($userDetails['FirstName']); ?></p>
         <p>Last Name: <?php echo htmlspecialchars($userDetails['LastName']); ?></p>
         <p>Email: <?php echo htmlspecialchars($userDetails['Email']); ?></p>
-        <?php if (!empty($userDetails['image'])): ?>
-            <img src="<?php echo htmlspecialchars($userDetails['image']); ?>" alt="Profile Picture">
-        <?php endif; ?>
     </section>
 
     <section>
         <h2>Upcoming Sessions</h2>
         <?php if ($sessionsResult->num_rows > 0): ?>
             <ul>
-                <?php while ($session = $sessionsResult->fetch_assoc()): ?>
+                <?php while ($session = $sessionsResult->fetch_assoc()):?>
                     <li>
-                        Course: <?php echo htmlspecialchars($session['Course']); ?><br>
+                        <!-- Add session to calendar -->
+                        <?php  $calendar->addSession($session['CourseName'], $session['DateAndTime'], "blue"); ?>
+                        Course: <?php echo htmlspecialchars($session['CourseId']); ?><br>
                         Date: <?php echo htmlspecialchars($session['DateAndTime']); ?><br>
                         Start Time: <?php echo date("g:i A", strtotime($session['StartTime'])); ?><br>
-                        <a href="ViewSession.php?sessionId=<?php echo $session['SessionId']; ?>">View Session</a>
+                        <a href="ViewSession.php?sessionId=<?php echo $session['SessionId']; ?>&tutorId=<?php echo $session['TutorId']; ?>">View Session</a>
                     </li>
+                    
                 <?php endwhile; ?>
             </ul>
         <?php else: ?>
             <p>No upcoming sessions.</p>
         <?php endif; ?>
     </section>
+
+    
+    
+    
 </body>
+
+
+<?php
+    //render the calendar
+        echo $calendar->render();
+    ?>
 </html>

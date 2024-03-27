@@ -8,6 +8,8 @@ $startTime = isset($_GET['startTime']) ? $_GET['startTime'] : '';
 $endTime = isset($_GET['endTime']) ? $_GET['endTime'] : '';
 //get student id from session
 $studentId = $_SESSION['studentId'];
+$courseId = isset($_GET['courseId']) ? $_GET['courseId'] : ''; 
+
 
 ?>
 
@@ -25,10 +27,26 @@ $studentId = $_SESSION['studentId'];
         <input type="hidden" name="date" value="<?php echo htmlspecialchars($date); ?>">
         <input type="hidden" name="startTime" value="<?php echo htmlspecialchars($startTime); ?>">
         <input type="hidden" name="endTime" value="<?php echo htmlspecialchars($endTime); ?>">
+        <input type="hidden" name="courseId" value="<?php echo htmlspecialchars($courseId); ?>"> 
         
-        <!-- Add any additional form fields here -->
+        
+        <label for="firstName">First Name</label>
+        <input type="text" name="firstName" id="firstName" required>
+        <br>
+        <label for="lastName">Last Name</label>
+        <input type="text" name="lastName" id="lastName" required>
+        <br>
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" required>
+        <br>
+        <label for="phone">Phone</label>
+        <input type="text" name="phone" id="phone" required>
+        <br>
+        <label for="subject">Subject</label>
+        <input type="text" name="subject" id="subject" required>
+        <br>
         <label for="message">Message:</label>
-        <textarea id="message" name="message"></textarea><br>
+        <textarea id="message" name="message"required></textarea><br>
         
         <button type="submit">Send Request</button>
     </form>

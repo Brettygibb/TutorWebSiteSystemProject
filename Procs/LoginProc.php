@@ -1,5 +1,9 @@
 <?php
-include '../Connect.php';
+include '../Database.php';
+
+$db = new Database($servername, $username, $password, $dbname);
+
+$conn = $db->getConnection();
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -25,18 +29,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Handle multiple roles
                 $roles = explode(',', $row['RoleName']);
                 if (in_array('Student', $roles)) {
-                    header("Location: StudentDashBoard.php");
+                    header("Location: ../StudentDashBoard.php");
                     exit();
                 } elseif (in_array('Tutor', $roles)) {
-                    header("Location: TutorDashBoard.php");
+                    header("Location: ../TutorDashBoard.php");
                     exit();
                 } elseif (in_array('Admin', $roles)) {
-                    header("Location: AdminDashBoard.php");
+                    header("Location: ../AdminDashBoard.php");
                     exit();
                 } else {
                     echo "Invalid role";
                     exit();
                 }
+            }else{
+                header("Location: ../Login.php?error=invalidpassword");
             }
         }
     } else {

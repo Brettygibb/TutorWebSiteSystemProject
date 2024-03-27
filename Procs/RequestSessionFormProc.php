@@ -19,18 +19,41 @@ if ($result->num_rows === 0) {
 } else {
 
     $tutorId =$_POST['tutorId'];
+    $courseId =$_POST['courseId'];
     $date = date('Y-m-d', strtotime($_POST['date']));
     $startTime = date('H:i:s', strtotime($_POST['startTime']));
     $endTime = date('H:i:s', strtotime($_POST['endTime']));
     $message = $_POST['message'];
     $status = "Pending";
     
-    $sql = "INSERT INTO session_request (tutorId, studentId, requestdate, starttime, endtime, message, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO session_request (tutorId, studentId, courseId, requestdate, starttime, endtime, message, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iisssss", $tutorId, $studentId, $date, $startTime, $endTime, $message, $status);
-    
+    $stmt->bind_param("iiisssss", $tutorId, $studentId, $courseId, $date, $startTime, $endTime, $message, $status);
+
     if ($stmt->execute()) {
-        header("Location: ../StudentDashBoard.php?success=true");
+        // Fetch the userId of the tutor associated with the request
+        $userIdSql = "SELECT UserId FROM tutors WHERE TutorId = ?";
+        $stmt = $conn->prepare($userIdSql);
+        $stmt->bind_param("i", $tutorId); 
+        $stmt->execute();
+        $stmt->bind_result($userId);
+        $stmt->fetch();
+        $stmt->close();
+
+        $message = "New session request received. Please review.";
+        
+        // Notification insertion query
+        $sqlNotification = "INSERT INTO notifications (user_id, message) VALUES (?, ?)";
+        $stmtNotification = $conn->prepare($sqlNotification);
+        $stmtNotification->bind_param("is", $userId, $message); // Bind userId and message to the statement
+        
+        if ($stmtNotification->execute()) {
+            header("Location: ../StudentDashBoard.php?success=true");
+        } else {
+            echo "Error: " . $conn->error;
+            header("Location: ../StudentDashBoard.php?success=false");
+        }
+        $stmtNotification->close();
     } else {
         echo "Error: " . $conn->error;
         header("Location: ../StudentDashBoard.php?success=false");
@@ -43,4 +66,3 @@ if ($result->num_rows === 0) {
 
 
 ?>
-

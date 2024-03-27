@@ -5,27 +5,16 @@ session_start();
 include 'Database.php';
 
 //Create a new instance of DB class 
-$database = new Database($servername, $username, $password, $dbname);
+$database= new Database($servername, $username, $password, $dbname);
 
 //Get the database connection 
-$conn = $database->getConnection();
+$conn= $database ->getConnection();
 
 $userId = $_SESSION['id'];
 
 // Check if the user exists in the tutors table
-$sql = "CALL switchToTutor(?)";
-
-// Prepare the statement
-$stmt = $conn->prepare($sql);
-
-// Bind the parameter
-$stmt->bind_param("i", $userId);
-
-// Execute the statement
-$stmt->execute();
-
-// Get the result
-$result = $stmt->get_result();
+$sql = "SELECT * FROM tutors WHERE UserId = $userId";
+$result = mysqli_query($conn, $sql);
 
 if (mysqli_num_rows($result) > 0) {
     // User is already a tutor, redirect to TutorDashboard.php
