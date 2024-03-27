@@ -30,7 +30,8 @@ if(isset($_SESSION['id'])) {
         echo "No user found with ID: ".$userid;
     }
     $stmt->close();
-    $conn->close();
+    //$conn->close();
+    //LAST MODIFICATION 
 } else {
     echo "User is not logged in.";
 }

@@ -13,7 +13,7 @@ $conn = $database->getConnection();
 $admin = new Admin();
 
 // Fetch pending tutor requests along with student details using the obtainWhoWantBecomeTutor method
-$result = $admin->obtainWhoWantBecomeTutor($conn);
+$result2 = $admin->obtainWhoWantBecomeTutor($conn);
 ?>
 
 <!DOCTYPE html>
@@ -35,7 +35,7 @@ $result = $admin->obtainWhoWantBecomeTutor($conn);
                 <th>Last Name</th>
                 <th>Action</th>
             </tr>
-            <?php while($row = mysqli_fetch_assoc($result)): ?>
+            <?php while($row = mysqli_fetch_assoc($result2)): ?>
                 <tr>
                     <td><?php echo $row['FirstName']; ?></td>
                     <td><?php echo $row['LastName']; ?></td>
