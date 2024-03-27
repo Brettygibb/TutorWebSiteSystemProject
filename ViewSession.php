@@ -24,7 +24,7 @@ if ($stmt = $conn->prepare("SELECT FirstName, LastName, Email FROM users WHERE U
     $stmt->close();
 }
 
-$tutor = isset($_GET['tutorId']) ? intval($_GET['tutorId']) : 0;
+$tutorId = isset($_GET['tutorId']) ? intval($_GET['tutorId']) : 0;
 
 
 $sessions = [];
