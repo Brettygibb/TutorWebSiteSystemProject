@@ -1,3 +1,10 @@
+<?php
+
+if(isset($_GET['error'])){
+    echo "<script>alert('Email Already Exists')</script>";
+}
+    
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,7 +30,7 @@
             <input type="email" id="email" name="email" required><br>
             
             <label for="password">Password:</label>
-            <input type="text" id="password" name="password" required><br>
+            <input type="password" id="password" name="password" required><br>
 
             <button type="submit" value="Signup">Sign Up</button>
         </form>

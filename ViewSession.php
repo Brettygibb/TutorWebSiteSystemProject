@@ -1,40 +1,36 @@
-<?php 
+<?php
 session_start();
-//include 'Connect.php';
-
 include 'Database.php';
 
-//Create a new instance of DB class 
-$database= new Database($servername, $username, $password, $dbname);
-
-//Get the database connection 
-$conn= $database ->getConnection();
-
-$userid = isset($_SESSION['id']) ? $_SESSION['id'] : null;
-if (!$userid) {
-    // Redirect to login or show an error because the user is not logged in
-    header("Location: Login.php");
-    exit();
-}
-if ($stmt = $conn->prepare("SELECT FirstName, LastName, Email FROM users WHERE UserID = ?")) {
-    $stmt->bind_param("i", $userid);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $userRow = $result->fetch_assoc();
-    $stmt->close();
-}
+$database = new Database($servername, $username, $password, $dbname);
+$conn = $database->getConnection();
 
 $tutorId = isset($_GET['tutorId']) ? intval($_GET['tutorId']) : 0;
+$tutorProfile = null;
 
-
-$sessions = [];
 if ($tutorId > 0) {
-    if ($stmt = $conn->prepare("SELECT * FROM sessions WHERE TutorId = ? ORDER BY DateAndTime ASC")) { // Adjust 'DateAndTime' if using a different column name for the session date/time
+    $sql = "SELECT u.UserId, u.FirstName, u.LastName, u.Email, up.academicBackground, up.expertise, up.achievements, up.bio 
+            FROM tutors t
+            INNER JOIN users u ON t.UserId = u.UserId
+            LEFT JOIN users_profiles up ON u.UserId = up.UserId
+            WHERE t.TutorId = ?";
+    if ($stmt = $conn->prepare($sql)) {
         $stmt->bind_param("i", $tutorId);
         $stmt->execute();
         $result = $stmt->get_result();
-        while ($row = $result->fetch_assoc()) {
-            $sessions[] = $row;
+        if ($result->num_rows > 0) {
+            $tutorProfile = $result->fetch_assoc();
+        }
+        $stmt->close();
+    }
+
+    $reviewSql = "SELECT AVG(Rating) as AverageRating FROM reviews WHERE TutorId = ?";
+    if ($stmt = $conn->prepare($reviewSql)) {
+        $stmt->bind_param("i", $tutorId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if($row = $result->fetch_assoc()) {
+            $averageRating = round($row['AverageRating'], 1);
         }
         $stmt->close();
     }
@@ -44,29 +40,33 @@ if ($tutorId > 0) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Student Dashboard</title>
+    <title>Tutor Profile</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <?php include 'Includes/StudentHeader.php'; ?>
     <section>
-        <h2>Welcome to the Student Dashboard</h2>
-        <p>First Name: <?php echo htmlspecialchars($userRow['FirstName'] ?? 'N/A'); ?></p>
-        <p>Last Name: <?php echo htmlspecialchars($userRow['LastName'] ?? 'N/A'); ?></p>
-        <p>Email: <?php echo htmlspecialchars($userRow['Email'] ?? 'N/A'); ?></p>
-        <?php if (!empty($userRow['image'])): ?>
-            <img src="<?php echo htmlspecialchars($userRow['image']); ?>" alt="Profile Picture" style="width:100px;height:100px;">
+        <?php if ($tutorProfile): ?>
+            <h2>Tutor Profile</h2>
+            <p>Name: <?php echo htmlspecialchars($tutorProfile['FirstName'] . ' ' . $tutorProfile['LastName']); ?></p>
+            <p>Email: <?php echo htmlspecialchars($tutorProfile['Email']); ?></p>
+            <p>Academic Background: <?php echo htmlspecialchars($tutorProfile['academicBackground']); ?></p>
+            <p>Expertise: <?php echo htmlspecialchars($tutorProfile['expertise']); ?></p>
+            <p>Achievements: <?php echo htmlspecialchars($tutorProfile['achievements']); ?></p>
+            <p>Bio: <?php echo htmlspecialchars($tutorProfile['bio']); ?></p>
+            <p>Average Rating: <?php echo $averageRating; ?></p>
+
+            <form action="LeaveReview.php" method="post">
+                <input type="hidden" name="tutorId" value="<?php echo $tutorId; ?>">
+                <input type="hidden" name="studentId" value="<?php echo $_SESSION['studentId']; ?>">
+                <input type="hidden" name="sessionId" value="<?php echo $_GET['sessionId']; ?>">
+                <input type="submit" value="Leave a Review">
+            </form
+        <?php else: ?>
+            <p>No tutor found.</p>
         <?php endif; ?>
-    </section>
-    
-    <section>
-        <h2>Available Sessions</h2>
-        <?php foreach ($sessions as $session): ?>
-            <p>Course: <?php echo htmlspecialchars($session['CourseName']); ?></p> <!-- Assuming there's a 'CourseName' field -->
-            <p>Description: <?php echo htmlspecialchars($session['Description']); ?></p>
-            <p>Date and Time: <?php echo htmlspecialchars($session['DateAndTime']); ?></p> <!-- Adjust if using a different field for the session date/time -->
-            <hr>
-        <?php endforeach; ?>
+
+
     </section>
 </body>
 </html>

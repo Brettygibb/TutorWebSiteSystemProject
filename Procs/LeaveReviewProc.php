@@ -15,19 +15,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $conn = $db->getConnection();
 
     // Insert review into database
-    $stmt = $conn->prepare("INSERT INTO reviews (SessionId, TutorId, StudentId, Rating, Comment) VALUES (?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO reviews (SessionId, TutorId, StudentId, Rating, Feedback) VALUES (?, ?, ?, ?, ?)");
     $stmt->bind_param("iiiss", $sessionId, $tutorId, $studentId, $rating, $reviewText);
-
     if ($stmt->execute()) {
-        $updateStmt = $conn->prepare("UPDATE sessions SET Status = 'Reviewed' WHERE SessionId = ?");
-        $updateStmt->bind_param("i", $sessionId);
-        $updateStmt->execute();
-        header("Location: ../StudentDashBoard.php?success=true");
+        header("Location: ../StudentDashBoard.php?message=Review submitted successfully");
     } else {
-        header("Location: ../StudentDashBoard.php?success=false");
+        header("Location: ../StudentDashBoard.php?error=Failed to submit review");
     }
-    exit();
 } else {
-    die("Invalid request method.");
+    header("Location: ../StudentDashBoard.php?error=Invalid request");
 }
 ?>

@@ -72,8 +72,8 @@ class Sessions {
 
         return $result;
     }
-    public function createSession($tutorId, $studentId, $courseId, $date, $startTime, $message, $status) {
-        $query = "INSERT INTO sessions (TutorId, StudentId, CourseId, DateAndTime, StartTime, Notes, Status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    public function createSession($tutorId, $studentId, $date, $startTime, $message, $courseId) {
+        $query = "INSERT INTO sessions (TutorId, StudentId,  DateAndTime, StartTime, Notes, CourseId) VALUES (?, ?, ?, ?, ?, ?)";
         
         $stmt = $this->db->prepare($query);
         if (!$stmt) {
@@ -83,7 +83,7 @@ class Sessions {
         }
     
         // Corrected to match the placeholders in the query
-        $stmt->bind_param("iiissss", $tutorId, $studentId, $courseId, $date, $startTime, $message, $status);
+        $stmt->bind_param("iisssi", $tutorId, $studentId, $date, $startTime, $message, $courseId);
         $result = $stmt->execute();
         $stmt->close();
     
