@@ -18,12 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $admin->processRequestedCourses($requestId, $courseId, $status, $conn);
     }
 }
-
-// Fetch only pending requests with tutor names from the database
-$sql = "CALL GetPendingTutorRequests()";
-$result = mysqli_query($conn, $sql);
-
-$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -36,7 +30,13 @@ $conn->close();
 </head>
 <body>
     <?php include 'Includes/AdminHeader.php'; ?>
+    <?php
+    // Fetch only pending requests with tutor names from the database
+    $sql2 = "CALL GetPendingTutorRequests()";
+    $result2 = mysqli_query($conn, $sql2);
 
+    //$conn->close();
+    ?>
     <section>
         <h1>Review New Courses for Tutors</h1>
 
@@ -48,7 +48,7 @@ $conn->close();
                 <th>Action</th>
             </tr>
 
-            <?php while ($row = mysqli_fetch_assoc($result)): ?>
+            <?php while ($row = mysqli_fetch_assoc($result2)): ?>
                 <tr>
                     <td><?php echo $row['TutorName']; ?></td>
                     <td><?php echo $row['CourseName']; ?></td>
