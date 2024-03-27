@@ -31,6 +31,7 @@ if(isset($_SESSION['id'])) {
     }
     $stmt->close();
     //$conn->close();
+    //LAST MODIFICATION 
 } else {
     echo "User is not logged in.";
 }
