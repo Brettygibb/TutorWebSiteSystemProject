@@ -1,3 +1,16 @@
+<?php
+    if(isset($_GET['message'])){
+        if($_GET['message'] == 'fieldsRequired'){
+            echo "<script>alert('All fields are required');</script>";
+        }
+        else if($_GET['message'] == 'Invalid Email'){
+            echo "<script>alert('Invalid Email');</script>";
+        }
+        else if($_GET['message'] == 'ProfileUpdatedSuccessfully'){
+            echo "<script>alert('Profile Updated Successfully');</script>";
+        }
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,8 +22,13 @@
 <body>
     <?php include 'Includes/StudentHeader.php'; ?>
     <form action="StudentEditProc.php" method="post" enctype="multipart/form-data">
+        <label for="firstName">First Name:</label>
+        <input type="text" name="firstName" placeholder="First Name">
+        <label for="lastName">Last Name:</label>
+        <input type="text" name="lastName" placeholder="Last Name">
+        <label for="email">Email:</label>
         <input type="text" name="email" placeholder="Email">
-        <input type="text" name="pass" placeholder="Password">
+        
         <button type="submit">Submit</button>
 </body>
 </html>
