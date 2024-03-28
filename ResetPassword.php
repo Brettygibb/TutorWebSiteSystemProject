@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <?php
-    include 'Connect.php';
+    include 'Database.php';
+    $db = new Database($servername, $username, $password, $dbname); // Add parameters as required by your constructor
+    $conn = $db->getConnection();
 
     if(isset($_POST['token']) && isset($_POST['password']) && isset($_POST['passwordConf'])){
         $token = $_POST['token'];

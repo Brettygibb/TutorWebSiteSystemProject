@@ -1,7 +1,10 @@
 <?php
 
-include("Connect.php");
+include("Database.php");
 include("sendResetEmail.php");
+
+$db = new Database($servername, $username, $password, $dbname); // Add parameters as required by your constructor
+$conn = $db->getConnection();
 
 if($_SERVER['REQUEST_METHOD']=='POST'){
     $email = $_POST['email'];
@@ -10,7 +13,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
     $sql = "CALL GetUserByEmail(?)";
     $stmt = $conn->prepare($sql);
     if(!$stmt){
-        echo "Unable to prepare statement. Error: ".$conn->error;
+        echo "<script> alert('Unable to prepare statement. Error: ".$conn->error."')</script";
         exit();
     }
     $stmt->bind_param("s",$email);
@@ -32,7 +35,8 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
         $sql = "CALL UpdateUserResetToken(?,?)";
         $stmt = $conn->prepare($sql);
         if(!$stmt){
-            echo "Unable to prepare statement. Error: ".$conn->error;
+            echo "<script> alert('Unable to prepare statement. Error: ".$conn->error."')</script";
+            
             exit();
         }
         $stmt->bind_param("ss",$resetToken,$email);
@@ -46,10 +50,11 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 
         sendResetEmail($email,$resetToken);
 
-        echo "Check your email to reset your password";
+        echo "<script> alert('Password reset email sent')</script>";
+        header("Location: Login.php?reset=success");
     }
     else{
-        echo "Email does not exist";
+        header("Location: ForgotPassword.php?error=invalidemail");
     }
     $stmt->close();
     $conn->close();

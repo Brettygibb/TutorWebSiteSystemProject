@@ -9,6 +9,11 @@ if(isset($_GET['error'])){
         exit();
     }
 }
+if(isset($_GET['reset'])){
+    if($_GET['reset'] == 'success'){
+        echo "<script>alert('Password reset email sent')</script>";
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -1,3 +1,12 @@
+<?php
+    if(isset($_GET['error'])){
+        if($_GET['error'] == 'invalidemail'){
+            echo "<script>alert('Invalid email')</script>";
+        }
+        
+    }
+    
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
