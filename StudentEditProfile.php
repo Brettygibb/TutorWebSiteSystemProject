@@ -9,6 +9,12 @@
         else if($_GET['message'] == 'ProfileUpdatedSuccessfully'){
             echo "<script>alert('Profile Updated Successfully');</script>";
         }
+        else if($_GET['message'] == 'FailedToUpdateProfile'){
+            echo "<script>alert('Failed to update profile');</script>";
+        }
+        else if($_GET['message'] == 'Invalid Request'){
+            echo "<script>alert('Invalid Request');</script>";
+        }
     }
 ?>
 <!DOCTYPE html>
