@@ -27,11 +27,14 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
         header("Location: StudentEditProfile.php?message=Invalid Email");
         exit();
     }
-    $sql = "Update users set FirstName = ?, LastName = ?, Email = ? where UserId = ?";
+    $sql = "Call UpdateUserInfo(?,?,?,?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssi", $firstName, $lastName, $email, $userId);
-    $stmt->execute();
-    $stmt->close();
+    $stmt->bind_param("isss",$userId,$firstName,$lastName,$email);
+    if(!$stmt->execute()){
+        header("Location: StudentEditProfile.php?message=FailedToUpdateProfile");
+        exit();
+    }
+    
 
     header("Location: StudentDashBoard.php?message=ProfileUpdatedSuccessfully");
     exit();
