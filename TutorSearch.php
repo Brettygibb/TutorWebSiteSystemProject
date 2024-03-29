@@ -25,33 +25,46 @@
                         // Clear previous search results
                         $('#searchResults').empty();
 
-
                         console.log(response.length);
                         
                         if (response.length > 0) {
+
+                            //testing
+                            console.log(response);
+
+                            
+
                             // Display the search results
                             var table = '<table>';
-                            table += '<tr><td colspan="2"><strong>First Name</strong></td>';
-                            table += '<td colspan="2"><strong>Last Name</strong></td>';
-                            table += '<td colspan="2"><strong>Course Name</strong></td>';
-                            table += '<td colspan="2"><strong>Availability</strong></td></tr>';
+                            table += '<thead>';
+                            table += '<tr><th>First Name<br><button class="filterBtn" data-column="0">Filter</button></th>';
+                            table += '<th>Last Name<br><button class="filterBtn" data-column="1">Filter</button></th>';
+                            table += '<th>Course Name<br><button class="filterBtn" data-column="2">Filter</button></th>';
+                            table += '<th>Reviews<br><button class="filterBtn" data-column="2">Filter</button></th>';
 
+                            table += '<th>Availability</th>';
                             
+                            table += '</thead>';
                             
+                            table += '<tbody>';
+                           
+                            
+
                             $.each(response, function(index, pair) {
-
                                var tutor = pair[0];
                                var course = pair[1];
-
+                               var review = pair[2];
 
                                 table += '<tr>';
-                                table += '<td colspan="2">' + tutor.firstName + '</td>';
-                                table += '<td colspan="2">' + tutor.lastName + '</td>';
-                                table += '<td colspan="2">' + course.courseName + '</td>';
-                                table += '<td colspan="2">'+'<a href=ViewAllSessions.php?Id=' + tutor.tutorId +'&Course=' + course.courseId + '>View Sessions</a></td>';
+                                table += '<td>' + tutor.firstName + '</td>';
+                                table += '<td>' + tutor.lastName + '</td>';
+                                table += '<td>' + course.courseName + '</td>';
+                                table += '<td>' + tutor.rating + '</td>';
+                                table += '<td>' + '<a href=ViewAllSessions.php?Id=' + tutor.tutorId +'&Course=' + course.courseId + '>View Sessions</a>' + '</td>';
                                 table += '</tr>';
                             });
                             
+                            table += '</tbody>';
                             table += '</table>';
                             $('#searchResults').html(table);
                         } else {
@@ -62,19 +75,48 @@
                     error: function(response) {
                         console.log(response);
                     }
-
-
                 });
             } else {
                 // Clear search results if search input is empty
                 $('#searchResults').empty();
             }
         });
+
+        // Add event listener for column filtering buttons
+        $(document).on('click', '.filterBtn', function() {
+            var column = $(this).data('column');
+            sortTable(column);
+        });
+
+        function sortTable(column) {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.querySelector('table');
+            switching = true;
+            
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("TD")[column];
+                    y = rows[i + 1].getElementsByTagName("TD")[column];
+                    
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        }
     });
     </script>
 </head>
 <body>
-    <?php include 'Includes/StudentHeader.php'; ?>
     <!--wrapper for main content-->
     <div class="wrapper">
         <main>
@@ -82,15 +124,19 @@
             <img src="images/nbccLogo.png" class="nbccBanner" alt="" />
 
             <form id="tutorSearch" method="post" action="#">
-                <label for="search">Name or Subject</label>
+                <label for="search">Enter a subject or name</label>
                 <input type="text" id="search" name="search" placeholder="Enter search">
-                <button type="button">Search</button>
-            </form><BR><BR>
+            </form><br><br>
+
+
+
+
+
+
+
 
             <!-- Container to display search results -->
             <div id="searchResults"></div>
-
-            
         </main>
     </div>
     

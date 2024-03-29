@@ -2,6 +2,7 @@
 require_once 'Database.php';
 require_once 'tutor.php'; // Include the Tutor class definition
 require_once 'course.php'; 
+require_once 'review.php'; 
 
 function searchTutors($searchQuery) {
     try {
@@ -28,15 +29,19 @@ function searchTutors($searchQuery) {
         if ($result->num_rows > 0) {
             // Fetch data from the database and populate Tutor objects
             while ($row = $result->fetch_assoc()) {
-                
+
                 // Create a Tutor object and add it to the $tutors array
-                $tutor = new Tutor($row['FirstName'], $row['LastName'], $row['TutorId']);
+                $tutor = new Tutor($row['FirstName'], $row['LastName'], $row['TutorId'], $row['Rating']);
                 $course = new Course($row['CourseId'], $row['CourseName']);
+               // $review = new Review($row['Rating']);
+                
 
                 $pair = [$tutor, $course];
 
 
                 $tutors[] = $pair;
+
+                
             }
         }
 
