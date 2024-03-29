@@ -31,7 +31,7 @@ function searchTutors($searchQuery) {
             while ($row = $result->fetch_assoc()) {
 
                 // Create a Tutor object and add it to the $tutors array
-                $tutor = new Tutor($row['FirstName'], $row['LastName'], $row['TutorId'], $row['Rating']);
+                $tutor = new Tutor($row['FirstName'], $row['LastName'], $row['TutorId'], $row['AvgRating']);
                 $course = new Course($row['CourseId'], $row['CourseName']);
                // $review = new Review($row['Rating']);
                 
