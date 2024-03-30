@@ -117,6 +117,7 @@
     </script>
 </head>
 <body>
+    <?php include 'Includes/StudentHeader.php'; ?>
     <!--wrapper for main content-->
     <div class="wrapper">
         <main>
