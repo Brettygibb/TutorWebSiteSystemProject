@@ -11,7 +11,7 @@ $conn = $db->getConnection();
 $userid = isset($_SESSION['id']) ? $_SESSION['id'] : null;
 if (!$userid) {
     // Redirect to login page or show an error if the user ID isn't set
-    header("Location: login.php");
+    header("Location: Login.php");
     exit;
 }
 
@@ -21,6 +21,7 @@ $stmt->bind_param("i", $userid);
 $stmt->execute();
 $result = $stmt->get_result();
 $userDetails = $result->fetch_assoc();
+$stmt->close();
 
 // Fetch tutor ID
 $tutorStmt = $conn->prepare("CALL GetTutorId(?)");
