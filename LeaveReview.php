@@ -1,13 +1,13 @@
 <?php
 session_start();
 // Check if the user is logged in and the required parameters are present
-if (!isset($_SESSION['studentId']) || !isset($_POST['sessionId']) || !isset($_POST['tutorId'])) {
+if (!isset($_SESSION['studentId']) || !isset($_GET['sessionId']) || !isset($_GET['tutorId'])) {
     die("Unauthorized access or missing information.");
 }
 
 // Sanitize GET parameters
-$sessionId = htmlspecialchars($_POST['sessionId']);
-$tutorId = htmlspecialchars($_POST['tutorId']);
+$sessionId = htmlspecialchars($_GET['sessionId']);
+$tutorId = htmlspecialchars($_GET['tutorId']);
 $studentId = $_SESSION['studentId']; // Already sanitized during login
 
 include 'Database.php'; // Adjust the path as needed

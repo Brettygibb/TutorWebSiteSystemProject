@@ -25,6 +25,9 @@ if ($stmt = $conn->prepare("CALL GetUserByUserId(?)")) {
 }
 
 $tutorId = isset($_GET['tutorId']) ? $_GET['tutorId'] : 0;
+$sessionId = isset($_GET['sessionId']) ? $_GET['sessionId'] : 0;
+$studentId = $_SESSION['studentId'];
+
 
 
 $sessions = [];
@@ -62,10 +65,12 @@ if ($tutorId > 0) {
             <p>Tutor First Name: <?php echo htmlspecialchars($session['TutorFirstName']); ?></p> 
             <p>Tutor Last Name: <?php echo htmlspecialchars($session['TutorLastName']); ?></p> 
             <p>Email: <?php echo htmlspecialchars($session['TutorEmail']); ?></p> 
-
             <p>Course: <?php echo htmlspecialchars($session['CourseName']); ?></p> 
             <p>Date and Time: <?php echo htmlspecialchars($session['SessionDate']); ?></p> 
             <p>Start Time: <?php echo date('h:i A', strtotime($session['StartTime'])); ?></p>
+            <a href="LeaveReview.php?sessionId=<?php echo $sessionId; ?>&tutorId=<?php echo $tutorId; ?>&studentId=<?php echo $studentId; ?>">Leave a Review</a>
+
+
             <hr>
         <?php endforeach; ?>
     </section>
