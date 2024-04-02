@@ -10,7 +10,7 @@ $conn = $database->getConnection();
 $userid = isset($_SESSION['id']) ? $_SESSION['id'] : null;
 if (!$userid) {
     // Redirect to login page or show an error if the user ID isn't set
-    header("Location: login.php");
+    header("Location: Login.php");
     exit;
 }
 
@@ -39,6 +39,7 @@ $stmt = $conn->prepare("CALL GetUpcomingSessions(?)");
 $stmt->bind_param("i", $studentgetid);
 $stmt->execute();
 $sessionsResult = $stmt->get_result();
+$stmt->close();
 //stores the student id in a session
 $_SESSION['userid'] = $userid;
 
