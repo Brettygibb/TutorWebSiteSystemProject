@@ -15,10 +15,6 @@ include 'Database.php'; // Adjust the path as needed
 // Database connection
 $db = new Database($servername, $username, $password, $dbname); // Add parameters as required by your constructor
 $conn = $db->getConnection();
-
-echo $studentId;
-echo $sessionId;
-echo $tutorId;
 ?>
 
 <!DOCTYPE html>
