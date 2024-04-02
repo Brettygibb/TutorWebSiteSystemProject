@@ -24,12 +24,12 @@ if ($stmt = $conn->prepare("CALL GetUserByUserId(?)")) {
     $stmt->close();
 }
 
-$tutorId = isset($_GET['tutorId']) ? intval($_GET['tutorId']) : 0;
+$tutorId = isset($_GET['tutorId']) ? $_GET['tutorId'] : 0;
 
 
 $sessions = [];
 if ($tutorId > 0) {
-    if ($stmt = $conn->prepare("CALL GetSessions(?)")) {
+    if ($stmt = $conn->prepare("CALL GetSessionsByTutor(?)")) {
         $stmt->bind_param("i", $tutorId);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -59,9 +59,13 @@ if ($tutorId > 0) {
     <section>
         <h2>Available Sessions</h2>
         <?php foreach ($sessions as $session): ?>
+            <p>Tutor First Name: <?php echo htmlspecialchars($session['TutorFirstName']); ?></p> 
+            <p>Tutor Last Name: <?php echo htmlspecialchars($session['TutorLastName']); ?></p> 
+            <p>Email: <?php echo htmlspecialchars($session['TutorEmail']); ?></p> 
+
             <p>Course: <?php echo htmlspecialchars($session['CourseName']); ?></p> 
-            <p>Description: <?php echo htmlspecialchars($session['Description']); ?></p>
-            <p>Date and Time: <?php echo htmlspecialchars($session['DateAndTime']); ?></p> 
+            <p>Date and Time: <?php echo htmlspecialchars($session['SessionDate']); ?></p> 
+            <p>Start Time: <?php echo date('h:i A', strtotime($session['StartTime'])); ?></p>
             <hr>
         <?php endforeach; ?>
     </section>
