@@ -29,7 +29,7 @@ $tutorId = isset($_GET['tutorId']) ? intval($_GET['tutorId']) : 0;
 
 $sessions = [];
 if ($tutorId > 0) {
-    if ($stmt = $conn->prepare("CALL GetSessions(?)")) { // Adjust 'DateAndTime' if using a different column name for the session date/time
+    if ($stmt = $conn->prepare("CALL GetSessions(?)")) {
         $stmt->bind_param("i", $tutorId);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -54,17 +54,14 @@ if ($tutorId > 0) {
         <p>First Name: <?php echo htmlspecialchars($userRow['FirstName'] ?? 'N/A'); ?></p>
         <p>Last Name: <?php echo htmlspecialchars($userRow['LastName'] ?? 'N/A'); ?></p>
         <p>Email: <?php echo htmlspecialchars($userRow['Email'] ?? 'N/A'); ?></p>
-        <?php if (!empty($userRow['image'])): ?>
-            <img src="<?php echo htmlspecialchars($userRow['image']); ?>" alt="Profile Picture" style="width:100px;height:100px;">
-        <?php endif; ?>
     </section>
     
     <section>
         <h2>Available Sessions</h2>
         <?php foreach ($sessions as $session): ?>
-            <p>Course: <?php echo htmlspecialchars($session['CourseName']); ?></p> <!-- Assuming there's a 'CourseName' field -->
+            <p>Course: <?php echo htmlspecialchars($session['CourseName']); ?></p> 
             <p>Description: <?php echo htmlspecialchars($session['Description']); ?></p>
-            <p>Date and Time: <?php echo htmlspecialchars($session['DateAndTime']); ?></p> <!-- Adjust if using a different field for the session date/time -->
+            <p>Date and Time: <?php echo htmlspecialchars($session['DateAndTime']); ?></p> 
             <hr>
         <?php endforeach; ?>
     </section>
