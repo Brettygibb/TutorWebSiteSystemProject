@@ -36,16 +36,15 @@
 
                             // Display the search results
                             var table = '<table>';
-                            table += '<thead>';
-                            table += '<tr><th>First Name<br><button class="filterBtn" data-column="0">Filter</button></th>';
+                            
+
+                            table += '<thead><tr>'; 
+                            table += '<th>First Name<br><button class="filterBtn" data-column="0">Filter</button></th>';
                             table += '<th>Last Name<br><button class="filterBtn" data-column="1">Filter</button></th>';
                             table += '<th>Course Name<br><button class="filterBtn" data-column="2">Filter</button></th>';
-                            table += '<th>Reviews<br><button class="filterBtn" data-column="2">Filter</button></th>';
-
+                            table += '<th>Rating<br><button class="filterBtn" data-column="3">Filter</button></th>';
                             table += '<th>Availability</th>';
-                            
-                            table += '</thead>';
-                            
+                            table += '</tr></thead>';
                             table += '<tbody>';
                            
                             
@@ -55,11 +54,13 @@
                                var course = pair[1];
                                var review = pair[2];
 
+                               
+
                                 table += '<tr>';
                                 table += '<td>' + tutor.firstName + '</td>';
                                 table += '<td>' + tutor.lastName + '</td>';
                                 table += '<td>' + course.courseName + '</td>';
-                                table += '<td>' + tutor.rating + '</td>';
+                                table += '<td>' + Math.round(tutor.rating) + '</td>';
                                 table += '<td>' + '<a href=ViewAllSessions.php?Id=' + tutor.tutorId +'&Course=' + course.courseId + '>View Sessions</a>' + '</td>';
                                 table += '</tr>';
                             });
@@ -117,6 +118,7 @@
     </script>
 </head>
 <body>
+<?php include 'Includes/StudentHeader.php'; ?>
     <!--wrapper for main content-->
     <div class="wrapper">
         <main>
@@ -126,7 +128,7 @@
             <form id="tutorSearch" method="post" action="#">
                 <label for="search">Enter a subject or name</label>
                 <input type="text" id="search" name="search" placeholder="Enter search">
-            </form><br><br>
+            </form></br></br>
 
 
 
@@ -137,6 +139,8 @@
 
             <!-- Container to display search results -->
             <div id="searchResults"></div>
+
+            
         </main>
     </div>
     
