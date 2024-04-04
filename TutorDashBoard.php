@@ -36,6 +36,17 @@ if ($tutorRow = $tutorResult->fetch_assoc()) {
     exit; // Or handle this scenario appropriately
 }
 $tutorStmt->close();
+
+$tutorgetid = $_SESSION['tutorId'];
+//WE NEED TO CALL GetUpcomingSessions(?) WITH THE NEXT CODE
+// Fetch upcoming sessions
+$Calstmt = $conn->prepare("CALL GetTutorsSessions(?)");
+$Calstmt->bind_param("i", $tutorgetid);
+$Calstmt->execute();
+$sessionsResult = $Calstmt->get_result();
+$Calstmt->close();
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -44,6 +55,7 @@ $tutorStmt->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tutor Dashboard</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="Calendar.css" rel="stylesheet" type="text/css"> 
 </head>
 <body>
     <?php include 'Includes/TutorHeader.php'; ?>
@@ -59,6 +71,24 @@ $tutorStmt->close();
             <img src="<?php echo htmlspecialchars($userDetails['image']); ?>" alt="Profile Picture">
         <?php endif; ?>
         
+    </section>
+
+    <section>
+        <h2>Upcoming Sessions</h2>
+        <?php if ($sessionsResult->num_rows > 0): ?>
+            <ul>
+                <?php while ($session = $sessionsResult->fetch_assoc()):?>
+                    <br>
+                    <li>
+                        <!-- Add session to calendar -->
+                        <?php  $calendar->addSession($session['CourseName'], $session['DateAndTime'], $session['SessionId'], $session['TutorId'], "blue"); ?>
+                    </li>
+                    
+                <?php endwhile; ?>
+            </ul>
+        <?php else: ?>
+            <p>No upcoming sessions.</p>
+        <?php endif; ?>
     </section>
 </body>
 </html>
