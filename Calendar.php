@@ -10,8 +10,8 @@ class SimpleCalendar {
     }
 
     // Add an event
-    public function addSession($eventText, $eventDate, $cssClass = '') {
-        $this->sessions[$eventDate][] = ['text' => $eventText, 'class' => $cssClass];
+    public function addSession($eventText, $eventDate, $sessionId, $tutorId, $cssClass = '') {
+        $this->sessions[$eventDate][] = ['text' => $eventText, 'session' => $sessionId, 'tutor' => $tutorId, 'class' => $cssClass];
     }
 
     public function render() {
@@ -60,7 +60,8 @@ class SimpleCalendar {
 
             if (isset($this->sessions[$date])) {
                 foreach ($this->sessions[$date] as $event) {
-                    $calendar .= "<div class='event " . $event['class'] . "'>" . $event['text'] . "</div>";
+                    $calendar .= "<div class='event " . $event['class'] . "'>" . $event['text'] . "<a href='ViewSession.php?sessionId=" . $event['session'] . "&tutorId=" . $event['tutor'] . "'>" . "View Session" . "</a>" . "</div>";
+                    
                 }
             }
 

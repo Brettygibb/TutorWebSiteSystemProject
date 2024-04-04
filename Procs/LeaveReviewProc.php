@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $conn = $db->getConnection();
 
     // Insert review into database
-    $stmt = $conn->prepare("INSERT INTO reviews (SessionId, TutorId, StudentId, Rating, Feedback) VALUES (?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("CALL InsertReview(?, ?, ?, ?, ?)");
     $stmt->bind_param("iiiss", $sessionId, $tutorId, $studentId, $rating, $reviewText);
     if ($stmt->execute()) {
         header("Location: ../StudentDashBoard.php?message=Review submitted successfully");
