@@ -1,3 +1,22 @@
+<?php
+    if(isset($_GET['message'])){
+        if($_GET['message'] == 'fieldsRequired'){
+            echo "<script>alert('All fields are required');</script>";
+        }
+        else if($_GET['message'] == 'Invalid Email'){
+            echo "<script>alert('Invalid Email');</script>";
+        }
+        else if($_GET['message'] == 'ProfileUpdatedSuccessfully'){
+            echo "<script>alert('Profile Updated Successfully');</script>";
+        }
+        else if($_GET['message'] == 'FailedToUpdateProfile'){
+            echo "<script>alert('Failed to update profile');</script>";
+        }
+        else if($_GET['message'] == 'Invalid Request'){
+            echo "<script>alert('Invalid Request');</script>";
+        }
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,21 +27,14 @@
 </head>
 <body>
     <?php include 'Includes/AdminHeader.php'; ?>
-
-    <section>
-    <h1>Edit Admin Profile</h1>
     <form action="AdminEditProc.php" method="post" enctype="multipart/form-data">
+        <label for="firstName">First Name:</label>
+        <input type="text" name="firstName" placeholder="First Name">
+        <label for="lastName">Last Name:</label>
+        <input type="text" name="lastName" placeholder="Last Name">
+        <label for="email">Email:</label>
         <input type="text" name="email" placeholder="Email">
-        <input type="text" name="pass" placeholder="Password">
-        <label for="gender">Gender:</label>
-        <select name="gender" id="gender">
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-        </select><br>  
-        <label for="profilePicture">Profile Picture:</label>              
-        <input type="file" name="image" placeholder="Profile Picture">
+        
         <button type="submit">Submit</button>
-    </section>
 </body>
 </html>
