@@ -67,9 +67,6 @@ $Calstmt->close();
         <p>Last Name: <?php echo htmlspecialchars($userDetails['LastName']); ?></p>
         <p>Email: <?php echo htmlspecialchars($userDetails['Email']); ?></p>
         <p>Tutor ID: <?php echo htmlspecialchars($_SESSION['tutorId']); ?></p> <!-- Displaying TutorId -->
-        <?php if (!empty($userDetails['image'])): ?>
-            <img src="<?php echo htmlspecialchars($userDetails['image']); ?>" alt="Profile Picture">
-        <?php endif; ?>
         
     </section>
 
