@@ -1,13 +1,13 @@
 <?php
 session_start();
-require 'Database.php'; // Adjust the path as necessary
+require 'Database.php';
 
 $db = new Database($servername, $username, $password, $dbname);
 $conn = $db->getConnection();
 
 if (isset($_POST['cancelSession'], $_POST['sessionId'])) {
     $sessionId = $_POST['sessionId'];
-    $studentId = $_SESSION['studentId']; // Make sure this is set correctly
+    $studentId = $_SESSION['studentId'];
 
     // Start transaction for atomicity
     $conn->begin_transaction();
