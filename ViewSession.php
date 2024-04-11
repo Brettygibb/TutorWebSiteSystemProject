@@ -42,6 +42,7 @@ if ($tutorId > 0) {
         $stmt->close();
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -52,6 +53,7 @@ if ($tutorId > 0) {
 </head>
 <body>
     <?php include 'Includes/StudentHeader.php'; ?>
+    
     <section>
         <h2>Welcome to the Student Dashboard</h2>
         <p>First Name: <?php echo htmlspecialchars($userRow['FirstName'] ?? 'N/A'); ?></p>
@@ -69,8 +71,12 @@ if ($tutorId > 0) {
             <p>Date and Time: <?php echo htmlspecialchars($session['SessionDate']); ?></p> 
             <p>Start Time: <?php echo date('h:i A', strtotime($session['StartTime'])); ?></p>
             <a href="LeaveReview.php?sessionId=<?php echo $sessionId; ?>&tutorId=<?php echo $tutorId; ?>&studentId=<?php echo $studentId; ?>">Leave a Review</a>
-
-
+            <!-- Add a class to the form for styling -->
+            <form action="CancelSessionProc.php" method="post" style="background:none; border:none; padding:0; margin:0;">
+            <input type="hidden" name="sessionId" value="<?php echo htmlspecialchars($sessionId); ?>">
+            <input type="hidden" name="userRole" value="<?php echo isset($_SESSION['userRole']) ? $_SESSION['userRole'] : ''; ?>">
+            <button type="submit" name="cancelSession" onclick="return confirm('Are you sure you want to cancel this session?');" style="background-color: #0f6e90; color: white; border: none; padding: 10px 10px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; border-radius: 4px;">Cancel Session</button>
+        </form>
             <hr>
         <?php endforeach; ?>
     </section>
