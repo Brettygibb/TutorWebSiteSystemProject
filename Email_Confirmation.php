@@ -2,9 +2,10 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
-require '../PHPMailer/src/Exception.php';
-require '../PHPMailer/src/PHPMailer.php';
-require '../PHPMailer/src/SMTP.php';
+
+require_once 'PHPMailer\PHPMailer\src\Exception.php';
+require_once 'PHPMailer\PHPMailer\src\PHPMailer.php';
+require_once 'PHPMailer\PHPMailer\src\SMTP.php';
 //require 'vendor/autoload.php';
 include 'Connect.php';
 
@@ -84,6 +85,37 @@ function sendVerificationEmail($email, $token, $firstName, $lastName) {
         $mail->isHTML(true);
         $mail->Subject = 'Please verify your email';
         $mail->Body = $message;
+
+        // Send email
+        $mail->send();
+        echo "Message has been sent";
+    } catch (Exception $e) {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    }
+}
+
+function welcomeEmail($email, $firstName) {
+    $mail = new PHPMailer(true);
+
+    try {
+        // Server settings
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'nbcctutoremail@gmail.com';
+        $mail->Password = 'hxymgawarsapwfza';
+        $mail->SMTPSecure = 'ssl';
+        $mail->Port = 465;
+
+        // Recipients
+        $mail->setFrom('nbcctutoremail@gmail.com');
+        $mail->addAddress($email, $firstName);
+
+        // Content
+        $mail->isHTML(true);
+        $mail->Subject = 'Welcome to NBCC Tutoring';
+        $mail->Body = 'Welcome to NBCC Tutoring!';
+        $mail->AltBody = 'Welcome to NBCC Tutoring!';
 
         // Send email
         $mail->send();

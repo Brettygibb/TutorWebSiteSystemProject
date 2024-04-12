@@ -1,5 +1,6 @@
 <?php
 include('Database.php');
+include('Email_Confirmation.php');
 
 
 //jays test////////////////////////////////////////////////////////////////////// WORKED
@@ -48,6 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $stmt = $conn->prepare($sqlStudent);
                 $stmt->bind_param("i", $userid);
                 if ($stmt->execute()) {
+                    // Send welcome email to the user
+                    welcomeEmail($email, $firstName);
                     header("Location: index.php");
                     exit();
                 } else {
