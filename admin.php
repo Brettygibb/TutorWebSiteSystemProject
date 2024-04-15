@@ -137,7 +137,7 @@ class Admin extends User {
             $status = 'Denied';
 
             // SQL to update status
-            $updateSql = "UPDATE becometutor_requests SET Status = ? WHERE StudentId = ?";
+            $updateSql = "CALL UpdateTutorRequestStatus(?, ?)";
             $stmt = mysqli_prepare($conn, $updateSql);
             if (!$stmt) {
                 echo "Error preparing statement: " . mysqli_error($conn);
@@ -151,7 +151,7 @@ class Admin extends User {
             mysqli_stmt_close($stmt);
 
             // Get the UserId associated with the StudentId
-            $userIdSql = "SELECT UserId FROM students WHERE StudentId = ?";
+            $userIdSql = "CALL GetUserIdByStudentId(?)";
             $stmt = mysqli_prepare($conn, $userIdSql);
             if (!$stmt) {
                 echo "Error preparing statement: " . mysqli_error($conn);
@@ -165,7 +165,7 @@ class Admin extends User {
 
             // Add a notification for tutor request denial
             $notificationMessage = "Tutor request was denied.";
-            $insertNotificationSql = "INSERT INTO notifications (user_id, message, is_read) VALUES (?, ?, 0)";
+            $insertNotificationSql = "CALL InsertNotificationNoRead(?, ?)";
             $stmt = mysqli_prepare($conn, $insertNotificationSql);
             if (!$stmt) {
                 echo "Error preparing statement: " . mysqli_error($conn);
