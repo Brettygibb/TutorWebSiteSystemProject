@@ -7,7 +7,7 @@ $userid = $_SESSION['id'];
 
 // Query to get the tutor ID based on the user ID
 //need a stored procedure to get the tutor id
-$tutorIdSql = "SELECT TutorId FROM tutors WHERE UserId = ?";
+$tutorIdSql = "CALL GetTutorId(?)";
 $stmt = $conn->prepare($tutorIdSql);
 $stmt->bind_param("i", $userid);
 $stmt->execute();
@@ -25,8 +25,7 @@ if (!$tutorIdRow) {
 $tutorid = $tutorIdRow['TutorId'];
 
 // Query to get the user information
-//need a stored procedure to get the user info
-$userSql = "SELECT * FROM users WHERE UserID = ?";
+$userSql = "CALL GetUserByUserID(?)";
 $stmt = $conn->prepare($userSql);
 $stmt->bind_param("i", $userid);
 $stmt->execute();
@@ -36,7 +35,7 @@ $userRow = $userResult->fetch_assoc();
 // Query to get available courses for the tutor to subscribe
 //need a stored procedure to get the available courses
 //$availableCoursesSql = "SELECT * FROM courses WHERE CourseId NOT IN (SELECT CourseId FROM tutor_courses WHERE TutorId = ?)";
-$availableCoursesSql = "SELECT * FROM courses WHERE CourseId NOT IN (SELECT CourseId FROM tutor_courses WHERE TutorId = ?) AND CourseId NOT IN (SELECT CourseId FROM requests WHERE TutorId = ? AND Status = 'Pending')";
+$availableCoursesSql = "CALL GetAvailableCourses(?)";
 $stmt = $conn->prepare($availableCoursesSql);
 $stmt->bind_param("ii", $tutorid, $tutorid);
 $stmt->execute();
