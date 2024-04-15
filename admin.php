@@ -36,8 +36,7 @@ class Admin extends User {
         $stmt->close();
 
         // Insert admin into admins table
-        $sql_insert_admin = "INSERT INTO admins (UserId)
-                             VALUES (?)";
+        $sql_insert_admin = "CALL InsertAdmin(?)";
         $stmt = $conn->prepare($sql_insert_admin);
         $stmt->bind_param("i", $user_id);
         $stmt->execute();
@@ -51,11 +50,7 @@ class Admin extends User {
     
     
     public function obtainWhoWantBecomeTutor($conn) {
-        $sql = "SELECT u.FirstName, u.LastName, bt.StudentId
-                FROM becometutor_requests bt
-                INNER JOIN students s ON bt.StudentId = s.StudentId
-                INNER JOIN users u ON s.UserId = u.UserId
-                WHERE bt.Status = 'Pending'";
+        $sql = "CALL GetWhoWantBecomeTutor()";
         $result = mysqli_query($conn, $sql);
         if (!$result) {
             echo "Error fetching tutor requests: " . mysqli_error($conn);
@@ -70,7 +65,7 @@ class Admin extends User {
             $status = 'Approved';
 
             // SQL to update status
-            $updateSql = "UPDATE becometutor_requests SET Status = ? WHERE StudentId = ?";
+            $updateSql = "CALL UpdateTutorRequestStatus(?, ?)";
             $stmt = mysqli_prepare($conn, $updateSql);
             if (!$stmt) {
                 echo "Error preparing statement: " . mysqli_error($conn);
@@ -84,7 +79,7 @@ class Admin extends User {
             mysqli_stmt_close($stmt);
 
             // Get the UserId associated with the StudentId
-            $userIdSql = "SELECT UserId FROM students WHERE StudentId = ?";
+            $userIdSql = "CALL GetUserIdByStudentId(?)";
             $stmt = mysqli_prepare($conn, $userIdSql);
             if (!$stmt) {
                 echo "Error preparing statement: " . mysqli_error($conn);
@@ -97,7 +92,7 @@ class Admin extends User {
             mysqli_stmt_close($stmt);
 
             // Insert into tutors table
-            $insertTutorSql = "INSERT INTO tutors (UserId) VALUES (?)";
+            $insertTutorSql = "CALL InsertTutor(?)";
             $stmt = mysqli_prepare($conn, $insertTutorSql);
             if (!$stmt) {
                 echo "Error preparing statement: " . mysqli_error($conn);
