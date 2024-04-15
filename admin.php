@@ -191,7 +191,7 @@ class Admin extends User {
         // Check if the status is 'Approved' and insert into tutor_courses table
         if ($status === 'Approved') {
             // Update the status in the requests table
-            $updateStatusSql = "UPDATE requests SET Status = 'Approved' WHERE TutorId = ? AND CourseId = ?";
+            $updateStatusSql = "CALL UpdateCourseRequestStatus(?, ?)";
             $stmt = $conn->prepare($updateStatusSql);
             $stmt->bind_param("ii", $requestId, $courseId);
             $stmt->execute();
@@ -204,7 +204,7 @@ class Admin extends User {
             $stmt->close();
 
             // Fetch the userId of the tutor associated with the request
-            $userIdSql = "SELECT UserId FROM tutors WHERE TutorId = ?";
+            $userIdSql = "CALL GetUserIdByTutorId(?)";
             $stmt = $conn->prepare($userIdSql);
             $stmt->bind_param("i", $requestId);
             $stmt->execute();
