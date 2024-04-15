@@ -213,7 +213,7 @@ class Admin extends User {
             $stmt->close();
 
             // Fetch the course name
-            $getCourseNameSql = "SELECT CourseName FROM courses WHERE CourseId = ?";
+            $getCourseNameSql = "CALL GetCourseNameById(?)";
             $stmt = $conn->prepare($getCourseNameSql);
             $stmt->bind_param("i", $courseId);
             $stmt->execute();
