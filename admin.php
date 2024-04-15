@@ -106,7 +106,7 @@ class Admin extends User {
             mysqli_stmt_close($stmt);
 
             // Add tutor role to the user in user_roles table
-            $insertUserRoleSql = "INSERT INTO user_roles (UserId, RoleId) VALUES (?, (SELECT RoleId FROM roles WHERE RoleName = 'Tutor'))";
+            $insertUserRoleSql = "CALL InsertUserRoleForTutor(?)";
             $stmt = mysqli_prepare($conn, $insertUserRoleSql);
             if (!$stmt) {
                 echo "Error preparing statement: " . mysqli_error($conn);
@@ -121,7 +121,7 @@ class Admin extends User {
 
             // Add a notification for tutor request approval
             $notificationMessage = "Tutor request was approved.";
-            $insertNotificationSql = "INSERT INTO notifications (user_id, message, is_read) VALUES (?, ?, 0)";
+            $insertNotificationSql = "CALL InsertNotificationNoRead(?, ?)";
             $stmt = mysqli_prepare($conn, $insertNotificationSql);
             if (!$stmt) {
                 echo "Error preparing statement: " . mysqli_error($conn);
