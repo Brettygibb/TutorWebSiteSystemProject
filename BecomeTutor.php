@@ -65,14 +65,14 @@
                     echo "Your request to become a tutor has been submitted. You will be notified once it's reviewed.";
 
                     // After inserting the tutor request, insert notifications for all admin users
-                    $sqlAdmins = "SELECT UserId FROM admins";
+                    $sqlAdmins = "CALL GetAdmins()";
                     $stmtAdmins = mysqli_prepare($conn, $sqlAdmins);
                     mysqli_stmt_execute($stmtAdmins);
                     mysqli_stmt_store_result($stmtAdmins);
                     mysqli_stmt_bind_result($stmtAdmins, $adminId);
 
                     // Prepare the notification insertion query
-                    $sqlNotification = "INSERT INTO notifications (user_id, message) VALUES (?, ?)";
+                    $sqlNotification = "CALL InsertNotification(?, ?)";
                     $stmtNotification = mysqli_prepare($conn, $sqlNotification);
                     $message = "New tutor request received. Please review.";
 
