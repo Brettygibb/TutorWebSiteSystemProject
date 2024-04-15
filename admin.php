@@ -20,8 +20,7 @@ class Admin extends User {
 
     public function insertAdminDatabase($conn) {
         // Prepare the SQL statement
-        $sql_insert_user = "INSERT INTO users (FirstName, LastName, Email, PasswordHash)
-                            VALUES (?, ?, ?, ?)";
+        $sql_insert_user = "CALL InsertUserOptimized(?, ?, ?, ?)";
         $stmt = $conn->prepare($sql_insert_user);
         
         // Bind parameters
