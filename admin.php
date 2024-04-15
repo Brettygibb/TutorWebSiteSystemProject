@@ -223,7 +223,7 @@ class Admin extends User {
 
             // Add a notification for course request approval
             $notificationMessage = "Course request for $courseName was approved.";
-            $insertNotificationSql = "INSERT INTO notifications (user_id, message, is_read) VALUES (?, ?, 0)";
+            $insertNotificationSql = "CALL InsertNotificationNoRead(?, ?)";
             $stmt = $conn->prepare($insertNotificationSql);
             $stmt->bind_param("is", $userId, $notificationMessage);
             $stmt->execute();
@@ -231,14 +231,14 @@ class Admin extends User {
 
         } elseif ($status === 'Denied') {
             // Update the status in the requests table
-            $updateStatusSql = "UPDATE requests SET Status = 'Denied' WHERE TutorId = ? AND CourseId = ?";
+            $updateStatusSql = "CALL UpdateCourseRequestStatusToDenied(?, ?)";
             $stmt = $conn->prepare($updateStatusSql);
             $stmt->bind_param("ii", $requestId, $courseId);
             $stmt->execute();
             $stmt->close(); 
 
             // Fetch the userId of the tutor associated with the request
-            $userIdSql = "SELECT UserId FROM tutors WHERE TutorId = ?";
+            $userIdSql = "CALL GetUserIdByTutorId(?)";
             $stmt = $conn->prepare($userIdSql);
             $stmt->bind_param("i", $requestId);
             $stmt->execute();
@@ -247,7 +247,7 @@ class Admin extends User {
             $stmt->close();
 
             // Fetch the course name
-            $getCourseNameSql = "SELECT CourseName FROM courses WHERE CourseId = ?";
+            $getCourseNameSql = "CALL GetCourseNameById(?)";
             $stmt = $conn->prepare($getCourseNameSql);
             $stmt->bind_param("i", $courseId);
             $stmt->execute();
@@ -257,7 +257,7 @@ class Admin extends User {
 
             // Add a notification for course request denial
             $notificationMessage = "Course request for $courseName was denied.";
-            $insertNotificationSql = "INSERT INTO notifications (user_id, message, is_read) VALUES (?, ?, 0)";
+            $insertNotificationSql = "CALL InsertNotificationNoRead(?, ?)";
             $stmt = $conn->prepare($insertNotificationSql);
             $stmt->bind_param("is", $userId, $notificationMessage);
             $stmt->execute();
