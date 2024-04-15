@@ -8,7 +8,7 @@
                 if (isset($_SESSION['id'])) {
                     $userId = $_SESSION['id'];
                     // Fetch unread notifications for the current user
-                    $sql = "SELECT * FROM notifications WHERE user_id = ? AND is_read = 0";
+                    $sql = "CALL Notifications(?)";
                     $stmt = $conn->prepare($sql);
                     if (!$stmt) {
                         echo "Error: " . $conn->error;
