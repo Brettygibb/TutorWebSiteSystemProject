@@ -49,16 +49,6 @@ class Admin extends User {
     }
     
     
-    public function obtainWhoWantBecomeTutor($conn) {
-        $sql = "CALL GetWhoWantBecomeTutor()";
-        $result = mysqli_query($conn, $sql);
-        if (!$result) {
-            echo "Error fetching tutor requests: " . mysqli_error($conn);
-            exit();
-        }
-        return $result;
-    }
-    
     
     public function processBecomeTutor($action, $studentId, $conn) {
         if ($action === 'approve') {
@@ -263,6 +253,20 @@ class Admin extends User {
             $stmt->execute();
             $stmt->close();
         }
+    }
+    
+    public function obtainWhoWantBecomeTutor($conn) {
+        $sql = "SELECT u.FirstName, u.LastName, bt.StudentId
+                FROM becometutor_requests bt
+                INNER JOIN students s ON bt.StudentId = s.StudentId
+                INNER JOIN users u ON s.UserId = u.UserId
+                WHERE bt.Status = 'Pending'";
+        $result = mysqli_query($conn, $sql);
+        if (!$result) {
+            echo "Error fetching tutor requests: " . mysqli_error($conn);
+            exit();
+        }
+        return $result;
     }
 
     
