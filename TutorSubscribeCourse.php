@@ -13,6 +13,7 @@ $stmt->bind_param("i", $userid);
 $stmt->execute();
 $tutorIdResult = $stmt->get_result();
 $tutorIdRow = $tutorIdResult->fetch_assoc();
+$stmt->close();
 
 
 
@@ -31,15 +32,17 @@ $stmt->bind_param("i", $userid);
 $stmt->execute();
 $userResult = $stmt->get_result();
 $userRow = $userResult->fetch_assoc();
+$stmt->close();
 
 // Query to get available courses for the tutor to subscribe
 //need a stored procedure to get the available courses
 //$availableCoursesSql = "SELECT * FROM courses WHERE CourseId NOT IN (SELECT CourseId FROM tutor_courses WHERE TutorId = ?)";
 $availableCoursesSql = "CALL GetAvailableCourses(?)";
 $stmt = $conn->prepare($availableCoursesSql);
-$stmt->bind_param("ii", $tutorid, $tutorid);
+$stmt->bind_param("i", $tutorid);
 $stmt->execute();
 $availableCoursesResult = $stmt->get_result();
+$stmt->close();
 
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
