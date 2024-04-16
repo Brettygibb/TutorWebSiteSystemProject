@@ -64,9 +64,10 @@
     text-align: center;
     width: 100%; /* Ensures the footer is full width */
     box-sizing: border-box; 
-    position: absolute; 
+    position: relative; 
     bottom: 0;
     left: 0;
+    min-height: 50px;
 }
 
 .footer p {
