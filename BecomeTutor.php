@@ -13,7 +13,7 @@
     </header>
 
     <section>
-        <?php
+       <?php
         session_start();
         include('Database.php');
 
@@ -43,9 +43,16 @@
                 mysqli_stmt_execute($stmt_check);
                 mysqli_stmt_store_result($stmt_check);
 
-                //test
                 // Consume result set of the stored procedure call
-                while(mysqli_next_result($conn)) {;}
+                while(mysqli_next_result($conn)) {
+                    if (!mysqli_more_results($conn)) {
+                        break;
+                    }
+                    if (!$result = mysqli_store_result($conn)) {
+                        break;
+                    }
+                    mysqli_free_result($result);
+                }
 
                 if (mysqli_stmt_num_rows($stmt_check) > 0) {
                     echo "Previously you made an application for becoming a tutor.";
@@ -70,6 +77,17 @@
                     mysqli_stmt_execute($stmtAdmins);
                     mysqli_stmt_store_result($stmtAdmins);
                     mysqli_stmt_bind_result($stmtAdmins, $adminId);
+
+                    // Consume result set of the stored procedure call
+                    while(mysqli_next_result($conn)) {
+                        if (!mysqli_more_results($conn)) {
+                            break;
+                        }
+                        if (!$result = mysqli_store_result($conn)) {
+                            break;
+                        }
+                        mysqli_free_result($result);
+                    }
 
                     // Prepare the notification insertion query
                     $sqlNotification = "CALL InsertNotification(?, ?)";
