@@ -72,13 +72,13 @@ function sendVerificationEmail($email, $token, $firstName, $lastName) {
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'nbcctutoremail@gmail.com';
-        $mail->Password = 'hxymgawarsapwfza';
-        $mail->SMTPSecure = 'ssl';
-        $mail->Port = 465;
+        $mail->Username = '';
+        $mail->Password = '';
+        $mail->SMTPSecure = '';
+        $mail->Port = ;
 
         // Recipients
-        $mail->setFrom('nbcctutoremail@gmail.com');
+        $mail->setFrom('');
         $mail->addAddress($email, $firstName . ' ' . $lastName);
 
         // Content
@@ -100,15 +100,15 @@ function welcomeEmail($email, $firstName) {
     try {
         // Server settings
         $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
+        $mail->Host = '';
         $mail->SMTPAuth = true;
-        $mail->Username = 'nbcctutoremail@gmail.com';
-        $mail->Password = 'hxymgawarsapwfza';
-        $mail->SMTPSecure = 'ssl';
+        $mail->Username = '';
+        $mail->Password = '';
+        $mail->SMTPSecure = '';
         $mail->Port = 465;
 
         // Recipients
-        $mail->setFrom('nbcctutoremail@gmail.com');
+        $mail->setFrom('');
         $mail->addAddress($email, $firstName);
 
         // Content
