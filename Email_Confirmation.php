@@ -75,7 +75,7 @@ function sendVerificationEmail($email, $token, $firstName, $lastName) {
         $mail->Username = '';
         $mail->Password = '';
         $mail->SMTPSecure = '';
-        $mail->Port = ;
+        $mail->Port = "";
 
         // Recipients
         $mail->setFrom('');
